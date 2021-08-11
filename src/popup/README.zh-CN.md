@@ -104,20 +104,6 @@ export default {
 
 <!-- 挂载到 #app 节点下 -->
 <van-popup v-model:show="show" teleport="#app" />
-
-<!-- 挂载到指定的元素下 -->
-<van-popup v-model:show="show" :teleport="myContainer" />
-```
-
-```js
-export default {
-  setup() {
-    const myContainer = document.querySelector('.my-container');
-    return {
-      myContainer,
-    };
-  },
-};
 ```
 
 ## API
@@ -131,7 +117,7 @@ export default {
 | position | 弹出位置，可选值为 `top` `bottom` `right` `left` | _string_ | `center` |
 | overlay-class | 自定义遮罩层类名 | _string \| Array \| object_ | - |
 | overlay-style | 自定义遮罩层样式 | _object_ | - |
-| duration | 动画时长，单位秒 | _number \| string_ | `0.3` |
+| duration | 动画时长，单位秒，设置为 0 可以禁用动画 | _number \| string_ | `0.3` |
 | round | 是否显示圆角 | _boolean_ | `false` |
 | lock-scroll | 是否锁定背景滚动 | _boolean_ | `true` |
 | lazy-render | 是否在显示弹层时才渲染节点 | _boolean_ | `true` |
@@ -141,10 +127,10 @@ export default {
 | close-icon | 关闭[图标名称](#/zh-CN/icon)或图片链接 | _string_ | `cross` |
 | close-icon-position | 关闭图标位置，可选值为 `top-left`<br>`bottom-left` `bottom-right` | _string_ | `top-right` |
 | before-close `v3.1.4` | 关闭前的回调函数，返回 `false` 可阻止关闭，支持返回 Promise | _(action: string) => boolean \| Promise\<boolean\>_ | - |
-| icon-prefix `v3.0.18` | 图标类名前缀，同 Icon 组件的 [class-prefix 属性](#/zh-CN/icon#props) | _string_ | `van-icon` |
+| icon-prefix `v3.0.18` | 图标类名前缀，等同于 Icon 组件的 [class-prefix 属性](#/zh-CN/icon#props) | _string_ | `van-icon` |
 | transition | 动画类名，等价于 [transition](https://v3.cn.vuejs.org/api/built-in-components.html#transition) 的 `name` 属性 | _string_ | - |
 | transition-appear | 是否在初始渲染时启用过渡动画 | _boolean_ | `false` |
-| teleport | 指定挂载的节点 | _string \| Element_ | - |
+| teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://v3.cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | - |
 | safe-area-inset-bottom | 是否开启[底部安全区适配](#/zh-CN/advanced-usage#di-bu-an-quan-qu-gua-pei) | _boolean_ | `false` |
 
 ### Events

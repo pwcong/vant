@@ -8,6 +8,7 @@ import {
   PropType,
   onMounted,
   defineComponent,
+  ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -15,6 +16,7 @@ import {
   isDef,
   extend,
   addUnit,
+  FORM_KEY,
   unknownProp,
   resetScroll,
   formatNumber,
@@ -33,9 +35,8 @@ import {
 import { cellProps } from '../cell/Cell';
 
 // Composables
-import { useParent } from '@vant/use';
+import { CUSTOM_FIELD_INJECTION_KEY, useParent } from '@vant/use';
 import { useExpose } from '../composables/use-expose';
-import { FORM_KEY, FIELD_KEY } from '../composables/use-link-field';
 
 // Components
 import { Icon } from '../icon';
@@ -45,28 +46,20 @@ import { Cell } from '../cell';
 import type {
   FieldRule,
   FieldType,
+  FieldExpose,
   FieldTextAlign,
   FieldClearTrigger,
   FieldFormatTrigger,
   FieldValidateError,
   FieldAutosizeConfig,
   FieldValidateTrigger,
+  FieldFormSharedProps,
 } from './types';
 
 const [name, bem] = createNamespace('field');
 
-// Shared props of Field and Form
-type SharedProps =
-  | 'colon'
-  | 'disabled'
-  | 'readonly'
-  | 'labelWidth'
-  | 'labelAlign'
-  | 'inputAlign'
-  | 'errorMessageAlign';
-
 // provide to Search component to inherit
-export const fieldProps = {
+export const fieldSharedProps = {
   formatter: Function as PropType<(value: string) => string>,
   leftIcon: String,
   rightIcon: String,
@@ -106,29 +99,33 @@ export const fieldProps = {
   },
 };
 
+const props = extend({}, cellProps, fieldSharedProps, {
+  rows: [Number, String],
+  name: String,
+  rules: Array as PropType<FieldRule[]>,
+  autosize: [Boolean, Object] as PropType<boolean | FieldAutosizeConfig>,
+  labelWidth: [Number, String],
+  labelClass: unknownProp,
+  labelAlign: String as PropType<FieldTextAlign>,
+  autocomplete: String,
+  showWordLimit: Boolean,
+  errorMessageAlign: String as PropType<FieldTextAlign>,
+  type: {
+    type: String as PropType<FieldType>,
+    default: 'text',
+  },
+  colon: {
+    type: Boolean,
+    default: null,
+  },
+});
+
+export type FieldProps = ExtractPropTypes<typeof props>;
+
 export default defineComponent({
   name,
 
-  props: extend({}, cellProps, fieldProps, {
-    rows: [Number, String],
-    name: String,
-    rules: Array as PropType<FieldRule[]>,
-    autosize: [Boolean, Object] as PropType<boolean | FieldAutosizeConfig>,
-    labelWidth: [Number, String],
-    labelClass: unknownProp,
-    labelAlign: String as PropType<FieldTextAlign>,
-    autocomplete: String,
-    showWordLimit: Boolean,
-    errorMessageAlign: String as PropType<FieldTextAlign>,
-    type: {
-      type: String as PropType<FieldType>,
-      default: 'text',
-    },
-    colon: {
-      type: Boolean,
-      default: null,
-    },
-  }),
+  props,
 
   emits: [
     'blur',
@@ -149,13 +146,13 @@ export default defineComponent({
     });
 
     const inputRef = ref<HTMLInputElement>();
-    const childFieldValue = ref<() => unknown>();
+    const customValue = ref<() => unknown>();
 
     const { parent: form } = useParent(FORM_KEY);
 
     const getModelValue = () => String(props.modelValue ?? '');
 
-    const getProp = <T extends SharedProps>(key: T) => {
+    const getProp = <T extends FieldFormSharedProps>(key: T) => {
       if (isDef(props[key])) {
         return props[key];
       }
@@ -179,8 +176,8 @@ export default defineComponent({
     });
 
     const formValue = computed(() => {
-      if (childFieldValue.value && slots.input) {
-        return childFieldValue.value();
+      if (customValue.value && slots.input) {
+        return customValue.value();
       }
       return props.modelValue;
     });
@@ -517,7 +514,7 @@ export default defineComponent({
       renderMessage(),
     ];
 
-    useExpose({
+    useExpose<FieldExpose>({
       blur,
       focus,
       validate,
@@ -525,8 +522,8 @@ export default defineComponent({
       resetValidation,
     });
 
-    provide(FIELD_KEY, {
-      childFieldValue,
+    provide(CUSTOM_FIELD_INJECTION_KEY, {
+      customValue,
       resetValidation,
       validateWithTrigger,
     });

@@ -6,8 +6,7 @@ import {
 } from 'vue';
 
 // Utils
-import { createNamespace, extend } from '../utils';
-import { BORDER_SURROUND } from '../utils/constant';
+import { createNamespace, BORDER_SURROUND, extend } from '../utils';
 import { useRoute, routeProps } from '../composables/use-route';
 
 // Components
@@ -40,7 +39,7 @@ export default defineComponent({
     hairline: Boolean,
     disabled: Boolean,
     iconPrefix: String,
-    loadingSize: String,
+    loadingSize: [Number, String],
     loadingText: String,
     loadingType: String as PropType<LoadingType>,
     tag: {

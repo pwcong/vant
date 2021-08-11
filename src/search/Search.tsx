@@ -1,4 +1,4 @@
-import { ref, PropType, defineComponent } from 'vue';
+import { ref, PropType, defineComponent, ExtractPropTypes } from 'vue';
 
 // Utils
 import {
@@ -9,7 +9,7 @@ import {
   preventDefault,
   ComponentInstance,
 } from '../utils';
-import { fieldProps } from '../field/Field';
+import { fieldSharedProps } from '../field/Field';
 
 // Composables
 import { useExpose } from '../composables/use-expose';
@@ -17,28 +17,33 @@ import { useExpose } from '../composables/use-expose';
 // Components
 import { Field } from '../field';
 
+// Types
+import type { SearchShape } from './types';
+
 const [name, bem, t] = createNamespace('search');
 
-export type SearchShape = 'square' | 'round';
+const props = extend({}, fieldSharedProps, {
+  label: String,
+  clearable: truthProp,
+  actionText: String,
+  background: String,
+  showAction: Boolean,
+  shape: {
+    type: String as PropType<SearchShape>,
+    default: 'square',
+  },
+  leftIcon: {
+    type: String,
+    default: 'search',
+  },
+});
+
+export type SearchProps = ExtractPropTypes<typeof props>;
 
 export default defineComponent({
   name,
 
-  props: extend({}, fieldProps, {
-    label: String,
-    clearable: truthProp,
-    actionText: String,
-    background: String,
-    showAction: Boolean,
-    shape: {
-      type: String as PropType<SearchShape>,
-      default: 'square',
-    },
-    leftIcon: {
-      type: String,
-      default: 'search',
-    },
-  }),
+  props,
 
   emits: ['search', 'cancel', 'update:modelValue'],
 
@@ -89,8 +94,8 @@ export default defineComponent({
     const blur = () => filedRef.value?.blur();
     const focus = () => filedRef.value?.focus();
 
-    const fieldPropNames = Object.keys(fieldProps) as Array<
-      keyof typeof fieldProps
+    const fieldPropNames = Object.keys(fieldSharedProps) as Array<
+      keyof typeof fieldSharedProps
     >;
 
     const renderField = () => {

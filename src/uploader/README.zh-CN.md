@@ -240,8 +240,8 @@ export default {
     };
 
     // 返回 Promise
-    const asyncBeforeRead = (file) => {
-      return new Promise((resolve, reject) => {
+    const asyncBeforeRead = (file) =>
+      new Promise((resolve, reject) => {
         if (file.type !== 'image/jpeg') {
           Toast('请上传 jpg 格式图片');
           reject();
@@ -252,7 +252,6 @@ export default {
           resolve(img);
         }
       });
-    };
 
     return {
       beforeRead,
@@ -383,6 +382,19 @@ before-read、after-read、before-delete 执行时会传递以下回调参数：
 | closeImagePreview | 关闭全屏的图片预览 | - | - |
 | chooseFile | 主动调起文件选择，由于浏览器安全限制，只有在用户触发操作的上下文中调用才有效 | - | - |
 
+### 类型定义
+
+通过 `UploaderInstance` 获取 Uploader 实例的类型定义。
+
+```ts
+import { ref } from 'vue';
+import type { UploaderInstance } from 'vant';
+
+const uploaderRef = ref<UploaderInstance>();
+
+uploaderRef.value?.chooseFile();
+```
+
 ### 样式变量
 
 组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
@@ -436,8 +448,8 @@ import Compressor from 'compressorjs';
 
 export default {
   setup() {
-    const beforeRead = (file) => {
-      return new Promise((resolve) => {
+    const beforeRead = (file) =>
+      new Promise((resolve) => {
         // compressorjs 默认开启 checkOrientation 选项
         // 会将图片修正为正确方向
         new Compressor(file, {
@@ -447,7 +459,6 @@ export default {
           },
         });
       });
-    };
 
     return {
       beforeRead,

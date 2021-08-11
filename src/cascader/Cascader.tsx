@@ -7,7 +7,7 @@ import { Tabs } from '../tabs';
 import { Icon } from '../icon';
 
 // Types
-import type { TabsClickTabEventParams } from '../tabs/Tabs';
+import type { TabsClickTabEventParams } from '../tabs/types';
 
 const [name, bem, t] = createNamespace('cascader');
 
@@ -281,7 +281,7 @@ export default defineComponent({
         color={props.activeColor}
         swipeThreshold={0}
         swipeable={props.swipeable}
-        onClickTab={onClickTab}
+        onClick-tab={onClickTab}
       >
         {state.tabs.map(renderTab)}
       </Tabs>

@@ -178,7 +178,7 @@ export default {
 | closeIconPosition | 关闭图标位置，可选值为 `top-left`<br>`bottom-left` `bottom-right` | _string_ | `top-right` |
 | transition `v3.0.8` | 动画类名，等价于 [transition](https://v3.cn.vuejs.org/api/built-in-components.html#transition) 的 `name` 属性 | _string_ | `van-fade` |
 | overlay-style `v3.0.8` | 自定义遮罩层样式 | _object_ | - |
-| teleport | 指定挂载的节点，[用法示例](#/zh-CN/popup#zhi-ding-gua-zai-wei-zhi) | _string \| Element_ | - |
+| teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://v3.cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | - |
 
 ### Props
 
@@ -203,7 +203,7 @@ export default {
 | close-icon-position | 关闭图标位置，可选值为 `top-left`<br>`bottom-left` `bottom-right` | _string_ | `top-right` |
 | transition `v3.0.8` | 动画类名，等价于 [transition](https://v3.cn.vuejs.org/api/built-in-components.html#transition) 的 `name` 属性 | _string_ | `van-fade` |
 | overlay-style `v3.0.8` | 自定义遮罩层样式 | _object_ | - |
-| teleport | 指定挂载的节点，[用法示例](#/zh-CN/popup#zhi-ding-gua-zai-wei-zhi) | _string \| Element_ | - |
+| teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://v3.cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | - |
 
 ### Events
 
@@ -220,9 +220,22 @@ export default {
 
 通过组件调用 `ImagePreview` 时，通过 ref 可以获取到 ImagePreview 实例并调用实例方法，详见[组件实例方法](#/zh-CN/advanced-usage#zu-jian-shi-li-fang-fa)。
 
-| 方法名          | 说明           | 参数                            | 返回值 |
-| --------------- | -------------- | ------------------------------- | ------ |
-| swipeTo `2.9.0` | 切换到指定位置 | index: number, options: Options | -      |
+| 方法名 | 说明 | 参数 | 返回值 |
+| --- | --- | --- | --- |
+| swipeTo `2.9.0` | 切换到指定位置 | _index: number, options?: SwipeToOptions_ | - |
+
+### 类型定义
+
+通过 `ImagePreviewInstance` 获取 ImagePreview 实例的类型定义。
+
+```ts
+import { ref } from 'vue';
+import type { ImagePreviewInstance } from 'vant';
+
+const imagePreviewRef = ref<ImagePreviewInstance>();
+
+imagePreviewRef.value?.swipeTo(1);
+```
 
 ### Slots
 

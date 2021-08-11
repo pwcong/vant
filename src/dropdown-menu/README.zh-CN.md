@@ -154,7 +154,7 @@ export default {
 | active-color | 菜单标题和选项的选中态颜色 | _string_ | `#ee0a24` |
 | direction | 菜单展开方向，可选值为`up` | _string_ | `down` |
 | z-index | 菜单栏 z-index 层级 | _number \| string_ | `10` |
-| duration | 动画时长，单位秒 | _number \| string_ | `0.2` |
+| duration | 动画时长，单位秒，设置为 0 可以禁用动画 | _number \| string_ | `0.2` |
 | overlay | 是否显示遮罩层 | _boolean_ | `true` |
 | close-on-click-overlay | 是否在点击遮罩层后关闭菜单 | _boolean_ | `true` |
 | close-on-click-outside | 是否在点击外部元素后关闭菜单 | _boolean_ | `true` |
@@ -169,7 +169,7 @@ export default {
 | disabled | 是否禁用菜单 | _boolean_ | `false` |
 | lazy-render | 是否在首次展开时才渲染菜单内容 | _boolean_ | `true` |
 | title-class | 标题额外类名 | _string \| Array \| object_ | - |
-| teleport | 指定挂载的节点，[用法示例](#/zh-CN/popup#zhi-ding-gua-zai-wei-zhi) | _string \| Element_ | - |
+| teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://v3.cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | - |
 
 ### DropdownItem Events
 
@@ -195,6 +195,19 @@ export default {
 | 方法名 | 说明 | 参数 | 返回值 |
 | --- | --- | --- | --- |
 | toggle | 切换菜单展示状态，传 `true` 为显示，`false` 为隐藏，不传参为取反 | _show?: boolean_ | - |
+
+### 类型定义
+
+通过 `DropdownItemInstance` 获取 DropdownItem 实例的类型定义。
+
+```ts
+import { ref } from 'vue';
+import type { DropdownItemInstance } from 'vant';
+
+const dropdownItemRef = ref<DropdownItemInstance>();
+
+dropdownItemRef.value?.toggle();
+```
 
 ### Option 数据结构
 

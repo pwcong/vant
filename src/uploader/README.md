@@ -221,8 +221,8 @@ export default {
     };
 
     // 返回 Promise
-    const asyncBeforeRead = (file) => {
-      return new Promise((resolve, reject) => {
+    const asyncBeforeRead = (file) =>
+      new Promise((resolve, reject) => {
         if (file.type !== 'image/jpeg') {
           Toast('Please upload an image in jpg format');
           reject();
@@ -233,7 +233,6 @@ export default {
           resolve(img);
         }
       });
-    };
 
     return {
       beforeRead,
@@ -357,6 +356,19 @@ Use [ref](https://v3.vuejs.org/guide/component-template-refs.html) to get Upload
 | --- | --- | --- | --- |
 | closeImagePreview | Close full screen image preview | - | - |
 | chooseFile | Trigger choosing files, works with the user action context only because of browser security | - | - |
+
+### Types
+
+Get the type definition of the Uploader instance through `UploaderInstance`.
+
+```ts
+import { ref } from 'vue';
+import type { UploaderInstance } from 'vant';
+
+const uploaderRef = ref<UploaderInstance>();
+
+uploaderRef.value?.chooseFile();
+```
 
 ### CSS Variables
 

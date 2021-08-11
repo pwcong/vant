@@ -240,7 +240,7 @@ export default {
 | type | 样式风格类型，可选值为 `card` | _string_ | `line` |
 | color | 标签主题色 | _string_ | `#ee0a24` |
 | background | 标签栏背景色 | _string_ | `white` |
-| duration | 动画时间，单位秒 | _number \| string_ | `0.3` |
+| duration | 动画时间，单位秒，设置为 0 可以禁用动画 | _number \| string_ | `0.3` |
 | line-width | 底部条宽度，默认单位 `px` | _number \| string_ | `40px` |
 | line-height | 底部条高度，默认单位 `px` | _number \| string_ | `3px` |
 | animated | 是否开启切换标签内容时的转场动画 | _boolean_ | `false` |
@@ -266,7 +266,7 @@ export default {
 | badge | 图标右上角徽标的内容 | _number \| string_ | - |
 | name | 标签名称，作为匹配的标识符 | _number \| string_ | 标签的索引值 |
 | url | 点击后跳转的链接地址 | _string_ | - |
-| to | 点击后跳转的目标路由对象，同 vue-router 的 [to 属性](https://router.vuejs.org/zh/api/#to) | _string \| object_ | - |
+| to | 点击后跳转的目标路由对象，等同于 vue-router 的 [to 属性](https://router.vuejs.org/zh/api/#to) | _string \| object_ | - |
 | replace | 是否在跳转时替换当前页面历史 | _boolean_ | `false` |
 | title-style | 自定义标题样式 | _string \| Array \| object_ | - |
 | title-class | 自定义标题类名 | _string \| Array \| object_ | - |
@@ -290,6 +290,19 @@ export default {
 | --- | --- | --- | --- |
 | resize | 外层元素大小或组件显示状态变化时，可以调用此方法来触发重绘 | - | - |
 | scrollTo | 滚动到指定的标签页，在滚动导航模式下可用 | _name: string \| number_ | - |
+
+### 类型定义
+
+通过 `TabsInstance` 获取 Tabs 实例的类型定义。
+
+```ts
+import { ref } from 'vue';
+import type { TabsInstance } from 'vant';
+
+const tabsRef = ref<TabsInstance>();
+
+tabsRef.value?.scrollTo(0);
+```
 
 ### Tabs Slots
 

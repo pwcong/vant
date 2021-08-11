@@ -1,80 +1,5 @@
-<template>
-  <demo-block card :title="t('basicUsage')">
-    <van-picker
-      :title="t('title')"
-      :columns="t('textColumns')"
-      @change="onChange1"
-    />
-  </demo-block>
-
-  <demo-block card :title="t('defaultIndex')">
-    <van-picker
-      :title="t('title')"
-      :columns="t('textColumns')"
-      :default-index="2"
-      @change="onChange1"
-    />
-  </demo-block>
-
-  <demo-block card :title="t('multipleColumns')">
-    <van-picker
-      :title="t('title')"
-      :columns="t('dateColumns')"
-      @cancel="onCancel"
-      @confirm="onConfirm"
-    />
-  </demo-block>
-
-  <demo-block card v-if="!isWeapp" :title="t('cascade')">
-    <van-picker :title="t('title')" :columns="t('cascadeColumns')" />
-  </demo-block>
-
-  <demo-block card :title="t('disableOption')">
-    <van-picker :title="t('title')" :columns="t('disabledColumns')" />
-  </demo-block>
-
-  <demo-block card :title="t('setColumnValues')">
-    <van-picker
-      ref="picker"
-      :title="t('title')"
-      :columns="columns"
-      @change="onChange2"
-    />
-  </demo-block>
-
-  <demo-block card :title="t('loadingStatus')">
-    <van-picker loading :title="t('title')" :columns="columns" />
-  </demo-block>
-
-  <demo-block card v-if="!isWeapp" :title="t('withPopup')">
-    <van-field
-      v-model="fieldValue"
-      is-link
-      readonly
-      :label="t('city')"
-      :placeholder="t('chooseCity')"
-      @click="onClickField"
-    />
-    <van-popup v-model:show="showPicker" round position="bottom">
-      <van-picker
-        :title="t('title')"
-        :columns="t('textColumns')"
-        @cancel="onCancel2"
-        @confirm="onConfirm2"
-      />
-    </van-popup>
-  </demo-block>
-  <demo-block card :title="t('customChildrenKey')">
-    <van-picker
-      :title="t('title')"
-      :columns="t('customChildrenColumns')"
-      :columns-field-names="customFieldName"
-    />
-  </demo-block>
-</template>
-
-<script lang="ts">
-import { ref, computed, reactive, toRefs } from 'vue';
+<script setup lang="ts">
+import { ref, computed } from 'vue';
 import { dateColumns, cascadeColumns, cascadeColumnsCustomKey } from './data';
 import { useTranslate } from '@demo/use-translate';
 import { Toast } from '../../toast';
@@ -145,74 +70,129 @@ const i18n = {
   },
 };
 
-export default {
-  setup() {
-    const t = useTranslate(i18n);
-    const picker = ref();
-    const state = reactive({
-      showPicker: false,
-      fieldValue: '',
-      customFieldName: {
-        text: 'cityName',
-        children: 'cities',
-      },
-    });
+const t = useTranslate(i18n);
+const picker = ref();
+const showPicker = ref(false);
+const fieldValue = ref('');
+const customFieldName = ref({
+  text: 'cityName',
+  children: 'cities',
+});
 
-    const columns = computed(() => {
-      const column = t('column3');
-      return [
-        {
-          values: Object.keys(column),
-          className: 'column1',
-        },
-        {
-          values: column[Object.keys(column)[0]],
-          className: 'column2',
-          defaultIndex: 2,
-        },
-      ];
-    });
+const columns = computed(() => {
+  const column = t('column3');
+  return [
+    {
+      values: Object.keys(column),
+      className: 'column1',
+    },
+    {
+      values: column[Object.keys(column)[0]],
+      className: 'column2',
+      defaultIndex: 2,
+    },
+  ];
+});
 
-    const onChange1 = (value: string, index: number) => {
-      Toast(t('toastContent', value, index));
-    };
+const onChange1 = (value: string, index: number) => {
+  Toast(t('toastContent', value, index));
+};
 
-    const onChange2 = (values: string[]) => {
-      picker.value.setColumnValues(1, t('column3')[values[0]]);
-    };
+const onChange2 = (values: string[]) => {
+  picker.value.setColumnValues(1, t('column3')[values[0]]);
+};
 
-    const onConfirm = (value: string, index: number) => {
-      Toast(t('toastContent', value, index));
-    };
+const onConfirm = (value: string, index: number) => {
+  Toast(t('toastContent', value, index));
+};
 
-    const onCancel = () => Toast(t('cancel'));
+const onCancel = () => Toast(t('cancel'));
 
-    const onCancel2 = () => {
-      state.showPicker = false;
-    };
+const onCancel2 = () => {
+  showPicker.value = false;
+};
 
-    const onClickField = () => {
-      state.showPicker = true;
-    };
+const onClickField = () => {
+  showPicker.value = true;
+};
 
-    const onConfirm2 = (value: string) => {
-      state.showPicker = false;
-      state.fieldValue = value;
-    };
-
-    return {
-      ...toRefs(state),
-      t,
-      picker,
-      columns,
-      onCancel,
-      onCancel2,
-      onChange1,
-      onChange2,
-      onConfirm,
-      onConfirm2,
-      onClickField,
-    };
-  },
+const onConfirm2 = (value: string) => {
+  showPicker.value = false;
+  fieldValue.value = value;
 };
 </script>
+
+<template>
+  <demo-block card :title="t('basicUsage')">
+    <van-picker
+      :title="t('title')"
+      :columns="t('textColumns')"
+      @change="onChange1"
+    />
+  </demo-block>
+
+  <demo-block card :title="t('defaultIndex')">
+    <van-picker
+      :title="t('title')"
+      :columns="t('textColumns')"
+      :default-index="2"
+      @change="onChange1"
+    />
+  </demo-block>
+
+  <demo-block card :title="t('multipleColumns')">
+    <van-picker
+      :title="t('title')"
+      :columns="t('dateColumns')"
+      @cancel="onCancel"
+      @confirm="onConfirm"
+    />
+  </demo-block>
+
+  <demo-block card :title="t('cascade')">
+    <van-picker :title="t('title')" :columns="t('cascadeColumns')" />
+  </demo-block>
+
+  <demo-block card :title="t('disableOption')">
+    <van-picker :title="t('title')" :columns="t('disabledColumns')" />
+  </demo-block>
+
+  <demo-block card :title="t('setColumnValues')">
+    <van-picker
+      ref="picker"
+      :title="t('title')"
+      :columns="columns"
+      @change="onChange2"
+    />
+  </demo-block>
+
+  <demo-block card :title="t('loadingStatus')">
+    <van-picker loading :title="t('title')" :columns="columns" />
+  </demo-block>
+
+  <demo-block card :title="t('withPopup')">
+    <van-field
+      v-model="fieldValue"
+      is-link
+      readonly
+      :label="t('city')"
+      :placeholder="t('chooseCity')"
+      @click="onClickField"
+    />
+    <van-popup v-model:show="showPicker" round position="bottom">
+      <van-picker
+        :title="t('title')"
+        :columns="t('textColumns')"
+        @cancel="onCancel2"
+        @confirm="onConfirm2"
+      />
+    </van-popup>
+  </demo-block>
+  <demo-block card :title="t('customChildrenKey')">
+    <van-picker
+      :title="t('title')"
+      :columns="t('customChildrenColumns')"
+      :columns-field-names="customFieldName"
+    />
+  </demo-block>
+</template>

@@ -17,10 +17,10 @@ import {
   extend,
   truthProp,
   unknownProp,
+  BORDER_BOTTOM,
   createNamespace,
   ComponentInstance,
 } from '../utils';
-import { BORDER_BOTTOM } from '../utils/constant';
 
 // Composables
 import { useClickAway } from '@vant/use';
@@ -112,8 +112,8 @@ export default defineComponent({
     const wrapperRef = ref<HTMLElement>();
     const popoverRef = ref<ComponentInstance>();
 
-    const createPopperInstance = () => {
-      return createPopper(wrapperRef.value!, popoverRef.value!.popupRef.value, {
+    const createPopperInstance = () =>
+      createPopper(wrapperRef.value!, popoverRef.value!.popupRef.value, {
         placement: props.placement,
         modifiers: [
           {
@@ -130,7 +130,6 @@ export default defineComponent({
           }),
         ],
       });
-    };
 
     const updateLocation = () => {
       nextTick(() => {

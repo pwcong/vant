@@ -225,7 +225,7 @@ export default {
 | placement | 弹出位置 | _string_ | `bottom` |
 | theme | 主题风格，可选值为 `dark` | _string_ | `light` |
 | trigger | 触发方式，可选值为 `manual` | `click` |
-| duration | 动画时长，单位秒 | _number \| string_ | `0.3` |
+| duration | 动画时长，单位秒，设置为 0 可以禁用动画 | _number \| string_ | `0.3` |
 | offset | 出现位置的偏移量 | _[number, number]_ | `[0, 8]` |
 | overlay | 是否显示遮罩层 | _boolean_ | `false` |
 | overlay-class `v3.0.10` | 自定义遮罩层类名 | _string \| Array \| object_ | - |
@@ -233,8 +233,8 @@ export default {
 | close-on-click-action | 是否在点击选项后关闭 | _boolean_ | `true` |
 | close-on-click-outside | 是否在点击外部元素后关闭菜单 | _boolean_ | `true` |
 | close-on-click-overlay `v3.0.10` | 是否在点击遮罩层后关闭菜单 | _boolean_ | `true` |
-| teleport | 指定挂载的节点，[用法示例](#/zh-CN/popup#zhi-ding-gua-zai-wei-zhi) | _string \| Element_ | `body` |
-| icon-prefix `v3.0.17` | 图标类名前缀，同 Icon 组件的 [class-prefix 属性](#/zh-CN/icon#props) | _string_ | `van-icon` |
+| teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://v3.cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | `body` |
+| icon-prefix `v3.0.17` | 图标类名前缀，等同于 Icon 组件的 [class-prefix 属性](#/zh-CN/icon#props) | _string_ | `van-icon` |
 
 ### Action 数据结构
 

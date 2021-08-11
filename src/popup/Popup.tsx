@@ -15,8 +15,7 @@ import {
 
 // Utils
 import { popupSharedProps } from './shared';
-import { createNamespace, extend, isDef } from '../utils';
-import { callInterceptor } from '../utils/interceptor';
+import { extend, isDef, callInterceptor, createNamespace } from '../utils';
 
 // Composables
 import { useEventListener } from '@vant/use';
@@ -186,11 +185,13 @@ export default defineComponent({
           v-show={props.show}
           ref={popupRef}
           style={style.value}
-          class={bem({
-            round,
-            [position]: position,
-            'safe-area-inset-bottom': safeAreaInsetBottom,
-          })}
+          class={[
+            bem({
+              round,
+              [position]: position,
+            }),
+            { 'van-safe-area-bottom': safeAreaInsetBottom },
+          ]}
           onClick={onClick}
           {...attrs}
         >

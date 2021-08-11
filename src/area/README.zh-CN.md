@@ -122,8 +122,8 @@ export default {
 
 | 事件    | 说明               | 回调参数                       |
 | ------- | ------------------ | ------------------------------ |
-| confirm | 点击右上方完成按钮 | _result: ConfirmResult_        |
-| cancel  | 点击取消按钮时     | -                              |
+| confirm | 点击完成按钮时触发 | _result: ConfirmResult_        |
+| cancel  | 点击取消按钮时触发 | -                              |
 | change  | 选项改变时触发     | 所有列选中值，当前列对应的索引 |
 
 ### ConfirmResult 格式
@@ -165,6 +165,19 @@ confirm 事件返回的数据整体为一个数组，数组每一项对应一列
 | 方法名 | 说明 | 参数 | 返回值 |
 | --- | --- | --- | --- |
 | reset | 根据地区码重置所有选项，若不传地区码，则重置到第一项 | _code?: string_ | - |
+
+### 类型定义
+
+通过 `AreaInstance` 获取 Area 实例的类型定义。
+
+```ts
+import { ref } from 'vue';
+import type { AreaInstance } from 'vant';
+
+const areaRef = ref<AreaInstance>();
+
+areaRef.value?.reset();
+```
 
 ## 常见问题
 

@@ -1,89 +1,4 @@
-<template>
-  <demo-block card :title="t('dateType')">
-    <van-datetime-picker
-      v-model="value.date"
-      type="date"
-      :title="t('dateType')"
-      :min-date="minDate"
-      :max-date="maxDate"
-    />
-  </demo-block>
-
-  <demo-block card :title="t('yearMonthType')">
-    <van-datetime-picker
-      v-model="value.yearMonth"
-      type="year-month"
-      :title="t('yearMonthType')"
-      :min-date="minDate"
-      :max-date="maxDate"
-      :formatter="formatter"
-    />
-  </demo-block>
-
-  <demo-block v-if="!isWeapp" card :title="t('monthDayType')">
-    <van-datetime-picker
-      v-model="value.monthDayType"
-      type="month-day"
-      :title="t('monthDayType')"
-      :min-date="minDate"
-      :max-date="maxDate"
-      :formatter="formatter"
-    />
-  </demo-block>
-
-  <demo-block card :title="t('timeType')">
-    <van-datetime-picker
-      v-model="value.time"
-      type="time"
-      :title="t('timeType')"
-      :min-hour="10"
-      :max-hour="20"
-    />
-  </demo-block>
-
-  <demo-block card :title="t('datetimeType')">
-    <van-datetime-picker
-      v-model="value.datetime"
-      type="datetime"
-      :title="t('datetimeType')"
-      :min-date="minDate"
-      :max-date="maxDate"
-    />
-  </demo-block>
-
-  <demo-block v-if="!isWeapp" card :title="t('datehourType')">
-    <van-datetime-picker
-      v-model="value.datehour"
-      type="datehour"
-      :title="t('datehourType')"
-      :min-date="minDate"
-      :max-date="maxDate"
-    />
-  </demo-block>
-
-  <demo-block card :title="t('optionFilter')">
-    <van-datetime-picker
-      v-model="value.optionFilter"
-      type="time"
-      :title="t('optionFilter')"
-      :filter="filter"
-    />
-  </demo-block>
-
-  <demo-block v-if="!isWeapp" card :title="t('sortColumns')">
-    <van-datetime-picker
-      v-model="value.sortColumnsDate"
-      type="date"
-      :title="t('sortColumns')"
-      :columns-order="['month', 'day', 'year']"
-      :min-date="minDate"
-      :max-date="maxDate"
-      :formatter="formatter"
-    />
-  </demo-block>
-</template>
-
-<script lang="ts">
+<script setup lang="ts">
 import { reactive } from 'vue';
 import { useTranslate } from '@demo/use-translate';
 
@@ -116,48 +31,123 @@ const i18n = {
   },
 };
 
-export default {
-  setup() {
-    const t = useTranslate(i18n);
-    const value = reactive({
-      date: new Date(2021, 0, 17),
-      time: '12:00',
-      datetime: new Date(2020, 0, 1),
-      datehour: new Date(2020, 0, 1),
-      monthDay: new Date(2020, 0, 1),
-      yearMonth: new Date(2020, 0, 1),
-      optionFilter: '12:00',
-      sortColumnsDate: new Date(2020, 0, 1),
-    });
+const t = useTranslate(i18n);
+const value = reactive({
+  date: new Date(2021, 0, 17),
+  time: '12:00',
+  datetime: new Date(2020, 0, 1),
+  datehour: new Date(2020, 0, 1),
+  monthDay: new Date(2020, 0, 1),
+  yearMonth: new Date(2020, 0, 1),
+  optionFilter: '12:00',
+  sortColumnsDate: new Date(2020, 0, 1),
+});
 
-    const filter = (type: string, values: string[]) => {
-      if (type === 'minute') {
-        return values.filter((value) => Number(value) % 5 === 0);
-      }
-      return values;
-    };
+const minDate = new Date(2020, 0, 1);
+const maxDate = new Date(2025, 10, 1);
 
-    const formatter = (type: string, value: string) => {
-      if (type === 'year') {
-        return value + t('year');
-      }
-      if (type === 'month') {
-        return value + t('month');
-      }
-      if (type === 'day') {
-        return value + t('day');
-      }
-      return value;
-    };
+const filter = (type: string, values: string[]) => {
+  if (type === 'minute') {
+    return values.filter((value) => Number(value) % 5 === 0);
+  }
+  return values;
+};
 
-    return {
-      t,
-      value,
-      filter,
-      minDate: new Date(2020, 0, 1),
-      maxDate: new Date(2025, 10, 1),
-      formatter,
-    };
-  },
+const formatter = (type: string, value: string) => {
+  if (type === 'year') {
+    return value + t('year');
+  }
+  if (type === 'month') {
+    return value + t('month');
+  }
+  if (type === 'day') {
+    return value + t('day');
+  }
+  return value;
 };
 </script>
+
+<template>
+  <demo-block card :title="t('dateType')">
+    <van-datetime-picker
+      v-model="value.date"
+      type="date"
+      :title="t('dateType')"
+      :min-date="minDate"
+      :max-date="maxDate"
+    />
+  </demo-block>
+
+  <demo-block card :title="t('yearMonthType')">
+    <van-datetime-picker
+      v-model="value.yearMonth"
+      type="year-month"
+      :title="t('yearMonthType')"
+      :min-date="minDate"
+      :max-date="maxDate"
+      :formatter="formatter"
+    />
+  </demo-block>
+
+  <demo-block card :title="t('monthDayType')">
+    <van-datetime-picker
+      v-model="value.monthDay"
+      type="month-day"
+      :title="t('monthDayType')"
+      :min-date="minDate"
+      :max-date="maxDate"
+      :formatter="formatter"
+    />
+  </demo-block>
+
+  <demo-block card :title="t('timeType')">
+    <van-datetime-picker
+      v-model="value.time"
+      type="time"
+      :title="t('timeType')"
+      :min-hour="10"
+      :max-hour="20"
+    />
+  </demo-block>
+
+  <demo-block card :title="t('datetimeType')">
+    <van-datetime-picker
+      v-model="value.datetime"
+      type="datetime"
+      :title="t('datetimeType')"
+      :min-date="minDate"
+      :max-date="maxDate"
+    />
+  </demo-block>
+
+  <demo-block card :title="t('datehourType')">
+    <van-datetime-picker
+      v-model="value.datehour"
+      type="datehour"
+      :title="t('datehourType')"
+      :min-date="minDate"
+      :max-date="maxDate"
+    />
+  </demo-block>
+
+  <demo-block card :title="t('optionFilter')">
+    <van-datetime-picker
+      v-model="value.optionFilter"
+      type="time"
+      :title="t('optionFilter')"
+      :filter="filter"
+    />
+  </demo-block>
+
+  <demo-block card :title="t('sortColumns')">
+    <van-datetime-picker
+      v-model="value.sortColumnsDate"
+      type="date"
+      :title="t('sortColumns')"
+      :columns-order="['month', 'day', 'year']"
+      :min-date="minDate"
+      :max-date="maxDate"
+      :formatter="formatter"
+    />
+  </demo-block>
+</template>
