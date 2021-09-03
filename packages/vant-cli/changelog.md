@@ -1,5 +1,27 @@
 # 更新日志
 
+## v4.0.0
+
+`unreleased`
+
+对以下依赖进行了大版本升级：
+
+- jest v27
+- husky v7
+- ts-jest v27
+- postcss v8
+- clean-css v5
+- commander v8
+- css-loader v6
+- babel-jest v27
+- sass-loader v12
+- less-loader v10
+- lint-staged v11
+- style-loader v3
+- autoprefixer v10
+- postcss-loader v6
+- webpack-dev-server v4
+
 ## v3.11.2
 
 `2021-07-15`
