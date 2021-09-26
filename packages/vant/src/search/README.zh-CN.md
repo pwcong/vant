@@ -130,7 +130,9 @@ export default {
 
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
+| v-model | 当前输入的值 | _number \| string_ | - |
 | label | 搜索框左侧文本 | _string_ | - |
+| name `v3.2.3` | 名称，作为提交表单时的标识符 | _string_ | - |
 | shape | 搜索框形状，可选值为 `round` | _string_ | `square` |
 | id `v3.2.2` | 搜索框 id，同时会设置 label 的 for 属性 | _string_ | - |
 | background | 搜索框外部背景色 | _string_ | `#f2f2f2` |
@@ -151,6 +153,7 @@ export default {
 | input-align | 输入框内容对齐方式，可选值为 `center` `right` | _string_ | `left` |
 | left-icon | 输入框左侧[图标名称](#/zh-CN/icon)或图片链接 | _string_ | `search` |
 | right-icon | 输入框右侧[图标名称](#/zh-CN/icon)或图片链接 | _string_ | - |
+| autocomplete `v3.2.3` | input 标签原生的[自动完成属性](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete) | _string_ | - |
 
 ### Events
 
@@ -178,7 +181,7 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { SearchShape, SearchInstance } from 'vant';
+import type { SearchProps, SearchShape, SearchInstance } from 'vant';
 ```
 
 `SearchInstance` 是组件实例的类型，用法如下：

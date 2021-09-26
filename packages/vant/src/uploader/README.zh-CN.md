@@ -388,6 +388,7 @@ before-read、after-read、before-delete 执行时会传递以下回调参数：
 
 ```ts
 import type {
+  UploaderProps,
   UploaderInstance,
   UploaderResultType,
   UploaderFileListItem,
@@ -441,6 +442,14 @@ uploaderRef.value?.chooseFile();
 
 ## 常见问题
 
+### Uploader 在部分安卓机型上无法上传图片？
+
+Uploader 采用了 HTML 原生的 `<input type="file />` 标签进行上传，能否上传取决于当前系统和浏览器的兼容性。当遇到无法上传的问题时，一般有以下几种情况：
+
+1. 遇到了安卓 App WebView 的兼容性问题，需要在安卓原生代码中进行兼容，可以参考此[文章](https://blog.csdn.net/qq_32756581/article/details/112861088)。
+2. 图片格式不正确，在当前系统/浏览器中无法识别，比如 `webp` 或 `heic` 格式。
+3. 其他浏览器兼容性问题。
+
 ### 拍照上传的图片被旋转 90 度？
 
 部分手机在拍照上传时会出现图片被旋转 90 度的问题，这个问题可以通过 [compressorjs](https://github.com/fengyuanchen/compressorjs) 或其他开源库进行处理。
@@ -478,6 +487,12 @@ export default {
   },
 };
 ```
+
+### 上传图片时出现浏览器刷新或卡顿现象？
+
+这种现象一般是内存不足导致的，通常发生在旧机型上；上传一张较大的图片引起也引起此现象。
+
+为了减少这种情况的出现，可以在上传图片前对图片进行压缩，压缩方法请参考上文中提到的 `compressorjs` 库。
 
 ### 上传 HEIC/HEIF 格式的图片后无法展示？
 

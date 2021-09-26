@@ -16,6 +16,50 @@ Vant 遵循 [Semver](https://semver.org/lang/zh-CN/) 语义化版本规范。
 
 ## 更新内容
 
+### [v3.2.4](https://github.com/youzan/vant/compare/v3.2.3...v3.2.4)
+
+`2021-09-26`
+
+**Feature**
+
+- Icon: 新增 guide-o 图标 [c5f45a](https://github.com/youzan/vant/commit/c5f45a5c134bf9d789c943b247c620a1a2391d03)
+- Search: 新增 autocomplete 属性 [#9553](https://github.com/youzan/vant/issues/9553)
+- Search: 新增 name 属性 [#9563](https://github.com/youzan/vant/issues/9563)
+
+**perf**
+
+- Lazyload: 移除生产环境的 log 信息 [33d7aa](https://github.com/youzan/vant/commit/33d7aa8f1aee38576f1a0b3549560edd7b5fe0ed)
+- Lazyload: 移除 edge 15 polyfill [00b156](https://github.com/youzan/vant/commit/00b1568887321cf452ed4b8872fe99f089a74b22)
+- @vant/use: 移除 raf polyfill [#9544](https://github.com/youzan/vant/issues/9544)
+
+**Types**
+
+- 导出部分组件的 props 类型 [a3380f](https://github.com/youzan/vant/commit/a3380f08c06f5fd32443e9b033e3d8a29c1f726a)
+- 修复 $toast、$dialog、$notify 类型缺失的问题 [#9556](https://github.com/youzan/vant/issues/9556)
+- Popover: PopoverAction 类型支持扩展字段 [#9554](https://github.com/youzan/vant/issues/9554)
+
+**Bug Fixes**
+
+- Collapse: 修复 wrapper ref 可能为空导致报错的问题 [#9505](https://github.com/youzan/vant/issues/9505)
+- CouponList: 修复错误的滚动条样式 [#9480](https://github.com/youzan/vant/issues/9480)
+- Radio: 修复 icon ref 可能为空导致报错的问题 [#9503](https://github.com/youzan/vant/issues/9503)
+- Tabs: 修复多个 Tabs 组件同时存在时动画失效的问题 [#9543](https://github.com/youzan/vant/issues/9543)
+
+### [v3.2.3](https://github.com/youzan/vant/compare/v3.2.2...v3.2.3)
+
+`2021-09-12`
+
+**Bug Fixes**
+
+- Button: 修复无法通过 CSS 变量设置渐变背景色的问题 [#9454](https://github.com/youzan/vant/issues/9454)
+- Calendar: 日历组件已经禁用部分日期依然可以选择日期区间的问题 [#9361](https://github.com/youzan/vant/issues/9361)
+- Field: 修复全局设置 user-select: none 时 IOS 下无法输入的问题 [#9418](https://github.com/youzan/vant/issues/9418)
+- FIeld: 修复 field-error-message-font-size 变量名称错误的问题 [#9394](https://github.com/youzan/vant/issues/9394)
+- Popup: 修复在 keep-alive 下激活时无法开启自动轮播的问题 [#9452](https://github.com/youzan/vant/issues/9452)
+- Theme: 移除了内部 less import 的波浪号 [a7ab2f](https://github.com/youzan/vant/commit/a7ab2f8049b7c18d2a2f74aeac26f72dfbadaf6f)
+- slider: 修复双滑块情况下，传入空数组无法滑动的问题 [#9409](https://github.com/youzan/vant/issues/9409)
+- Uploader: 修复 --van-uploader-delete-icon-size 变量未正确生效的问题 [#9453](https://github.com/youzan/vant/issues/9453)
+
 ### [v3.2.2](https://github.com/youzan/vant/compare/v3.2.1...v3.2.2)
 
 `2021-09-02`

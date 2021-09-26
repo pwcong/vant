@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   name: 'vant-icon',
   basic: [
     'arrow',
@@ -148,6 +148,7 @@ module.exports = {
     'replay',
     'shrink',
     'shield-o',
+    'guide-o',
   ],
   filled: [
     // has corresponding outline icon

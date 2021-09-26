@@ -22,10 +22,8 @@ module.exports = {
     baiduAnalytics: {
       seed: 'ad6b5732c36321f2dafed737ac2da92f',
     },
-    htmlPluginOptions: {
-      meta: {
-        'docsearch:version': 'v3',
-      },
+    htmlMeta: {
+      'docsearch:version': 'v3',
     },
     locales: {
       'zh-CN': {
@@ -77,6 +75,10 @@ module.exports = {
               {
                 path: 'advanced-usage',
                 title: '进阶用法',
+              },
+              {
+                path: 'faq',
+                title: '常见问题',
               },
               {
                 path: 'changelog',

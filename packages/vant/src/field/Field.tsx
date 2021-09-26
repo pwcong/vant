@@ -61,6 +61,7 @@ const [name, bem] = createNamespace('field');
 // provide to Search component to inherit
 export const fieldSharedProps = {
   id: String,
+  name: String,
   formatter: Function as PropType<(value: string) => string>,
   leftIcon: String,
   rightIcon: String,
@@ -69,6 +70,7 @@ export const fieldSharedProps = {
   maxlength: [Number, String],
   inputAlign: String as PropType<FieldTextAlign>,
   placeholder: String,
+  autocomplete: String,
   errorMessage: String,
   error: {
     type: Boolean,
@@ -102,13 +104,11 @@ export const fieldSharedProps = {
 
 const props = extend({}, cellProps, fieldSharedProps, {
   rows: [Number, String],
-  name: String,
   rules: Array as PropType<FieldRule[]>,
   autosize: [Boolean, Object] as PropType<boolean | FieldAutosizeConfig>,
   labelWidth: [Number, String],
   labelClass: unknownProp,
   labelAlign: String as PropType<FieldTextAlign>,
-  autocomplete: String,
   showWordLimit: Boolean,
   errorMessageAlign: String as PropType<FieldTextAlign>,
   type: {

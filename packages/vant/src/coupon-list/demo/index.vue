@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import VanCouponCell from '../../coupon-cell';
+import VanPopup from '../../popup';
+import VanCouponList from '..';
 import { ref, computed } from 'vue';
-import { useTranslate } from '@demo/use-translate';
+import { useTranslate } from '../../../docs/site/use-translate';
 import { CouponInfo } from '../../coupon';
 import { Toast } from '../../toast';
 
@@ -107,7 +110,6 @@ const onExchange = () => {
         :coupons="coupons"
         :chosen-coupon="chosenCoupon"
         :disabled-coupons="disabledCoupons"
-        :show-count="false"
         @change="onChange"
         @exchange="onExchange"
       />
