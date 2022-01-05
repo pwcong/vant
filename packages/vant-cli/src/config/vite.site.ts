@@ -1,18 +1,20 @@
 import { join } from 'path';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
+import { createRequire } from 'module';
 import hljs from 'highlight.js';
 import vitePluginMd from 'vite-plugin-md';
 import vitePluginVue from '@vitejs/plugin-vue';
 import vitePluginJsx from '@vitejs/plugin-vue-jsx';
-import { setBuildTarget, getVantConfig, isDev } from '../common';
+import { setBuildTarget, getVantConfig, isDev } from '../common/index.js';
 import {
   SITE_DIST_DIR,
   SITE_MOBILE_SHARED_FILE,
   SITE_DESKTOP_SHARED_FILE,
   SITE_SRC_DIR,
-} from '../common/constant';
+} from '../common/constant.js';
 import { injectHtml } from 'vite-plugin-html';
 import type { InlineConfig } from 'vite';
+import type MarkdownIt from 'markdown-it';
 
 function markdownHighlight(str: string, lang: string) {
   if (lang && hljs.getLanguage(lang)) {
@@ -38,6 +40,25 @@ function markdownCardWrapper(htmlCode: string) {
       return fragment;
     })
     .join('');
+}
+
+// add target="_blank" to all links
+function markdownLinkOpen(md: MarkdownIt) {
+  const defaultRender = md.renderer.rules.link_open;
+
+  md.renderer.rules.link_open = (tokens, idx, options, env, self) => {
+    const aIndex = tokens[idx].attrIndex('target');
+
+    if (aIndex < 0) {
+      tokens[idx].attrPush(['target', '_blank']); // add new attribute
+    }
+
+    if (defaultRender) {
+      return defaultRender(tokens, idx, options, env, self);
+    }
+
+    return self.renderToken(tokens, idx, options);
+  };
 }
 
 function getSiteConfig(vantConfig: any) {
@@ -73,7 +94,7 @@ function getHTMLMeta(vantConfig: any) {
 }
 
 export function getViteConfigForSiteDev(): InlineConfig {
-  setBuildTarget('package');
+  setBuildTarget('site');
 
   const vantConfig = getVantConfig();
   const siteConfig = getSiteConfig(vantConfig);
@@ -94,11 +115,16 @@ export function getViteConfigForSiteDev(): InlineConfig {
           after: markdownCardWrapper,
         },
         markdownItOptions: {
+          typographer: false, // https://markdown-it.github.io/markdown-it/#MarkdownIt
           highlight: markdownHighlight,
         },
-        markdownItSetup(md: any) {
+        markdownItSetup(md: MarkdownIt) {
+          const require = createRequire(import.meta.url);
           const { slugify } = require('transliteration');
           const markdownItAnchor = require('markdown-it-anchor');
+
+          markdownLinkOpen(md);
+
           md.use(markdownItAnchor, {
             level: 2,
             slugify,
@@ -110,6 +136,9 @@ export function getViteConfigForSiteDev(): InlineConfig {
         data: {
           ...siteConfig,
           title,
+          // `description` is used by the HTML ejs template,
+          // so it needs to be written explicitly here to avoid error: description is not defined
+          description: siteConfig.description,
           baiduAnalytics,
           enableVConsole,
           meta: getHTMLMeta(vantConfig),
@@ -143,12 +172,17 @@ export function getViteConfigForSiteProd(): InlineConfig {
       outDir,
       brotliSize: false,
       emptyOutDir: true,
-      // reduce small CSS files
-      cssCodeSplit: false,
+      // https://github.com/youzan/vant/issues/9703
+      cssTarget: ['chrome53'],
       rollupOptions: {
         input: {
           main: join(SITE_SRC_DIR, 'index.html'),
-          nested: join(SITE_SRC_DIR, 'mobile.html'),
+          mobile: join(SITE_SRC_DIR, 'mobile.html'),
+        },
+        output: {
+          manualChunks: {
+            'vue-libs': ['vue', 'vue-router'],
+          },
         },
       },
     },

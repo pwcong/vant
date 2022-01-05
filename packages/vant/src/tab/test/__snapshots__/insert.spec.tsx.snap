@@ -5,51 +5,70 @@ exports[`should render Tab inside a component correctly 1`] = `
   <div class="van-tabs__wrap">
     <div role="tablist"
          class="van-tabs__nav van-tabs__nav--line"
+         aria-orientation="horizontal"
     >
-      <div role="tab"
-           class="van-tab"
+      <div id="van-tabs-0"
+           role="tab"
+           class="van-tab van-tab--line"
+           tabindex="-1"
            aria-selected="false"
+           aria-controls="van-tab"
       >
         <span class="van-tab__text van-tab__text--ellipsis">
           2
         </span>
       </div>
-      <div role="tab"
-           class="van-tab van-tab--active"
+      <div id="van-tabs-1"
+           role="tab"
+           class="van-tab van-tab--line van-tab--active"
+           tabindex="0"
            aria-selected="true"
+           aria-controls="van-tab"
       >
         <span class="van-tab__text van-tab__text--ellipsis">
           1
         </span>
       </div>
-      <div role="tab"
-           class="van-tab"
+      <div id="van-tabs-2"
+           role="tab"
+           class="van-tab van-tab--line"
+           tabindex="-1"
            aria-selected="false"
+           aria-controls="van-tab"
       >
         <span class="van-tab__text van-tab__text--ellipsis">
           3
         </span>
       </div>
       <div class="van-tabs__line"
-           style="transform: translateX(0px) translateX(-50%);"
+           style="transform: translateX(50px) translateX(-50%);"
       >
       </div>
     </div>
   </div>
   <div class="van-tabs__content">
-    <div role="tabpanel"
-         class="van-tab__pane"
+    <div id="van-tab"
+         role="tabpanel"
+         class="van-tab__panel"
+         tabindex="0"
+         aria-labelledby="van-tabs-1"
          style
     >
       1
     </div>
-    <div role="tabpanel"
-         class="van-tab__pane"
+    <div id="van-tab"
+         role="tabpanel"
+         class="van-tab__panel"
+         tabindex="-1"
+         aria-labelledby="van-tabs-0"
          style="display: none;"
     >
     </div>
-    <div role="tabpanel"
-         class="van-tab__pane"
+    <div id="van-tab"
+         role="tabpanel"
+         class="van-tab__panel"
+         tabindex="-1"
+         aria-labelledby="van-tabs-2"
          style="display: none;"
     >
     </div>
@@ -62,52 +81,71 @@ exports[`should render correctly after inserting a tab 1`] = `
   <div class="van-tabs__wrap">
     <div role="tablist"
          class="van-tabs__nav van-tabs__nav--line"
+         aria-orientation="horizontal"
     >
-      <div role="tab"
-           class="van-tab"
+      <div id="van-tabs-0"
+           role="tab"
+           class="van-tab van-tab--line"
+           tabindex="-1"
            aria-selected="false"
+           aria-controls="van-tab"
       >
         <span class="van-tab__text van-tab__text--ellipsis">
           1
         </span>
       </div>
-      <div role="tab"
-           class="van-tab van-tab--active"
+      <div id="van-tabs-1"
+           role="tab"
+           class="van-tab van-tab--line van-tab--active"
+           tabindex="0"
            aria-selected="true"
+           aria-controls="van-tab"
       >
         <span class="van-tab__text van-tab__text--ellipsis">
           2
         </span>
       </div>
-      <div role="tab"
-           class="van-tab"
+      <div id="van-tabs-2"
+           role="tab"
+           class="van-tab van-tab--line"
+           tabindex="-1"
            aria-selected="false"
+           aria-controls="van-tab"
       >
         <span class="van-tab__text van-tab__text--ellipsis">
           3
         </span>
       </div>
       <div class="van-tabs__line"
-           style="transform: translateX(0px) translateX(-50%); transition-duration: 0.3s;"
+           style="transform: translateX(50px) translateX(-50%); transition-duration: 0.3s;"
       >
       </div>
     </div>
   </div>
   <div class="van-tabs__content">
-    <div role="tabpanel"
-         class="van-tab__pane"
+    <div id="van-tab"
+         role="tabpanel"
+         class="van-tab__panel"
+         tabindex="-1"
+         aria-labelledby="van-tabs-0"
          style="display: none;"
     >
     </div>
     <div>
-      <div role="tabpanel"
-           class="van-tab__pane"
+      <div id="van-tab"
+           role="tabpanel"
+           class="van-tab__panel"
+           tabindex="0"
+           aria-labelledby="van-tabs-1"
       >
         2
       </div>
     </div>
-    <div role="tabpanel"
-         class="van-tab__pane"
+    <div id="van-tab"
+         role="tabpanel"
+         class="van-tab__panel"
+         tabindex="-1"
+         aria-labelledby="van-tabs-2"
          style="display: none;"
     >
       3
@@ -121,38 +159,51 @@ exports[`should render correctly after inserting a tab with name 1`] = `
   <div class="van-tabs__wrap">
     <div role="tablist"
          class="van-tabs__nav van-tabs__nav--line"
+         aria-orientation="horizontal"
     >
-      <div role="tab"
-           class="van-tab"
+      <div id="van-tabs-0"
+           role="tab"
+           class="van-tab van-tab--line"
+           tabindex="-1"
            aria-selected="false"
+           aria-controls="van-tab"
       >
         <span class="van-tab__text van-tab__text--ellipsis">
           bar
         </span>
       </div>
-      <div role="tab"
-           class="van-tab van-tab--active"
+      <div id="van-tabs-1"
+           role="tab"
+           class="van-tab van-tab--line van-tab--active"
+           tabindex="0"
            aria-selected="true"
+           aria-controls="van-tab"
       >
         <span class="van-tab__text van-tab__text--ellipsis">
           foo
         </span>
       </div>
       <div class="van-tabs__line"
-           style="transform: translateX(0px) translateX(-50%); transition-duration: 0.3s;"
+           style="transform: translateX(50px) translateX(-50%); transition-duration: 0.3s;"
       >
       </div>
     </div>
   </div>
   <div class="van-tabs__content">
-    <div role="tabpanel"
-         class="van-tab__pane"
+    <div id="van-tab"
+         role="tabpanel"
+         class="van-tab__panel"
+         tabindex="-1"
+         aria-labelledby="van-tabs-0"
          style="display: none;"
     >
       bar
     </div>
-    <div role="tabpanel"
-         class="van-tab__pane"
+    <div id="van-tab"
+         role="tabpanel"
+         class="van-tab__panel"
+         tabindex="0"
+         aria-labelledby="van-tabs-1"
          style
     >
       foo
@@ -166,9 +217,8 @@ exports[`should render nav-bottom slot correctly 1`] = `
   <div class="van-tabs__wrap">
     <div role="tablist"
          class="van-tabs__nav van-tabs__nav--line"
+         aria-orientation="horizontal"
     >
-      <div class="van-tabs__line">
-      </div>
     </div>
   </div>
   Nav Bottom

@@ -10,7 +10,7 @@ function initInstance() {
   const Wrapper = {
     setup() {
       const { state, toggle } = usePopupState();
-      return () => <VanDialog {...state} {...{ 'onUpdate:show': toggle }} />;
+      return () => <VanDialog {...state} onUpdate:show={toggle} />;
     },
   };
 
@@ -49,7 +49,7 @@ Dialog.defaultOptions = {
   className: '',
   allowHtml: false,
   lockScroll: true,
-  transition: 'van-dialog-bounce',
+  transition: undefined,
   beforeClose: null,
   overlayClass: '',
   overlayStyle: undefined,

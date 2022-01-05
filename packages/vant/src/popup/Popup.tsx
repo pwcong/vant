@@ -4,18 +4,25 @@ import {
   provide,
   Teleport,
   computed,
-  PropType,
   onMounted,
   Transition,
   onActivated,
-  CSSProperties,
   onDeactivated,
   defineComponent,
+  type CSSProperties,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
 import { popupSharedProps } from './shared';
-import { extend, isDef, callInterceptor, createNamespace } from '../utils';
+import {
+  isDef,
+  extend,
+  makeStringProp,
+  callInterceptor,
+  createNamespace,
+  HAPTICS_FEEDBACK,
+} from '../utils';
 
 // Composables
 import { useEventListener } from '@vant/use';
@@ -28,13 +35,22 @@ import { POPUP_TOGGLE_KEY } from '../composables/on-popup-reopen';
 import { Icon } from '../icon';
 import { Overlay } from '../overlay';
 
-export type PopupPosition = 'top' | 'left' | 'bottom' | 'right' | 'center' | '';
+// Types
+import type { PopupPosition, PopupCloseIconPosition } from './types';
 
-export type PopupCloseIconPosition =
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right';
+const popupProps = extend({}, popupSharedProps, {
+  round: Boolean,
+  position: makeStringProp<PopupPosition>('center'),
+  closeIcon: makeStringProp('cross'),
+  closeable: Boolean,
+  transition: String,
+  iconPrefix: String,
+  closeOnPopstate: Boolean,
+  closeIconPosition: makeStringProp<PopupCloseIconPosition>('top-right'),
+  safeAreaInsetBottom: Boolean,
+});
+
+export type PopupProps = ExtractPropTypes<typeof popupProps>;
 
 const [name, bem] = createNamespace('popup');
 
@@ -45,31 +61,11 @@ export default defineComponent({
 
   inheritAttrs: false,
 
-  props: extend({}, popupSharedProps, {
-    round: Boolean,
-    closeable: Boolean,
-    transition: String,
-    iconPrefix: String,
-    closeOnPopstate: Boolean,
-    safeAreaInsetBottom: Boolean,
-    position: {
-      type: String as PropType<PopupPosition>,
-      default: 'center',
-    },
-    closeIcon: {
-      type: String,
-      default: 'cross',
-    },
-    closeIconPosition: {
-      type: String as PropType<PopupCloseIconPosition>,
-      default: 'top-right',
-    },
-  }),
+  props: popupProps,
 
   emits: [
     'open',
     'close',
-    'click',
     'opened',
     'closed',
     'update:show',
@@ -117,8 +113,7 @@ export default defineComponent({
 
     const close = () => {
       if (opened) {
-        callInterceptor({
-          interceptor: props.beforeClose,
+        callInterceptor(props.beforeClose, {
           done() {
             opened = false;
             emit('close');
@@ -164,7 +159,10 @@ export default defineComponent({
             role="button"
             tabindex={0}
             name={props.closeIcon}
-            class={bem('close-icon', props.closeIconPosition)}
+            class={[
+              bem('close-icon', props.closeIconPosition),
+              HAPTICS_FEEDBACK,
+            ]}
             classPrefix={props.iconPrefix}
             onClick={onClickCloseIcon}
           />
@@ -172,7 +170,6 @@ export default defineComponent({
       }
     };
 
-    const onClick = (event: MouseEvent) => emit('click', event);
     const onOpened = () => emit('opened');
     const onClosed = () => emit('closed');
 
@@ -190,7 +187,6 @@ export default defineComponent({
             }),
             { 'van-safe-area-bottom': safeAreaInsetBottom },
           ]}
-          onClick={onClick}
           {...attrs}
         >
           {slots.default?.()}
@@ -206,22 +202,22 @@ export default defineComponent({
 
       return (
         <Transition
+          v-slots={{ default: renderPopup }}
           name={transition || name}
           appear={transitionAppear}
           onAfterEnter={onOpened}
           onAfterLeave={onClosed}
-        >
-          {renderPopup()}
-        </Transition>
+        />
       );
     };
 
     watch(
       () => props.show,
-      (value) => {
-        if (value) {
+      (show) => {
+        if (show && !opened) {
           open();
-        } else {
+        }
+        if (!show && opened) {
           opened = false;
           emit('close');
         }

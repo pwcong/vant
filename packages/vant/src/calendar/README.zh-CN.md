@@ -336,13 +336,14 @@ export default {
 
 ### Slots
 
-| 名称                  | 说明                     | 参数       |
-| --------------------- | ------------------------ | ---------- |
-| title                 | 自定义标题               | -          |
-| subtitle `v3.1.3`     | 自定义日历副标题         | -          |
-| footer                | 自定义底部区域内容       | -          |
-| top-info `v3.0.17`    | 自定义日期上方的提示信息 | _day: Day_ |
-| bottom-info `v3.0.17` | 自定义日期下方的提示信息 | _day: Day_ |
+| 名称                  | 说明                     | 参数                    |
+| --------------------- | ------------------------ | ----------------------- |
+| title                 | 自定义标题               | -                       |
+| subtitle `v3.1.3`     | 自定义日历副标题         | -                       |
+| footer                | 自定义底部区域内容       | -                       |
+| confirm-text `v3.2.6` | 自定义确认按钮的内容     | _{ disabled: boolean }_ |
+| top-info `v3.0.17`    | 自定义日期上方的提示信息 | _day: Day_              |
+| bottom-info `v3.0.17` | 自定义日期下方的提示信息 | _day: Day_              |
 
 ### 方法
 
@@ -386,7 +387,7 @@ calendarRef.value?.reset();
 
 | 名称 | 默认值 | 描述 |
 | --- | --- | --- |
-| --van-calendar-background-color | _var(--van-white)_ | - |
+| --van-calendar-background-color | _var(--van-background-color-light)_ | - |
 | --van-calendar-popup-height | _80%_ | - |
 | --van-calendar-header-box-shadow | _0 2px 10px rgba(125, 126, 128, 0.16)_ | - |
 | --van-calendar-header-title-height | _44px_ | - |
@@ -408,7 +409,7 @@ calendarRef.value?.reset();
 | --van-calendar-info-font-size | _var(--van-font-size-xs)_ | - |
 | --van-calendar-info-line-height | _var(--van-line-height-xs)_ | - |
 | --van-calendar-selected-day-background-color | _var(--van-danger-color)_ | - |
-| --van-calendar-day-disabled-color | _var(--van-gray-5)_ | - |
+| --van-calendar-day-disabled-color | _var(--van-text-color-3)_ | - |
 | --van-calendar-confirm-button-height | _36px_ | - |
 | --van-calendar-confirm-button-margin | _7px 0_ | - |
 

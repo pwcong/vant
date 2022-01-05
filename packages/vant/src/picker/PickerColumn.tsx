@@ -1,4 +1,4 @@
-import { ref, watch, reactive, PropType, defineComponent } from 'vue';
+import { ref, watch, reactive, defineComponent } from 'vue';
 
 // Utils
 import { deepClone } from '../utils/deep-clone';
@@ -6,8 +6,12 @@ import {
   clamp,
   isObject,
   unknownProp,
+  numericProp,
+  makeArrayProp,
+  makeNumberProp,
   preventDefault,
   createNamespace,
+  makeRequiredProp,
 } from '../utils';
 
 // Composables
@@ -29,50 +33,29 @@ const MOMENTUM_LIMIT_DISTANCE = 15;
 const [name, bem] = createNamespace('picker-column');
 
 function getElementTranslateY(element: Element) {
-  const style = window.getComputedStyle(element);
-  const transform = style.transform || style.webkitTransform;
+  const { transform } = window.getComputedStyle(element);
   const translateY = transform.slice(7, transform.length - 1).split(', ')[5];
-
   return Number(translateY);
 }
 
 export const PICKER_KEY = Symbol(name);
 
-function isOptionDisabled(option: PickerOption) {
-  return isObject(option) && option.disabled;
-}
+const isOptionDisabled = (option: PickerOption) =>
+  isObject(option) && option.disabled;
 
 export default defineComponent({
   name,
 
   props: {
+    textKey: makeRequiredProp(String),
     readonly: Boolean,
     allowHtml: Boolean,
     className: unknownProp,
-    textKey: {
-      type: String,
-      required: true,
-    },
-    itemHeight: {
-      type: Number,
-      required: true,
-    },
-    swipeDuration: {
-      type: [Number, String],
-      required: true,
-    },
-    visibleItemCount: {
-      type: [Number, String],
-      required: true,
-    },
-    defaultIndex: {
-      type: Number,
-      default: 0,
-    },
-    initialOptions: {
-      type: Array as PropType<PickerOption[]>,
-      default: () => [],
-    },
+    itemHeight: makeRequiredProp(Number),
+    defaultIndex: makeNumberProp(0),
+    swipeDuration: makeRequiredProp(numericProp),
+    initialOptions: makeArrayProp<PickerOption>(),
+    visibleItemCount: makeRequiredProp(numericProp),
   },
 
   emits: ['change'],
@@ -316,36 +299,30 @@ export default defineComponent({
 
     watch(
       () => props.defaultIndex,
-      (value) => {
-        setIndex(value);
-      }
+      (value) => setIndex(value)
     );
 
-    return () => {
-      const wrapperStyle = {
-        transform: `translate3d(0, ${state.offset + baseOffset()}px, 0)`,
-        transitionDuration: `${state.duration}ms`,
-        transitionProperty: state.duration ? 'all' : 'none',
-      };
-
-      return (
-        <div
-          class={[bem(), props.className]}
-          onTouchstart={onTouchStart}
-          onTouchmove={onTouchMove}
-          onTouchend={onTouchEnd}
-          onTouchcancel={onTouchEnd}
+    return () => (
+      <div
+        class={[bem(), props.className]}
+        onTouchstart={onTouchStart}
+        onTouchmove={onTouchMove}
+        onTouchend={onTouchEnd}
+        onTouchcancel={onTouchEnd}
+      >
+        <ul
+          ref={wrapper}
+          style={{
+            transform: `translate3d(0, ${state.offset + baseOffset()}px, 0)`,
+            transitionDuration: `${state.duration}ms`,
+            transitionProperty: state.duration ? 'all' : 'none',
+          }}
+          class={bem('wrapper')}
+          onTransitionend={stopMomentum}
         >
-          <ul
-            ref={wrapper}
-            style={wrapperStyle}
-            class={bem('wrapper')}
-            onTransitionend={stopMomentum}
-          >
-            {renderOptions()}
-          </ul>
-        </div>
-      );
-    };
+          {renderOptions()}
+        </ul>
+      </div>
+    );
   },
 });

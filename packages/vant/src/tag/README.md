@@ -116,6 +116,14 @@ export default {
 | click | Emitted when component is clicked  | _event: MouseEvent_ |
 | close | Emitted when close icon is clicked | _event: MouseEvent_ |
 
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type { TagSize, TagType, TagProps } from 'vant';
+```
+
 ## Theming
 
 ### CSS Variables
@@ -139,4 +147,4 @@ The component provides the following CSS variables, which can be used to customi
 | --van-tag-success-color | _var(--van-success-color)_ | - |
 | --van-tag-warning-color | _var(--van-warning-color)_ | - |
 | --van-tag-default-color | _var(--van-gray-6)_ | - |
-| --van-tag-plain-background-color | _var(--van-white)_ | - |
+| --van-tag-plain-background-color | _var(--van-background-color-light)_ | - |

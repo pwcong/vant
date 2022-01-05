@@ -95,10 +95,11 @@ export default {
 ### Step Slots
 
 | 名称 | 说明 |
-| --- | --- | --- | --- |
+| --- | --- |
+| default | 步骤内容 |
 | active-icon | 自定义激活状态图标 |
 | inactive-icon | 自定义未激活状态图标 |
-| finish-icon `v3.0.7` | 自定义已完成步骤对应的底部图标，优先级高于 `inactive-icon` | _string_ | - |
+| finish-icon `v3.0.7` | 自定义已完成步骤对应的底部图标，优先级高于 `inactive-icon` |
 
 ### Steps Events
 
@@ -106,23 +107,31 @@ export default {
 | ---------- | -------------------------- | --------------- |
 | click-step | 点击步骤的标题或图标时触发 | _index: number_ |
 
+### 类型定义
+
+组件导出以下类型定义：
+
+```ts
+import type { StepsProps, StepsDirection } from 'vant';
+```
+
 ## 主题定制
 
 ### 样式变量
 
 组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
 
-| 名称                                  | 默认值                     | 描述 |
-| ------------------------------------- | -------------------------- | ---- |
-| --van-step-text-color                 | _var(--van-gray-6)_        | -    |
-| --van-step-active-color               | _var(--van-success-color)_ | -    |
-| --van-step-process-text-color         | _var(--van-text-color)_    | -    |
-| --van-step-font-size                  | _var(--van-font-size-md)_  | -    |
-| --van-step-line-color                 | _var(--van-border-color)_  | -    |
-| --van-step-finish-line-color          | _var(--van-success-color)_ | -    |
-| --van-step-finish-text-color          | _var(--van-text-color)_    | -    |
-| --van-step-icon-size                  | _12px_                     | -    |
-| --van-step-circle-size                | _5px_                      | -    |
-| --van-step-circle-color               | _var(--van-gray-6)_        | -    |
-| --van-step-horizontal-title-font-size | _var(--van-font-size-sm)_  | -    |
-| --van-steps-background-color          | _var(--van-white)_         | -    |
+| 名称 | 默认值 | 描述 |
+| --- | --- | --- |
+| --van-step-text-color | _var(--van-text-color-2)_ | - |
+| --van-step-active-color | _var(--van-success-color)_ | - |
+| --van-step-process-text-color | _var(--van-text-color)_ | - |
+| --van-step-font-size | _var(--van-font-size-md)_ | - |
+| --van-step-line-color | _var(--van-border-color)_ | - |
+| --van-step-finish-line-color | _var(--van-success-color)_ | - |
+| --van-step-finish-text-color | _var(--van-text-color)_ | - |
+| --van-step-icon-size | _12px_ | - |
+| --van-step-circle-size | _5px_ | - |
+| --van-step-circle-color | _var(--van-gray-6)_ | - |
+| --van-step-horizontal-title-font-size | _var(--van-font-size-sm)_ | - |
+| --van-steps-background-color | _var(--van-background-color-light)_ | - |

@@ -104,7 +104,7 @@ Use [ref](https://v3.vuejs.org/guide/component-template-refs.html) to get IndexB
 The component exports the following type definitions:
 
 ```ts
-import type { IndexBarProps, IndexBarInstance } from 'vant';
+import type { IndexBarProps, IndexAnchorProps, IndexBarInstance } from 'vant';
 ```
 
 `IndexBarInstance` is the type of component instance:
@@ -144,4 +144,4 @@ The component provides the following CSS variables, which can be used to customi
 | --van-index-anchor-line-height | _32px_ | - |
 | --van-index-anchor-background-color | _transparent_ | - |
 | --van-index-anchor-sticky-text-color | _var(--van-danger-color)_ | - |
-| --van-index-anchor-sticky-background-color | _var(--van-white)_ | - |
+| --van-index-anchor-sticky-background-color | _var(--van-background-color-light)_ | - |

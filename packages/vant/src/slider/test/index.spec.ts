@@ -117,6 +117,17 @@ test('should not allow to click slider when readonly', async () => {
   expect(wrapper.emitted('update:modelValue')).toBeFalsy();
 });
 
+test('should render readonly Slider correctly', async () => {
+  const wrapper = mount(Slider, {
+    props: {
+      modelValue: 50,
+      readonly: true,
+    },
+  });
+
+  expect(wrapper.html()).toMatchSnapshot();
+});
+
 test('should allow to drag vertical slider', () => {
   const restoreMock = mockRect(true);
 
@@ -180,13 +191,13 @@ test('should not emit change event when value not changed', async () => {
   const button = wrapper.find('.van-slider__button');
   trigger(button, 'touchstart');
   trigger(wrapper, 'click', 100, 0);
-  expect(wrapper.emitted('change')!.length).toEqual(1);
+  expect(wrapper.emitted('change')).toHaveLength(1);
 
   await wrapper.setProps({ modelValue: 100 });
   trigger(button, 'touchstart');
   trigger(wrapper, 'click', 100, 0);
 
-  expect(wrapper.emitted('change')!.length).toEqual(1);
+  expect(wrapper.emitted('change')).toHaveLength(1);
 });
 
 // https://github.com/youzan/vant/issues/8889

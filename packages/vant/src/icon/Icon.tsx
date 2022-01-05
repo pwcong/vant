@@ -1,29 +1,40 @@
-import { PropType, defineComponent, inject, computed } from 'vue';
-import { addUnit, createNamespace } from '../utils';
-import { Badge } from '../badge';
+import {
+  inject,
+  computed,
+  defineComponent,
+  type PropType,
+  type ExtractPropTypes,
+} from 'vue';
+import {
+  addUnit,
+  numericProp,
+  makeStringProp,
+  createNamespace,
+} from '../utils';
+import { Badge, type BadgeProps } from '../badge';
 import { CONFIG_PROVIDER_KEY } from '../config-provider/ConfigProvider';
 
 const [name, bem] = createNamespace('icon');
 
-function isImage(name?: string) {
-  return name?.includes('/');
-}
+const isImage = (name?: string) => name?.includes('/');
+
+const iconProps = {
+  dot: Boolean,
+  tag: makeStringProp<keyof HTMLElementTagNameMap>('i'),
+  name: String,
+  size: numericProp,
+  badge: numericProp,
+  color: String,
+  badgeProps: Object as PropType<Partial<BadgeProps>>,
+  classPrefix: String,
+};
+
+export type IconProps = ExtractPropTypes<typeof iconProps>;
 
 export default defineComponent({
   name,
 
-  props: {
-    dot: Boolean,
-    name: String,
-    size: [Number, String],
-    badge: [Number, String],
-    color: String,
-    classPrefix: String,
-    tag: {
-      type: String as PropType<keyof HTMLElementTagNameMap>,
-      default: 'i',
-    },
-  },
+  props: iconProps,
 
   setup(props, { slots }) {
     const config = inject(CONFIG_PROVIDER_KEY, null);
@@ -40,7 +51,6 @@ export default defineComponent({
         <Badge
           dot={dot}
           tag={tag}
-          content={badge}
           class={[
             classPrefix.value,
             isImageIcon ? '' : `${classPrefix.value}-${name}`,
@@ -49,6 +59,8 @@ export default defineComponent({
             color,
             fontSize: addUnit(size),
           }}
+          content={badge}
+          {...props.badgeProps}
         >
           {slots.default?.()}
           {isImageIcon && <img class={bem('image')} src={name} />}

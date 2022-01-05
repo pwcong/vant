@@ -121,6 +121,14 @@ export default {
 | change | Emitted when check status changed | _value: any_        |
 | click  | Emitted when component is clicked | _event: MouseEvent_ |
 
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type { SwitchProps } from 'vant';
+```
+
 ## Theming
 
 ### CSS Variables
@@ -135,7 +143,7 @@ The component provides the following CSS variables, which can be used to customi
 | --van-switch-node-size | _1em_ | - |
 | --van-switch-node-background-color | _var(--van-white)_ | - |
 | --van-switch-node-box-shadow | _0 3px 1px 0 rgba(0, 0, 0, 0.05)_ | - |
-| --van-switch-background-color | _var(--van-white)_ | - |
+| --van-switch-background-color | _var(--van-background-color-light)_ | - |
 | --van-switch-on-background-color | _var(--van-primary-color)_ | - |
 | --van-switch-transition-duration | _var(--van-animation-duration-base)_ | - |
 | --van-switch-disabled-opacity | _var(--van-disabled-opacity)_ | - |

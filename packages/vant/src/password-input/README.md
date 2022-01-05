@@ -2,7 +2,7 @@
 
 ### Intro
 
-The passwordinput component is usually used with [NumberKeyboard](#/en-US/number-keyboard) Component.
+The PasswordInput component is usually used with [NumberKeyboard](#/en-US/number-keyboard) Component.
 
 ### Install
 
@@ -148,6 +148,14 @@ export default {
 | ----- | ----------------------------- | --------- |
 | focus | Emitted when input is focused | -         |
 
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type { PasswordInputProps } from 'vant';
+```
+
 ## Theming
 
 ### CSS Variables
@@ -160,12 +168,12 @@ The component provides the following CSS variables, which can be used to customi
 | --van-password-input-margin | _0 var(--van-padding-md)_ | - |
 | --van-password-input-font-size | _20px_ | - |
 | --van-password-input-border-radius | _6px_ | - |
-| --van-password-input-background-color | _var(--van-white)_ | - |
-| --van-password-input-info-color | _var(--van-gray-6)_ | - |
+| --van-password-input-background-color | _var(--van-background-color-light)_ | - |
+| --van-password-input-info-color | _var(--van-text-color-2)_ | - |
 | --van-password-input-info-font-size | _var(--van-font-size-md)_ | - |
 | --van-password-input-error-info-color | _var(--van-danger-color)_ | - |
 | --van-password-input-dot-size | _10px_ | - |
-| --van-password-input-dot-color | _var(--van-black)_ | - |
+| --van-password-input-dot-color | _var(--van-text-color)_ | - |
 | --van-password-input-text-color | _var(--van-text-color)_ | - |
 | --van-password-input-cursor-color | _var(--van-text-color)_ | - |
 | --van-password-input-cursor-width | _1px_ | - |

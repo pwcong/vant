@@ -108,7 +108,7 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { IndexBarProps, IndexBarInstance } from 'vant';
+import type { IndexBarProps, IndexAnchorProps, IndexBarInstance } from 'vant';
 ```
 
 `IndexBarInstance` 是组件实例的类型，用法如下：
@@ -148,4 +148,4 @@ indexBarRef.value?.scrollTo('B');
 | --van-index-anchor-line-height | _32px_ | - |
 | --van-index-anchor-background-color | _transparent_ | - |
 | --van-index-anchor-sticky-text-color | _var(--van-danger-color)_ | - |
-| --van-index-anchor-sticky-background-color | _var(--van-white)_ | - |
+| --van-index-anchor-sticky-background-color | _var(--van-background-color-light)_ | - |

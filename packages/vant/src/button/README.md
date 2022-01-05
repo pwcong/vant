@@ -92,7 +92,7 @@ app.use(Button);
 ### Route
 
 ```html
-<van-button type="primary" url="/vant/mobile.html">URL</van-button>
+<van-button type="primary" url="https://github.com">URL</van-button>
 <van-button type="primary" to="index">Vue Router</van-button>
 ```
 
@@ -154,7 +154,13 @@ app.use(Button);
 The component exports the following type definitions:
 
 ```ts
-import type { ButtonType, ButtonSize } from 'vant';
+import type {
+  ButtonType,
+  ButtonSize,
+  ButtonProps,
+  ButtonNativeType,
+  ButtonIconPosition,
+} from 'vant';
 ```
 
 ## Theming
@@ -178,7 +184,7 @@ The component provides the following CSS variables, which can be used to customi
 | --van-button-default-line-height | _1.2_ | - |
 | --van-button-default-font-size | _var(--van-font-size-lg)_ | - |
 | --van-button-default-color | _var(--van-text-color)_ | - |
-| --van-button-default-background-color | _var(--van-white)_ | - |
+| --van-button-default-background-color | _var(--van-background-color-light)_ | - |
 | --van-button-default-border-color | _var(--van-border-color)_ | - |
 | --van-button-primary-color | _var(--van-white)_ | - |
 | --van-button-primary-background-color | _var(--van-primary-color)_ | - |

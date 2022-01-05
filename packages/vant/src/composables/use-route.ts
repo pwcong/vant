@@ -2,10 +2,10 @@
  * Vue Router support
  */
 import {
-  PropType,
-  ExtractPropTypes,
   getCurrentInstance,
-  ComponentPublicInstance,
+  type PropType,
+  type ExtractPropTypes,
+  type ComponentPublicInstance,
 } from 'vue';
 import type { RouteLocationRaw } from 'vue-router';
 
@@ -17,10 +17,12 @@ export const routeProps = {
 
 export type RouteProps = ExtractPropTypes<typeof routeProps>;
 
-export function route(vm: ComponentPublicInstance<RouteProps>) {
-  const router = vm.$router;
-  const { to, url, replace } = vm;
-
+export function route({
+  to,
+  url,
+  replace,
+  $router: router,
+}: ComponentPublicInstance<RouteProps>) {
   if (to && router) {
     router[replace ? 'replace' : 'push'](to);
   } else if (url) {

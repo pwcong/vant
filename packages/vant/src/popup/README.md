@@ -151,7 +151,12 @@ Use `teleport` prop to specify mount location.
 The component exports the following type definitions:
 
 ```ts
-import type { PopupPosition, PopupCloseIconPosition } from 'vant';
+import type {
+  PopupProps,
+  PopupPosition,
+  PopupInstance,
+  PopupCloseIconPosition,
+} from 'vant';
 ```
 
 ## Theming
@@ -162,11 +167,10 @@ The component provides the following CSS variables, which can be used to customi
 
 | Name | Default Value | Description |
 | --- | --- | --- |
-| --van-popup-background-color | _var(--van-white)_ | - |
+| --van-popup-background-color | _var(--van-background-color-light)_ | - |
 | --van-popup-transition | _transform var(--van-animation-duration-base)_ | - |
 | --van-popup-round-border-radius | _16px_ | - |
 | --van-popup-close-icon-size | _22px_ | - |
 | --van-popup-close-icon-color | _var(--van-gray-5)_ | - |
-| --van-popup-close-icon-active-color | _var(--van-gray-6)_ | - |
 | --van-popup-close-icon-margin | _16px_ | - |
 | --van-popup-close-icon-z-index | _1_ | - |

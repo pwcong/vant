@@ -1,10 +1,9 @@
+import { get, noop } from '../basic';
 import { deepClone } from '../deep-clone';
 import { deepAssign } from '../deep-assign';
-import { get, noop } from '..';
 import { isDef, isMobile, isNumeric } from '../validate';
-import { camelize } from '../format/string';
-import { formatNumber } from '../format/number';
-import { addUnit, unitToPx } from '../format/unit';
+import { addUnit, unitToPx, camelize, formatNumber } from '../format';
+import { trigger } from '../../../test';
 
 test('deepClone', () => {
   const a = { foo: 0 };
@@ -112,6 +111,7 @@ test('unitToPx', () => {
 
   Object.defineProperty(window, 'innerWidth', { value: 100 });
   Object.defineProperty(window, 'innerHeight', { value: 200 });
+  trigger(window, 'resize');
 
   expect(unitToPx(0)).toEqual(0);
   expect(unitToPx(10)).toEqual(10);

@@ -1,33 +1,26 @@
-import { PropType, defineComponent, ExtractPropTypes, InjectionKey } from 'vue';
-import { createNamespace } from '../utils';
+import { defineComponent, type ExtractPropTypes, type InjectionKey } from 'vue';
+import { makeStringProp, makeNumericProp, createNamespace } from '../utils';
 import { useChildren } from '@vant/use';
 
 const [name, bem] = createNamespace('steps');
 
 export type StepsDirection = 'horizontal' | 'vertical';
 
-const props = {
+const stepsProps = {
+  active: makeNumericProp(0),
+  direction: makeStringProp<StepsDirection>('horizontal'),
+  activeIcon: makeStringProp('checked'),
   iconPrefix: String,
   finishIcon: String,
   activeColor: String,
   inactiveIcon: String,
   inactiveColor: String,
-  active: {
-    type: [Number, String],
-    default: 0,
-  },
-  direction: {
-    type: String as PropType<StepsDirection>,
-    default: 'horizontal',
-  },
-  activeIcon: {
-    type: String,
-    default: 'checked',
-  },
 };
 
+export type StepsProps = ExtractPropTypes<typeof stepsProps>;
+
 export type StepsProvide = {
-  props: ExtractPropTypes<typeof props>;
+  props: StepsProps;
   onClickStep: (index: number) => void;
 };
 
@@ -36,7 +29,7 @@ export const STEPS_KEY: InjectionKey<StepsProvide> = Symbol(name);
 export default defineComponent({
   name,
 
-  props,
+  props: stepsProps,
 
   emits: ['click-step'],
 

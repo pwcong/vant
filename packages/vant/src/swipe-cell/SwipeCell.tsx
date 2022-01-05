@@ -3,19 +3,21 @@ import {
   Ref,
   reactive,
   computed,
-  PropType,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
 import {
   clamp,
   isDef,
+  numericProp,
   Interceptor,
   preventDefault,
   callInterceptor,
   createNamespace,
+  makeNumericProp,
 } from '../utils';
 
 // Composables
@@ -32,24 +34,21 @@ import type {
 
 const [name, bem] = createNamespace('swipe-cell');
 
-const props = {
+const swipeCellProps = {
+  name: makeNumericProp(''),
   disabled: Boolean,
-  leftWidth: [Number, String],
-  rightWidth: [Number, String],
+  leftWidth: numericProp,
+  rightWidth: numericProp,
   beforeClose: Function as PropType<Interceptor>,
   stopPropagation: Boolean,
-  name: {
-    type: [Number, String],
-    default: '',
-  },
 };
 
-export type SwipeCellProps = ExtractPropTypes<typeof props>;
+export type SwipeCellProps = ExtractPropTypes<typeof swipeCellProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: swipeCellProps,
 
   emits: ['open', 'close', 'click'],
 
@@ -81,13 +80,15 @@ export default defineComponent({
     );
 
     const open = (side: SwipeCellSide) => {
-      opened = true;
       state.offset = side === 'left' ? leftWidth.value : -rightWidth.value;
 
-      emit('open', {
-        name: props.name,
-        position: side,
-      });
+      if (!opened) {
+        opened = true;
+        emit('open', {
+          name: props.name,
+          position: side,
+        });
+      }
     };
 
     const close = (position: SwipeCellPosition) => {
@@ -163,8 +164,7 @@ export default defineComponent({
       emit('click', position);
 
       if (opened && !lockClick) {
-        callInterceptor({
-          interceptor: props.beforeClose,
+        callInterceptor(props.beforeClose, {
           args: [
             {
               name: props.name,

@@ -1,9 +1,10 @@
-import { PropType } from 'vue';
 import { extend } from '../utils';
-import { pickerProps } from '../picker/Picker';
+import { pickerSharedProps } from '../picker/Picker';
+import type { PropType } from 'vue';
+import type { PickerInstance } from '../picker';
 import type { DatetimePickerColumnType } from './types';
 
-export const sharedProps = extend({}, pickerProps, {
+export const sharedProps = extend({}, pickerSharedProps, {
   filter: Function as PropType<(type: string, values: string[]) => string[]>,
   columnsOrder: Array as PropType<DatetimePickerColumnType[]>,
   formatter: {
@@ -12,14 +13,18 @@ export const sharedProps = extend({}, pickerProps, {
   },
 });
 
-export const pickerKeys = Object.keys(pickerProps) as Array<
-  keyof typeof pickerProps
+export const pickerInheritKeys = Object.keys(pickerSharedProps) as Array<
+  keyof typeof pickerSharedProps
 >;
 
 export function times<T>(n: number, iteratee: (index: number) => T) {
-  let index = -1;
+  if (n < 0) {
+    return [];
+  }
+
   const result: T[] = Array(n);
 
+  let index = -1;
   while (++index < n) {
     result[index] = iteratee(index);
   }
@@ -43,6 +48,29 @@ export function getTrueValue(value: string | undefined): number {
   return parseInt(value, 10);
 }
 
-export function getMonthEndDay(year: number, month: number): number {
-  return 32 - new Date(year, month - 1, 32).getDate();
-}
+export const getMonthEndDay = (year: number, month: number): number =>
+  32 - new Date(year, month - 1, 32).getDate();
+
+// https://github.com/youzan/vant/issues/10013
+export const proxyPickerMethods = (
+  picker: PickerInstance,
+  callback: () => void
+) => {
+  const methods = [
+    'setValues',
+    'setIndexes',
+    'setColumnIndex',
+    'setColumnValue',
+  ];
+  return new Proxy(picker, {
+    get: (target, prop: keyof PickerInstance) => {
+      if (methods.includes(prop)) {
+        return (...args: unknown[]) => {
+          target[prop](...args);
+          callback();
+        };
+      }
+      return target[prop];
+    },
+  });
+};

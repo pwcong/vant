@@ -196,7 +196,7 @@ export default {
 
 ```html
 <van-checkbox-group v-model="checked">
-  <van-cell-group>
+  <van-cell-group inset>
     <van-cell
       v-for="(item, index) in list"
       clickable
@@ -334,9 +334,12 @@ The component exports the following type definitions:
 ```ts
 import type {
   CheckboxProps,
+  CheckboxShape,
   CheckboxInstance,
+  CheckboxLabelPosition,
   CheckboxGroupProps,
   CheckboxGroupInstance,
+  CheckboxGroupDirection,
   CheckboxGroupToggleAllOptions,
 } from 'vant';
 ```
@@ -369,5 +372,5 @@ The component provides the following CSS variables, which can be used to customi
 | --van-checkbox-label-color | _var(--van-text-color)_ | - |
 | --van-checkbox-checked-icon-color | _var(--van-primary-color)_ | - |
 | --van-checkbox-disabled-icon-color | _var(--van-gray-5)_ | - |
-| --van-checkbox-disabled-label-color | _var(--van-gray-5)_ | - |
+| --van-checkbox-disabled-label-color | _var(--van-text-color-3)_ | - |
 | --van-checkbox-disabled-background-color | _var(--van-border-color)_ | - |

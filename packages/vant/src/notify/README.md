@@ -43,6 +43,11 @@ Notify({
 });
 
 Notify({
+  message: 'Custom Position',
+  position: 'bottom',
+});
+
+Notify({
   message: 'Custom Duration',
   duration: 1000,
 });
@@ -107,9 +112,10 @@ export default {
 
 | Attribute | Description | Type | Default |
 | --- | --- | --- | --- |
-| type | Can be set to `primary` `success` `warning` | _string_ | `danger` |
+| type | Can be set to `primary` `success` `warning` | _NotifyType_ | `danger` |
 | message | Message | _string_ | - |
 | duration | Duration(ms), won't disappear if value is 0 | _number \| string_ | `3000` |
+| position `v3.4.0` | Position, can be set to `bottom` | _NotifyPosition_ | `top` |
 | color | Message color | _string_ | `white` |
 | background | Background color | _string_ | - |
 | className | Custom className | _string \| Array \| object_ | - |
@@ -123,7 +129,12 @@ export default {
 The component exports the following type definitions:
 
 ```ts
-import type { NotifyType, NotifyOptions } from 'vant';
+import type {
+  NotifyType,
+  NotifyProps,
+  NotifyOptions,
+  NotifyPosition,
+} from 'vant';
 ```
 
 ## Theming

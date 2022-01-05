@@ -1,28 +1,36 @@
-import { CSSProperties, PropType, Transition, defineComponent } from 'vue';
-import { truthProp, createNamespace } from '../utils';
+import {
+  Transition,
+  defineComponent,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes,
+} from 'vue';
+import { truthProp, makeStringProp, createNamespace } from '../utils';
 import { Icon } from '../icon';
 
 const [name, bem] = createNamespace('tag');
 
+export type TagSize = 'large' | 'medium';
 export type TagType = 'default' | 'primary' | 'success' | 'warning' | 'danger';
+
+const tagProps = {
+  size: String as PropType<TagSize>,
+  mark: Boolean,
+  show: truthProp,
+  type: makeStringProp<TagType>('default'),
+  color: String,
+  plain: Boolean,
+  round: Boolean,
+  textColor: String,
+  closeable: Boolean,
+};
+
+export type TagProps = ExtractPropTypes<typeof tagProps>;
 
 export default defineComponent({
   name,
 
-  props: {
-    size: String,
-    mark: Boolean,
-    show: truthProp,
-    color: String,
-    plain: Boolean,
-    round: Boolean,
-    textColor: String,
-    closeable: Boolean,
-    type: {
-      type: String as PropType<TagType>,
-      default: 'default',
-    },
-  },
+  props: tagProps,
 
   emits: ['close'],
 

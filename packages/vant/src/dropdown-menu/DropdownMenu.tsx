@@ -1,17 +1,27 @@
 import {
   ref,
   computed,
-  PropType,
-  InjectionKey,
-  CSSProperties,
   defineComponent,
-  ExtractPropTypes,
+  type InjectionKey,
+  type CSSProperties,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
-import { isDef, truthProp, createNamespace, ComponentInstance } from '../utils';
+import {
+  isDef,
+  truthProp,
+  numericProp,
+  windowHeight,
+  makeStringProp,
+  makeNumericProp,
+  createNamespace,
+  HAPTICS_FEEDBACK,
+  type ComponentInstance,
+} from '../utils';
 
 // Composables
+import { useId } from '../composables/use-id';
 import {
   useRect,
   useChildren,
@@ -25,32 +35,27 @@ import type { DropdownMenuProvide, DropdownMenuDirection } from './types';
 
 const [name, bem] = createNamespace('dropdown-menu');
 
-const props = {
+const dropdownMenuProps = {
   overlay: truthProp,
-  zIndex: [Number, String],
+  zIndex: numericProp,
+  duration: makeNumericProp(0.2),
+  direction: makeStringProp<DropdownMenuDirection>('down'),
   activeColor: String,
   closeOnClickOutside: truthProp,
   closeOnClickOverlay: truthProp,
-  duration: {
-    type: [Number, String],
-    default: 0.2,
-  },
-  direction: {
-    type: String as PropType<DropdownMenuDirection>,
-    default: 'down',
-  },
 };
 
-export type DropdownMenuProps = ExtractPropTypes<typeof props>;
+export type DropdownMenuProps = ExtractPropTypes<typeof dropdownMenuProps>;
 
 export const DROPDOWN_KEY: InjectionKey<DropdownMenuProvide> = Symbol(name);
 
 export default defineComponent({
   name,
 
-  props,
+  props: dropdownMenuProps,
 
   setup(props, { slots }) {
+    const id = useId();
     const root = ref<HTMLElement>();
     const barRef = ref<HTMLElement>();
     const offset = ref(0);
@@ -84,7 +89,7 @@ export default defineComponent({
         if (props.direction === 'down') {
           offset.value = rect.bottom;
         } else {
-          offset.value = window.innerHeight - rect.top;
+          offset.value = windowHeight.value - rect.top;
         }
       }
     };
@@ -112,9 +117,10 @@ export default defineComponent({
 
       return (
         <div
+          id={`${id}-${index}`}
           role="button"
-          tabindex={disabled ? -1 : 0}
-          class={bem('item', { disabled })}
+          tabindex={disabled ? undefined : 0}
+          class={[bem('item', { disabled }), { [HAPTICS_FEEDBACK]: !disabled }]}
           onClick={() => {
             if (!disabled) {
               toggleItem(index);
@@ -137,7 +143,7 @@ export default defineComponent({
       );
     };
 
-    linkChildren({ props, offset });
+    linkChildren({ id, props, offset });
     useClickAway(root, onClickAway);
     useEventListener('scroll', onScroll, { target: scrollParent });
 

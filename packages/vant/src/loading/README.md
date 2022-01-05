@@ -90,7 +90,7 @@ use `color` or `text-color` to change text color.
 The component exports the following type definitions:
 
 ```ts
-import type { LoadingType } from 'vant';
+import type { LoadingType, LoadingProps } from 'vant';
 ```
 
 ## Theming
@@ -101,7 +101,7 @@ The component provides the following CSS variables, which can be used to customi
 
 | Name | Default Value | Description |
 | --- | --- | --- |
-| --van-loading-text-color | _var(--van-gray-6)_ | - |
+| --van-loading-text-color | _var(--van-text-color-2)_ | - |
 | --van-loading-text-font-size | _var(--van-font-size-md)_ | - |
 | --van-loading-spinner-color | _var(--van-gray-5)_ | - |
 | --van-loading-spinner-size | _30px_ | - |

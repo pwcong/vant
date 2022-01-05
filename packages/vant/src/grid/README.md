@@ -85,7 +85,7 @@ app.use(GridItem);
 ```html
 <van-grid clickable :column-num="2">
   <van-grid-item icon="home-o" text="Vue Router" to="/" />
-  <van-grid-item icon="search" text="URL" url="/vant/mobile.html" />
+  <van-grid-item icon="search" text="URL" url="https://github.com" />
 </van-grid>
 ```
 
@@ -124,6 +124,7 @@ app.use(GridItem);
 | reverse `v3.1.0` | Whether to reverse the position of icon and text | _boolean_ | `false` |
 | dot | Whether to show red dot | _boolean_ | `false` |
 | badge | Content of the badge | _number \| string_ | - |
+| badge-props `v3.2.8` | Props of Badge，see [Badge - props](#/en-US/badge#props) | _BadgeProps_ | - |
 | url | Link URL | _string_ | - |
 | to | Target route of the link, same as to of vue-router | _string \| object_ | - |
 | replace | If true, the navigation will not leave a history record | _boolean_ | `false` |
@@ -147,7 +148,7 @@ app.use(GridItem);
 The component exports the following type definitions:
 
 ```ts
-import type { GridDirection } from 'vant';
+import type { GridProps, GridDirection, GridItemProps } from 'vant';
 ```
 
 ## Theming
@@ -159,7 +160,7 @@ The component provides the following CSS variables, which can be used to customi
 | Name | Default Value | Description |
 | --- | --- | --- |
 | --van-grid-item-content-padding | _var(--van-padding-md) var(--van-padding-xs)_ | - |
-| --van-grid-item-content-background-color | _var(--van-white)_ | - |
+| --van-grid-item-content-background-color | _var(--van-background-color-light)_ | - |
 | --van-grid-item-content-active-color | _var(--van-active-color)_ | - |
 | --van-grid-item-icon-size | _28px_ | - |
 | --van-grid-item-text-color | _var(--van-gray-7)_ | - |

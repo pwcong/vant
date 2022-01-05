@@ -1,7 +1,19 @@
-import { watch, computed, reactive, CSSProperties, defineComponent } from 'vue';
+import {
+  watch,
+  computed,
+  reactive,
+  defineComponent,
+  type CSSProperties,
+} from 'vue';
 
 // Utils
-import { clamp, preventDefault, createNamespace } from '../utils';
+import {
+  clamp,
+  numericProp,
+  preventDefault,
+  createNamespace,
+  makeRequiredProp,
+} from '../utils';
 
 // Composables
 import { useTouch } from '../composables/use-touch';
@@ -11,12 +23,11 @@ import { Image } from '../image';
 import { Loading } from '../loading';
 import { SwipeItem } from '../swipe-item';
 
-function getDistance(touches: TouchList) {
-  return Math.sqrt(
+const getDistance = (touches: TouchList) =>
+  Math.sqrt(
     (touches[0].clientX - touches[1].clientX) ** 2 +
       (touches[0].clientY - touches[1].clientY) ** 2
   );
-}
 
 const bem = createNamespace('image-preview')[1];
 
@@ -25,22 +36,10 @@ export default defineComponent({
     src: String,
     show: Boolean,
     active: Number,
-    minZoom: {
-      type: [Number, String],
-      required: true,
-    },
-    maxZoom: {
-      type: [Number, String],
-      required: true,
-    },
-    rootWidth: {
-      type: Number,
-      required: true,
-    },
-    rootHeight: {
-      type: Number,
-      required: true,
-    },
+    minZoom: makeRequiredProp(numericProp),
+    maxZoom: makeRequiredProp(numericProp),
+    rootWidth: makeRequiredProp(Number),
+    rootHeight: makeRequiredProp(Number),
   },
 
   emits: ['scale', 'close'],

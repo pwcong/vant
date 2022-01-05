@@ -1,7 +1,13 @@
-import { computed, getCurrentInstance, defineComponent } from 'vue';
+import {
+  computed,
+  defineComponent,
+  getCurrentInstance,
+  type PropType,
+  type ExtractPropTypes,
+} from 'vue';
 
 // Utils
-import { createNamespace, extend, isObject } from '../utils';
+import { createNamespace, extend, isObject, numericProp } from '../utils';
 import { TABBAR_KEY } from '../tabbar/Tabbar';
 
 // Composables
@@ -10,20 +16,25 @@ import { routeProps, useRoute } from '../composables/use-route';
 
 // Components
 import { Icon } from '../icon';
-import { Badge } from '../badge';
+import { Badge, type BadgeProps } from '../badge';
 
 const [name, bem] = createNamespace('tabbar-item');
+
+const tabbarItemProps = extend({}, routeProps, {
+  dot: Boolean,
+  icon: String,
+  name: numericProp,
+  badge: numericProp,
+  badgeProps: Object as PropType<Partial<BadgeProps>>,
+  iconPrefix: String,
+});
+
+export type TabbarItemProps = ExtractPropTypes<typeof tabbarItemProps>;
 
 export default defineComponent({
   name,
 
-  props: extend({}, routeProps, {
-    dot: Boolean,
-    icon: String,
-    name: [Number, String],
-    badge: [Number, String],
-    iconPrefix: String,
-  }),
+  props: tabbarItemProps,
 
   emits: ['click'],
 
@@ -48,19 +59,21 @@ export default defineComponent({
         const { $route } = vm;
         const { to } = props;
         const config = isObject(to) ? to : { path: to };
-        const pathMatched = 'path' in config && config.path === $route.path;
-        const nameMatched = 'name' in config && config.name === $route.name;
-
-        return pathMatched || nameMatched;
+        return !!$route.matched.find((val) => {
+          const pathMatched = 'path' in config && config.path === val.path;
+          const nameMatched = 'name' in config && config.name === val.name;
+          return pathMatched || nameMatched;
+        });
       }
 
-      return (props.name || index.value) === modelValue;
+      return (props.name ?? index.value) === modelValue;
     });
 
     const onClick = (event: MouseEvent) => {
-      parent.setActive(props.name ?? index.value);
+      if (!active.value) {
+        parent.setActive(props.name ?? index.value, route);
+      }
       emit('click', event);
-      route();
     };
 
     const renderIcon = () => {
@@ -79,13 +92,20 @@ export default defineComponent({
 
       return (
         <div
+          role="tab"
           class={bem({ active: active.value })}
           style={{ color }}
+          tabindex={0}
+          aria-selected={active.value}
           onClick={onClick}
         >
-          <Badge dot={dot} content={badge} class={bem('icon')}>
-            {renderIcon()}
-          </Badge>
+          <Badge
+            v-slots={{ default: renderIcon }}
+            dot={dot}
+            class={bem('icon')}
+            content={badge}
+            {...props.badgeProps}
+          />
           <div class={bem('text')}>
             {slots.default?.({ active: active.value })}
           </div>

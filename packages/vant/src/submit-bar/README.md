@@ -122,6 +122,14 @@ export default {
 | top     | Custom top content  |
 | tip     | Custom tips         |
 
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type { SubmitBarProps, SubmitBarTextAlign } from 'vant';
+```
+
 ## Theming
 
 ### CSS Variables
@@ -132,7 +140,7 @@ The component provides the following CSS variables, which can be used to customi
 | --- | --- | --- |
 | --van-submit-bar-height | _50px_ | - |
 | --van-submit-bar-z-index | _100_ | - |
-| --van-submit-bar-background-color | _var(--van-white)_ | - |
+| --van-submit-bar-background-color | _var(--van-background-color-light)_ | - |
 | --van-submit-bar-button-width | _110px_ | - |
 | --van-submit-bar-price-color | _var(--van-danger-color)_ | - |
 | --van-submit-bar-price-font-size | _var(--van-font-size-sm)_ | - |
@@ -143,8 +151,8 @@ The component provides the following CSS variables, which can be used to customi
 | --van-submit-bar-tip-padding | _var(--van-padding-xs) var(--van-padding-sm)_ | - |
 | --van-submit-bar-tip-font-size | _var(--van-font-size-sm)_ | - |
 | --van-submit-bar-tip-line-height | _1.5_ | - |
-| --van-submit-bar-tip-color | _#f56723_ | - |
-| --van-submit-bar-tip-background-color | _#fff7cc_ | - |
+| --van-submit-bar-tip-color | _var(--van-orange-dark)_ | - |
+| --van-submit-bar-tip-background-color | _var(--van-orange-light)_ | - |
 | --van-submit-bar-tip-icon-size | _12px_ | - |
 | --van-submit-bar-button-height | _40px_ | - |
 | --van-submit-bar-padding | _0 var(--van-padding-md)_ | - |

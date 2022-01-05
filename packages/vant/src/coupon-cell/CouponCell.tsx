@@ -1,7 +1,14 @@
-import { PropType, defineComponent } from 'vue';
+import { defineComponent, type ExtractPropTypes } from 'vue';
 
 // Utils
-import { isDef, truthProp, createNamespace } from '../utils';
+import {
+  isDef,
+  truthProp,
+  makeArrayProp,
+  makeStringProp,
+  makeNumericProp,
+  createNamespace,
+} from '../utils';
 
 // Components
 import { Cell } from '../cell';
@@ -11,11 +18,18 @@ import type { CouponInfo } from '../coupon';
 
 const [name, bem, t] = createNamespace('coupon-cell');
 
-function formatValue(
-  coupons: CouponInfo[],
-  chosenCoupon: number | string,
-  currency: string
-) {
+const couponCellProps = {
+  title: String,
+  border: truthProp,
+  editable: truthProp,
+  coupons: makeArrayProp<CouponInfo>(),
+  currency: makeStringProp('¥'),
+  chosenCoupon: makeNumericProp(-1),
+};
+
+export type CouponCellProps = ExtractPropTypes<typeof couponCellProps>;
+
+function formatValue({ coupons, chosenCoupon, currency }: CouponCellProps) {
   const coupon = coupons[+chosenCoupon];
 
   if (coupon) {
@@ -36,37 +50,15 @@ function formatValue(
 export default defineComponent({
   name,
 
-  props: {
-    title: String,
-    border: truthProp,
-    editable: truthProp,
-    coupons: {
-      type: Array as PropType<CouponInfo[]>,
-      default: () => [],
-    },
-    currency: {
-      type: String,
-      default: '¥',
-    },
-    chosenCoupon: {
-      type: [Number, String],
-      default: -1,
-    },
-  },
+  props: couponCellProps,
 
   setup(props) {
     return () => {
       const selected = props.coupons[+props.chosenCoupon];
-      const value = formatValue(
-        props.coupons,
-        props.chosenCoupon,
-        props.currency
-      );
-
       return (
         <Cell
           class={bem()}
-          value={value}
+          value={formatValue(props)}
           title={props.title || t('title')}
           border={props.border}
           isLink={props.editable}

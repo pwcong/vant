@@ -172,7 +172,7 @@ export default {
 | show | Whether to show keyboard | _boolean_ | - |
 | title | Keyboard title | _string_ | - |
 | theme | Keyboard theme，can be set to `custom` | _string_ | `default` |
-| maxlength | Value maxlength | _number \| string_ | - |
+| maxlength | Value maxlength | _number \| string_ | `Infinity` |
 | transition | Whether to show transition animation | _boolean_ | `true` |
 | z-index | Keyboard z-index | _number \| string_ | `100` |
 | extra-key | Content of bottom left key | _string \| string[]_ | `''` |
@@ -190,7 +190,7 @@ export default {
 
 | Event | Description | Arguments |
 | --- | --- | --- |
-| input | Emitted when a key is pressed | key: Content of the key |
+| input | Emitted when a key is pressed | _key: string_ |
 | delete | Emitted when the delete key is pressed | - |
 | close | Emitted when the close button is clicked | - |
 | blur | Emitted when the close button is clicked or the keyboard is blurred | - |
@@ -210,7 +210,7 @@ export default {
 The component exports the following type definitions:
 
 ```ts
-import type { NumberKeyboardTheme } from 'vant';
+import type { NumberKeyboardProps, NumberKeyboardTheme } from 'vant';
 ```
 
 ## Theming
@@ -225,7 +225,7 @@ The component provides the following CSS variables, which can be used to customi
 | --van-number-keyboard-key-height | _48px_ | - |
 | --van-number-keyboard-key-font-size | _28px_ | - |
 | --van-number-keyboard-key-active-color | _var(--van-gray-3)_ | - |
-| --van-number-keyboard-key-background-color | _van(--van-white)_ | - |
+| --van-number-keyboard-key-background-color | _var(--van-white)_ | - |
 | --van-number-keyboard-delete-font-size | _var(--van-font-size-lg)_ | - |
 | --van-number-keyboard-title-color | _var(--van-gray-7)_ | - |
 | --van-number-keyboard-title-height | _34px_ | - |

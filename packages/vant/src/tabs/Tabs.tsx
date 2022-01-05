@@ -4,44 +4,47 @@ import {
   computed,
   reactive,
   nextTick,
-  PropType,
   onActivated,
-  InjectionKey,
-  CSSProperties,
   defineComponent,
-  ExtractPropTypes,
   getCurrentInstance,
-  ComponentPublicInstance,
+  type PropType,
+  type InjectionKey,
+  type CSSProperties,
+  type ExtractPropTypes,
+  type ComponentPublicInstance,
 } from 'vue';
 
 // Utils
 import {
+  pick,
   isDef,
   addUnit,
   isHidden,
   unitToPx,
   truthProp,
+  numericProp,
   Interceptor,
-  getVisibleTop,
+  windowWidth,
   getElementTop,
+  makeStringProp,
   callInterceptor,
   createNamespace,
-  getVisibleHeight,
+  makeNumericProp,
   setRootScrollTop,
-  ComponentInstance,
   BORDER_TOP_BOTTOM,
-  pick,
+  type ComponentInstance,
 } from '../utils';
 import { scrollLeftTo, scrollTopTo } from './utils';
 
 // Composables
 import {
+  useRect,
   useChildren,
-  useWindowSize,
   useScrollParent,
   useEventListener,
   onMountedOrActivated,
 } from '@vant/use';
+import { useId } from '../composables/use-id';
 import { route, RouteProps } from '../composables/use-route';
 import { useRefs } from '../composables/use-refs';
 import { useExpose } from '../composables/use-expose';
@@ -57,51 +60,37 @@ import type { TabsProvide, TabsType } from './types';
 
 const [name, bem] = createNamespace('tabs');
 
-const props = {
+const tabsProps = {
+  type: makeStringProp<TabsType>('line'),
   color: String,
   border: Boolean,
   sticky: Boolean,
+  shrink: Boolean,
+  active: makeNumericProp(0),
+  duration: makeNumericProp(0.3),
   animated: Boolean,
   ellipsis: truthProp,
   swipeable: Boolean,
   scrollspy: Boolean,
+  offsetTop: makeNumericProp(0),
   background: String,
   lazyRender: truthProp,
-  lineWidth: [Number, String],
-  lineHeight: [Number, String],
+  lineWidth: numericProp,
+  lineHeight: numericProp,
   beforeChange: Function as PropType<Interceptor>,
+  swipeThreshold: makeNumericProp(5),
   titleActiveColor: String,
   titleInactiveColor: String,
-  type: {
-    type: String as PropType<TabsType>,
-    default: 'line',
-  },
-  active: {
-    type: [Number, String],
-    default: 0,
-  },
-  duration: {
-    type: [Number, String],
-    default: 0.3,
-  },
-  offsetTop: {
-    type: [Number, String],
-    default: 0,
-  },
-  swipeThreshold: {
-    type: [Number, String],
-    default: 5,
-  },
 };
 
-export type TabsProps = ExtractPropTypes<typeof props>;
+export type TabsProps = ExtractPropTypes<typeof tabsProps>;
 
 export const TABS_KEY: InjectionKey<TabsProvide> = Symbol(name);
 
 export default defineComponent({
   name,
 
-  props,
+  props: tabsProps,
 
   emits: [
     'click',
@@ -136,7 +125,7 @@ export default defineComponent({
     const navRef = ref<HTMLElement>();
     const wrapRef = ref<HTMLElement>();
 
-    const windowSize = useWindowSize();
+    const id = useId();
     const scroller = useScrollParent(root);
     const [titleRefs, setTitleRefs] = useRefs<ComponentInstance>();
     const { children, linkChildren } = useChildren(TABS_KEY);
@@ -150,7 +139,10 @@ export default defineComponent({
 
     // whether the nav is scrollable
     const scrollable = computed(
-      () => children.length > props.swipeThreshold || !props.ellipsis
+      () =>
+        children.length > props.swipeThreshold ||
+        !props.ellipsis ||
+        props.shrink
     );
 
     const navStyle = computed(() => ({
@@ -308,20 +300,12 @@ export default defineComponent({
       const { title, disabled } = children[index];
       const name = getTabName(children[index], index);
 
-      emit('click-tab', {
-        name,
-        title,
-        event,
-        disabled,
-      });
-
       if (disabled) {
         // @deprecated
         // should be removed in next major version
         emit('disabled', name, title);
       } else {
-        callInterceptor({
-          interceptor: props.beforeChange,
+        callInterceptor(props.beforeChange, {
           args: [name],
           done: () => {
             setCurrentIndex(index);
@@ -335,6 +319,13 @@ export default defineComponent({
 
         route(item as ComponentPublicInstance<RouteProps>);
       }
+
+      emit('click-tab', {
+        name,
+        title,
+        event,
+        disabled,
+      });
     };
 
     const onStickyScroll = (params: {
@@ -354,7 +345,7 @@ export default defineComponent({
 
     const getCurrentIndexOnScroll = () => {
       for (let index = 0; index < children.length; index++) {
-        const top = getVisibleTop(children[index].$el);
+        const { top } = useRect(children[index].$el);
 
         if (top > scrollOffset.value) {
           return index === 0 ? 0 : index - 1;
@@ -374,19 +365,20 @@ export default defineComponent({
     const renderNav = () =>
       children.map((item, index) => (
         <TabsTitle
+          v-slots={{ title: item.$slots.title }}
+          id={`${id}-${index}`}
           ref={setTitleRefs(index)}
           type={props.type}
           color={props.color}
           style={item.titleStyle}
           class={item.titleClass}
+          shrink={props.shrink}
           isActive={index === state.currentIndex}
+          controls={item.id}
           scrollable={scrollable.value}
-          renderTitle={item.$slots.title}
           activeColor={props.titleActiveColor}
           inactiveColor={props.titleInactiveColor}
-          onClick={(event: MouseEvent) => {
-            onClickTab(item, index, event);
-          }}
+          onClick={(event: MouseEvent) => onClickTab(item, index, event)}
           {...pick(item, [
             'dot',
             'badge',
@@ -397,34 +389,42 @@ export default defineComponent({
         />
       ));
 
+    const renderLine = () => {
+      if (props.type === 'line' && children.length) {
+        return <div class={bem('line')} style={state.lineStyle} />;
+      }
+    };
+
     const renderHeader = () => {
       const { type, border } = props;
       return (
         <div
           ref={wrapRef}
           class={[
-            bem('wrap', { scrollable: scrollable.value }),
+            bem('wrap'),
             { [BORDER_TOP_BOTTOM]: type === 'line' && border },
           ]}
         >
           <div
             ref={navRef}
             role="tablist"
-            class={bem('nav', [type, { complete: scrollable.value }])}
+            class={bem('nav', [
+              type,
+              { shrink: props.shrink, complete: scrollable.value },
+            ])}
             style={navStyle.value}
+            aria-orientation="horizontal"
           >
             {slots['nav-left']?.()}
             {renderNav()}
-            {type === 'line' && (
-              <div class={bem('line')} style={state.lineStyle} />
-            )}
+            {renderLine()}
             {slots['nav-right']?.()}
           </div>
         </div>
       );
     };
 
-    watch([() => props.color, windowSize.width], setLine);
+    watch([() => props.color, windowWidth], setLine);
 
     watch(
       () => props.active,
@@ -467,7 +467,9 @@ export default defineComponent({
       setCurrentIndexByName(props.active);
       nextTick(() => {
         state.inited = true;
-        tabHeight = getVisibleHeight(wrapRef.value!);
+        if (wrapRef.value) {
+          tabHeight = useRect(wrapRef.value).height;
+        }
         scrollIntoView(true);
       });
     };
@@ -486,6 +488,7 @@ export default defineComponent({
     useEventListener('scroll', onScroll, { target: scroller });
 
     linkChildren({
+      id,
       props,
       setLine,
       onRendered,

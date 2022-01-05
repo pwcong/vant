@@ -179,7 +179,7 @@ export default {
 | show | 是否显示键盘 | _boolean_ | - |
 | title | 键盘标题 | _string_ | - |
 | theme | 样式风格，可选值为 `custom` | _string_ | `default` |
-| maxlength | 输入值最大长度 | _number \| string_ | - |
+| maxlength | 输入值最大长度 | _number \| string_ | `Infinity` |
 | transition | 是否开启过场动画 | _boolean_ | `true` |
 | z-index | 键盘 z-index 层级 | _number \| string_ | `100` |
 | extra-key | 底部额外按键的内容 | _string \| string[]_ | `''` |
@@ -197,7 +197,7 @@ export default {
 
 | 事件名 | 说明                           | 回调参数      |
 | ------ | ------------------------------ | ------------- |
-| input  | 点击按键时触发                 | key: 按键内容 |
+| input  | 点击按键时触发                 | _key: string_ |
 | delete | 点击删除键时触发               | -             |
 | close  | 点击关闭按钮时触发             | -             |
 | blur   | 点击关闭按钮或非键盘区域时触发 | -             |
@@ -217,7 +217,7 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { NumberKeyboardTheme } from 'vant';
+import type { NumberKeyboardProps, NumberKeyboardTheme } from 'vant';
 ```
 
 ## 主题定制
@@ -232,7 +232,7 @@ import type { NumberKeyboardTheme } from 'vant';
 | --van-number-keyboard-key-height | _48px_ | - |
 | --van-number-keyboard-key-font-size | _28px_ | - |
 | --van-number-keyboard-key-active-color | _var(--van-gray-3)_ | - |
-| --van-number-keyboard-key-background-color | _van(--van-white)_ | - |
+| --van-number-keyboard-key-background-color | _var(--van-white)_ | - |
 | --van-number-keyboard-delete-font-size | _var(--van-font-size-lg)_ | - |
 | --van-number-keyboard-title-color | _var(--van-gray-7)_ | - |
 | --van-number-keyboard-title-height | _34px_ | - |

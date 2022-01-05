@@ -1,3 +1,7 @@
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+
 // allow to import from node_modules
 // @import "~package-name/var.scss"
 const tildeImporter = (url: string) => {

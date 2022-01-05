@@ -3,9 +3,10 @@
 exports[`click option 1`] = `
 <div class="van-dropdown-menu">
   <div class="van-dropdown-menu__bar van-dropdown-menu__bar--opened">
-    <div role="button"
+    <div id="van-dropdown-menu-0"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">
@@ -13,9 +14,10 @@ exports[`click option 1`] = `
         </div>
       </span>
     </div>
-    <div role="button"
+    <div id="van-dropdown-menu-1"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">
@@ -24,7 +26,7 @@ exports[`click option 1`] = `
       </span>
     </div>
   </div>
-  <div style="top: 0px;"
+  <div style="top: 100px;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -36,9 +38,11 @@ exports[`click option 1`] = `
     <transition-stub>
       <div style="z-index: 2007; transition-duration: 0.2s; display: none;"
            class="van-popup van-popup--top van-dropdown-item__content"
+           role="menu"
+           aria-labelledby="van-dropdown-menu-0"
       >
         <div class="van-cell van-cell--clickable van-dropdown-item__option van-dropdown-item__option--active"
-             role="button"
+             role="menuitem"
              tabindex="0"
         >
           <div class="van-cell__title">
@@ -52,8 +56,8 @@ exports[`click option 1`] = `
           </div>
         </div>
         <div class="van-cell van-cell--clickable van-dropdown-item__option"
-             role="button"
-             tabindex="0"
+             role="menuitem"
+             tabindex="-1"
         >
           <div class="van-cell__title">
             <span>
@@ -66,7 +70,7 @@ exports[`click option 1`] = `
       </div>
     </transition-stub>
   </div>
-  <div style="top: 0px; display: none;"
+  <div style="top: 100px; display: none;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -80,9 +84,10 @@ exports[`click option 1`] = `
 exports[`close-on-click-outside 1`] = `
 <div class="van-dropdown-menu">
   <div class="van-dropdown-menu__bar van-dropdown-menu__bar--opened">
-    <div role="button"
+    <div id="van-dropdown-menu-0"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">
@@ -90,9 +95,10 @@ exports[`close-on-click-outside 1`] = `
         </div>
       </span>
     </div>
-    <div role="button"
+    <div id="van-dropdown-menu-1"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">
@@ -101,7 +107,7 @@ exports[`close-on-click-outside 1`] = `
       </span>
     </div>
   </div>
-  <div style="top: 0px;"
+  <div style="top: 100px;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -113,9 +119,11 @@ exports[`close-on-click-outside 1`] = `
     <transition-stub>
       <div style="z-index: 2004; transition-duration: 0.2s; display: none;"
            class="van-popup van-popup--top van-dropdown-item__content"
+           role="menu"
+           aria-labelledby="van-dropdown-menu-0"
       >
         <div class="van-cell van-cell--clickable van-dropdown-item__option van-dropdown-item__option--active"
-             role="button"
+             role="menuitem"
              tabindex="0"
         >
           <div class="van-cell__title">
@@ -129,8 +137,8 @@ exports[`close-on-click-outside 1`] = `
           </div>
         </div>
         <div class="van-cell van-cell--clickable van-dropdown-item__option"
-             role="button"
-             tabindex="0"
+             role="menuitem"
+             tabindex="-1"
         >
           <div class="van-cell__title">
             <span>
@@ -143,7 +151,7 @@ exports[`close-on-click-outside 1`] = `
       </div>
     </transition-stub>
   </div>
-  <div style="top: 0px; display: none;"
+  <div style="top: 100px; display: none;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -157,9 +165,10 @@ exports[`close-on-click-outside 1`] = `
 exports[`destroy one item 1`] = `
 <div class="van-dropdown-menu">
   <div class="van-dropdown-menu__bar">
-    <div role="button"
+    <div id="van-dropdown-menu-0"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">
@@ -182,9 +191,10 @@ exports[`destroy one item 1`] = `
 exports[`direction up 1`] = `
 <div class="van-dropdown-menu">
   <div class="van-dropdown-menu__bar">
-    <div role="button"
+    <div id="van-dropdown-menu-0"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title van-dropdown-menu__title--down">
         <div class="van-ellipsis">
@@ -192,9 +202,10 @@ exports[`direction up 1`] = `
         </div>
       </span>
     </div>
-    <div role="button"
+    <div id="van-dropdown-menu-1"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title van-dropdown-menu__title--down">
         <div class="van-ellipsis">
@@ -225,9 +236,10 @@ exports[`direction up 1`] = `
 exports[`direction up 2`] = `
 <div class="van-dropdown-menu">
   <div class="van-dropdown-menu__bar van-dropdown-menu__bar--opened">
-    <div role="button"
+    <div id="van-dropdown-menu-0"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title van-dropdown-menu__title--active">
         <div class="van-ellipsis">
@@ -235,9 +247,10 @@ exports[`direction up 2`] = `
         </div>
       </span>
     </div>
-    <div role="button"
+    <div id="van-dropdown-menu-1"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title van-dropdown-menu__title--down">
         <div class="van-ellipsis">
@@ -258,9 +271,11 @@ exports[`direction up 2`] = `
     <transition-stub>
       <div style="z-index: 2006; transition-duration: 0.2s;"
            class="van-popup van-popup--bottom van-dropdown-item__content"
+           role="menu"
+           aria-labelledby="van-dropdown-menu-0"
       >
         <div class="van-cell van-cell--clickable van-dropdown-item__option van-dropdown-item__option--active"
-             role="button"
+             role="menuitem"
              tabindex="0"
         >
           <div class="van-cell__title">
@@ -274,8 +289,8 @@ exports[`direction up 2`] = `
           </div>
         </div>
         <div class="van-cell van-cell--clickable van-dropdown-item__option"
-             role="button"
-             tabindex="0"
+             role="menuitem"
+             tabindex="-1"
         >
           <div class="van-cell__title">
             <span>
@@ -302,9 +317,10 @@ exports[`direction up 2`] = `
 exports[`disable close-on-click-outside 1`] = `
 <div class="van-dropdown-menu">
   <div class="van-dropdown-menu__bar van-dropdown-menu__bar--opened">
-    <div role="button"
+    <div id="van-dropdown-menu-0"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title van-dropdown-menu__title--down van-dropdown-menu__title--active">
         <div class="van-ellipsis">
@@ -312,9 +328,10 @@ exports[`disable close-on-click-outside 1`] = `
         </div>
       </span>
     </div>
-    <div role="button"
+    <div id="van-dropdown-menu-1"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">
@@ -323,7 +340,7 @@ exports[`disable close-on-click-outside 1`] = `
       </span>
     </div>
   </div>
-  <div style="top: 0px;"
+  <div style="top: 100px;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -335,9 +352,11 @@ exports[`disable close-on-click-outside 1`] = `
     <transition-stub>
       <div style="z-index: 2005; transition-duration: 0.2s;"
            class="van-popup van-popup--top van-dropdown-item__content"
+           role="menu"
+           aria-labelledby="van-dropdown-menu-0"
       >
         <div class="van-cell van-cell--clickable van-dropdown-item__option van-dropdown-item__option--active"
-             role="button"
+             role="menuitem"
              tabindex="0"
         >
           <div class="van-cell__title">
@@ -351,8 +370,8 @@ exports[`disable close-on-click-outside 1`] = `
           </div>
         </div>
         <div class="van-cell van-cell--clickable van-dropdown-item__option"
-             role="button"
-             tabindex="0"
+             role="menuitem"
+             tabindex="-1"
         >
           <div class="van-cell__title">
             <span>
@@ -365,7 +384,7 @@ exports[`disable close-on-click-outside 1`] = `
       </div>
     </transition-stub>
   </div>
-  <div style="top: 0px; display: none;"
+  <div style="top: 100px; display: none;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -379,8 +398,8 @@ exports[`disable close-on-click-outside 1`] = `
 exports[`disable dropdown item 1`] = `
 <div class="van-dropdown-menu">
   <div class="van-dropdown-menu__bar">
-    <div role="button"
-         tabindex="-1"
+    <div id="van-dropdown-menu-0"
+         role="button"
          class="van-dropdown-menu__item van-dropdown-menu__item--disabled"
     >
       <span class="van-dropdown-menu__title">
@@ -404,9 +423,10 @@ exports[`disable dropdown item 1`] = `
 exports[`render option icon 1`] = `
 <div class="van-dropdown-menu">
   <div class="van-dropdown-menu__bar van-dropdown-menu__bar--opened">
-    <div role="button"
+    <div id="van-dropdown-menu-0"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title van-dropdown-menu__title--down van-dropdown-menu__title--active">
         <div class="van-ellipsis">
@@ -414,9 +434,10 @@ exports[`render option icon 1`] = `
         </div>
       </span>
     </div>
-    <div role="button"
+    <div id="van-dropdown-menu-1"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">
@@ -425,7 +446,7 @@ exports[`render option icon 1`] = `
       </span>
     </div>
   </div>
-  <div style="top: 0px;"
+  <div style="top: 100px;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -437,9 +458,11 @@ exports[`render option icon 1`] = `
     <transition-stub>
       <div style="z-index: 2003; transition-duration: 0.2s;"
            class="van-popup van-popup--top van-dropdown-item__content"
+           role="menu"
+           aria-labelledby="van-dropdown-menu-0"
       >
         <div class="van-cell van-cell--clickable van-dropdown-item__option van-dropdown-item__option--active"
-             role="button"
+             role="menuitem"
              tabindex="0"
         >
           <i class="van-badge__wrapper van-icon van-icon-success van-cell__left-icon">
@@ -455,8 +478,8 @@ exports[`render option icon 1`] = `
           </div>
         </div>
         <div class="van-cell van-cell--clickable van-dropdown-item__option"
-             role="button"
-             tabindex="0"
+             role="menuitem"
+             tabindex="-1"
         >
           <i class="van-badge__wrapper van-icon van-icon-success van-cell__left-icon">
           </i>
@@ -471,7 +494,7 @@ exports[`render option icon 1`] = `
       </div>
     </transition-stub>
   </div>
-  <div style="top: 0px; display: none;"
+  <div style="top: 100px; display: none;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -485,9 +508,10 @@ exports[`render option icon 1`] = `
 exports[`show dropdown item 1`] = `
 <div class="van-dropdown-menu">
   <div class="van-dropdown-menu__bar van-dropdown-menu__bar--opened">
-    <div role="button"
+    <div id="van-dropdown-menu-0"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title van-dropdown-menu__title--down van-dropdown-menu__title--active">
         <div class="van-ellipsis">
@@ -495,9 +519,10 @@ exports[`show dropdown item 1`] = `
         </div>
       </span>
     </div>
-    <div role="button"
+    <div id="van-dropdown-menu-1"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">
@@ -506,7 +531,7 @@ exports[`show dropdown item 1`] = `
       </span>
     </div>
   </div>
-  <div style="top: 0px;"
+  <div style="top: 100px;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -518,9 +543,11 @@ exports[`show dropdown item 1`] = `
     <transition-stub>
       <div style="z-index: 2001; transition-duration: 0.2s;"
            class="van-popup van-popup--top van-dropdown-item__content"
+           role="menu"
+           aria-labelledby="van-dropdown-menu-0"
       >
         <div class="van-cell van-cell--clickable van-dropdown-item__option van-dropdown-item__option--active"
-             role="button"
+             role="menuitem"
              tabindex="0"
         >
           <div class="van-cell__title">
@@ -534,8 +561,8 @@ exports[`show dropdown item 1`] = `
           </div>
         </div>
         <div class="van-cell van-cell--clickable van-dropdown-item__option"
-             role="button"
-             tabindex="0"
+             role="menuitem"
+             tabindex="-1"
         >
           <div class="van-cell__title">
             <span>
@@ -548,7 +575,7 @@ exports[`show dropdown item 1`] = `
       </div>
     </transition-stub>
   </div>
-  <div style="top: 0px; display: none;"
+  <div style="top: 100px; display: none;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -562,9 +589,10 @@ exports[`show dropdown item 1`] = `
 exports[`show dropdown item 2`] = `
 <div class="van-dropdown-menu">
   <div class="van-dropdown-menu__bar van-dropdown-menu__bar--opened">
-    <div role="button"
+    <div id="van-dropdown-menu-0"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">
@@ -572,9 +600,10 @@ exports[`show dropdown item 2`] = `
         </div>
       </span>
     </div>
-    <div role="button"
+    <div id="van-dropdown-menu-1"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title van-dropdown-menu__title--down van-dropdown-menu__title--active">
         <div class="van-ellipsis">
@@ -583,7 +612,7 @@ exports[`show dropdown item 2`] = `
       </span>
     </div>
   </div>
-  <div style="top: 0px;"
+  <div style="top: 100px;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -595,9 +624,11 @@ exports[`show dropdown item 2`] = `
     <transition-stub>
       <div style="z-index: 2001; transition-duration: 0s; display: none;"
            class="van-popup van-popup--top van-dropdown-item__content"
+           role="menu"
+           aria-labelledby="van-dropdown-menu-0"
       >
         <div class="van-cell van-cell--clickable van-dropdown-item__option van-dropdown-item__option--active"
-             role="button"
+             role="menuitem"
              tabindex="0"
         >
           <div class="van-cell__title">
@@ -611,8 +642,8 @@ exports[`show dropdown item 2`] = `
           </div>
         </div>
         <div class="van-cell van-cell--clickable van-dropdown-item__option"
-             role="button"
-             tabindex="0"
+             role="menuitem"
+             tabindex="-1"
         >
           <div class="van-cell__title">
             <span>
@@ -625,7 +656,7 @@ exports[`show dropdown item 2`] = `
       </div>
     </transition-stub>
   </div>
-  <div style="top: 0px;"
+  <div style="top: 100px;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -637,9 +668,11 @@ exports[`show dropdown item 2`] = `
     <transition-stub>
       <div style="z-index: 2002; transition-duration: 0.2s;"
            class="van-popup van-popup--top van-dropdown-item__content"
+           role="menu"
+           aria-labelledby="van-dropdown-menu-1"
       >
         <div class="van-cell van-cell--clickable van-dropdown-item__option van-dropdown-item__option--active"
-             role="button"
+             role="menuitem"
              tabindex="0"
         >
           <div class="van-cell__title">
@@ -653,8 +686,8 @@ exports[`show dropdown item 2`] = `
           </div>
         </div>
         <div class="van-cell van-cell--clickable van-dropdown-item__option"
-             role="button"
-             tabindex="0"
+             role="menuitem"
+             tabindex="-1"
         >
           <div class="van-cell__title">
             <span>
@@ -673,9 +706,10 @@ exports[`show dropdown item 2`] = `
 exports[`show dropdown item 3`] = `
 <div class="van-dropdown-menu">
   <div class="van-dropdown-menu__bar van-dropdown-menu__bar--opened">
-    <div role="button"
+    <div id="van-dropdown-menu-0"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">
@@ -683,9 +717,10 @@ exports[`show dropdown item 3`] = `
         </div>
       </span>
     </div>
-    <div role="button"
+    <div id="van-dropdown-menu-1"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">
@@ -694,7 +729,7 @@ exports[`show dropdown item 3`] = `
       </span>
     </div>
   </div>
-  <div style="top: 0px;"
+  <div style="top: 100px;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -706,9 +741,11 @@ exports[`show dropdown item 3`] = `
     <transition-stub>
       <div style="z-index: 2001; transition-duration: 0s; display: none;"
            class="van-popup van-popup--top van-dropdown-item__content"
+           role="menu"
+           aria-labelledby="van-dropdown-menu-0"
       >
         <div class="van-cell van-cell--clickable van-dropdown-item__option van-dropdown-item__option--active"
-             role="button"
+             role="menuitem"
              tabindex="0"
         >
           <div class="van-cell__title">
@@ -722,8 +759,8 @@ exports[`show dropdown item 3`] = `
           </div>
         </div>
         <div class="van-cell van-cell--clickable van-dropdown-item__option"
-             role="button"
-             tabindex="0"
+             role="menuitem"
+             tabindex="-1"
         >
           <div class="van-cell__title">
             <span>
@@ -736,7 +773,7 @@ exports[`show dropdown item 3`] = `
       </div>
     </transition-stub>
   </div>
-  <div style="top: 0px;"
+  <div style="top: 100px;"
        class="van-dropdown-item van-dropdown-item--down"
   >
     <transition-stub>
@@ -748,9 +785,11 @@ exports[`show dropdown item 3`] = `
     <transition-stub>
       <div style="z-index: 2002; transition-duration: 0.2s; display: none;"
            class="van-popup van-popup--top van-dropdown-item__content"
+           role="menu"
+           aria-labelledby="van-dropdown-menu-1"
       >
         <div class="van-cell van-cell--clickable van-dropdown-item__option van-dropdown-item__option--active"
-             role="button"
+             role="menuitem"
              tabindex="0"
         >
           <div class="van-cell__title">
@@ -764,8 +803,8 @@ exports[`show dropdown item 3`] = `
           </div>
         </div>
         <div class="van-cell van-cell--clickable van-dropdown-item__option"
-             role="button"
-             tabindex="0"
+             role="menuitem"
+             tabindex="-1"
         >
           <div class="van-cell__title">
             <span>
@@ -784,9 +823,10 @@ exports[`show dropdown item 3`] = `
 exports[`title prop 1`] = `
 <div class="van-dropdown-menu">
   <div class="van-dropdown-menu__bar">
-    <div role="button"
+    <div id="van-dropdown-menu-0"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">
@@ -794,9 +834,10 @@ exports[`title prop 1`] = `
         </div>
       </span>
     </div>
-    <div role="button"
+    <div id="van-dropdown-menu-1"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">
@@ -827,9 +868,10 @@ exports[`title prop 1`] = `
 exports[`title slot 1`] = `
 <div class="van-dropdown-menu">
   <div class="van-dropdown-menu__bar">
-    <div role="button"
+    <div id="van-dropdown-menu-0"
+         role="button"
          tabindex="0"
-         class="van-dropdown-menu__item"
+         class="van-dropdown-menu__item van-haptics-feedback"
     >
       <span class="van-dropdown-menu__title">
         <div class="van-ellipsis">

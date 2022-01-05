@@ -4,16 +4,22 @@ import {
   computed,
   reactive,
   nextTick,
-  PropType,
   onMounted,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
 import { deepClone } from '../utils/deep-clone';
-import { pick, createNamespace, extend } from '../utils';
-import { pickerProps } from '../picker/Picker';
+import {
+  pick,
+  extend,
+  makeArrayProp,
+  makeNumericProp,
+  createNamespace,
+} from '../utils';
+import { pickerSharedProps } from '../picker/Picker';
 
 // Composables
 import { useExpose } from '../composables/use-expose';
@@ -46,36 +52,28 @@ const INHERIT_PROPS = [
   'confirmButtonText',
 ] as const;
 
-function isOverseaCode(code: string) {
-  return code[0] === '9';
-}
+const isOverseaCode = (code: string) => code[0] === '9';
 
-const props = extend({}, pickerProps, {
+const areaProps = extend({}, pickerSharedProps, {
   value: String,
+  columnsNum: makeNumericProp(3),
+  columnsPlaceholder: makeArrayProp<string>(),
   areaList: {
     type: Object as PropType<AreaList>,
     default: () => ({}),
-  },
-  columnsNum: {
-    type: [Number, String],
-    default: 3,
   },
   isOverseaCode: {
     type: Function as PropType<(code: string) => boolean>,
     default: isOverseaCode,
   },
-  columnsPlaceholder: {
-    type: Array as PropType<string[]>,
-    default: () => [],
-  },
 });
 
-export type AreaProps = ExtractPropTypes<typeof props>;
+export type AreaProps = ExtractPropTypes<typeof areaProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: areaProps,
 
   emits: ['change', 'confirm', 'cancel'],
 

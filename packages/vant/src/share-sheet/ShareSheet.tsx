@@ -1,7 +1,14 @@
-import { PropType, defineComponent } from 'vue';
+import { defineComponent, type ExtractPropTypes } from 'vue';
 
 // Utils
-import { truthProp, createNamespace, extend, pick } from '../utils';
+import {
+  pick,
+  extend,
+  truthProp,
+  makeArrayProp,
+  createNamespace,
+  HAPTICS_FEEDBACK,
+} from '../utils';
 import { popupSharedProps, popupSharedPropKeys } from '../popup/shared';
 
 // Components
@@ -27,8 +34,9 @@ const PRESET_ICONS = [
   'wechat-moments',
 ];
 
-const popupKeys = [
+const popupInheritKeys = [
   ...popupSharedPropKeys,
+  'round',
   'closeOnPopstate',
   'safeAreaInsetBottom',
 ] as const;
@@ -42,20 +50,22 @@ function getIconURL(icon: string) {
 
 const [name, bem, t] = createNamespace('share-sheet');
 
+const shareSheetProps = extend({}, popupSharedProps, {
+  title: String,
+  round: truthProp,
+  options: makeArrayProp<ShareSheetOption | ShareSheetOption[]>(),
+  cancelText: String,
+  description: String,
+  closeOnPopstate: truthProp,
+  safeAreaInsetBottom: truthProp,
+});
+
+export type ShareSheetProps = ExtractPropTypes<typeof shareSheetProps>;
+
 export default defineComponent({
   name,
 
-  props: extend({}, popupSharedProps, {
-    title: String,
-    cancelText: String,
-    description: String,
-    closeOnPopstate: truthProp,
-    safeAreaInsetBottom: truthProp,
-    options: {
-      type: Array as PropType<ShareSheetOptions>,
-      default: () => [],
-    },
-  }),
+  props: shareSheetProps,
 
   emits: ['cancel', 'select', 'update:show'],
 
@@ -94,7 +104,7 @@ export default defineComponent({
         <div
           role="button"
           tabindex={0}
-          class={[bem('option'), className]}
+          class={[bem('option'), className, HAPTICS_FEEDBACK]}
           onClick={() => onSelect(option, index)}
         >
           <img src={getIconURL(icon)} class={bem('icon')} />
@@ -133,11 +143,10 @@ export default defineComponent({
 
     return () => (
       <Popup
-        round
         class={bem()}
         position="bottom"
-        {...pick(props, popupKeys)}
-        {...{ 'onUpdate:show': updateShow }}
+        onUpdate:show={updateShow}
+        {...pick(props, popupInheritKeys)}
       >
         {renderHeader()}
         {renderRows()}

@@ -1,14 +1,23 @@
 import {
   watch,
-  PropType,
   onMounted,
   onUnmounted,
-  CSSProperties,
   defineComponent,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
-import { createNamespace, isDef, unknownProp } from '../utils';
+import {
+  pick,
+  isDef,
+  unknownProp,
+  numericProp,
+  makeStringProp,
+  makeNumberProp,
+  createNamespace,
+} from '../utils';
 import { lockClick } from './lock-click';
 
 // Components
@@ -21,40 +30,41 @@ import type { ToastType, ToastPosition } from './types';
 
 const [name, bem] = createNamespace('toast');
 
+const popupInheritProps = [
+  'show',
+  'overlay',
+  'transition',
+  'overlayClass',
+  'overlayStyle',
+  'closeOnClickOverlay',
+] as const;
+
+const toastProps = {
+  icon: String,
+  show: Boolean,
+  type: makeStringProp<ToastType>('text'),
+  overlay: Boolean,
+  message: numericProp,
+  iconSize: numericProp,
+  duration: makeNumberProp(2000),
+  position: makeStringProp<ToastPosition>('middle'),
+  className: unknownProp,
+  iconPrefix: String,
+  transition: makeStringProp('van-fade'),
+  loadingType: String as PropType<LoadingType>,
+  forbidClick: Boolean,
+  overlayClass: unknownProp,
+  overlayStyle: Object as PropType<CSSProperties>,
+  closeOnClick: Boolean,
+  closeOnClickOverlay: Boolean,
+};
+
+export type ToastProps = ExtractPropTypes<typeof toastProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    icon: String,
-    show: Boolean,
-    overlay: Boolean,
-    message: [Number, String],
-    iconSize: [Number, String],
-    className: unknownProp,
-    iconPrefix: String,
-    loadingType: String as PropType<LoadingType>,
-    forbidClick: Boolean,
-    overlayClass: unknownProp,
-    overlayStyle: Object as PropType<CSSProperties>,
-    closeOnClick: Boolean,
-    closeOnClickOverlay: Boolean,
-    type: {
-      type: String as PropType<ToastType>,
-      default: 'text',
-    },
-    duration: {
-      type: Number,
-      default: 2000,
-    },
-    position: {
-      type: String as PropType<ToastPosition>,
-      default: 'middle',
-    },
-    transition: {
-      type: String,
-      default: 'van-fade',
-    },
-  },
+  props: toastProps,
 
   emits: ['update:show'],
 
@@ -133,20 +143,15 @@ export default defineComponent({
 
     return () => (
       <Popup
-        show={props.show}
         class={[
           bem([props.position, { [props.type]: !props.icon }]),
           props.className,
         ]}
-        overlay={props.overlay}
         lockScroll={false}
-        transition={props.transition}
-        overlayClass={props.overlayClass}
-        overlayStyle={props.overlayStyle}
-        closeOnClickOverlay={props.closeOnClickOverlay}
         onClick={onClick}
         onClosed={clearTimer}
-        {...{ 'onUpdate:show': updateShow }}
+        onUpdate:show={updateShow}
+        {...pick(props, popupInheritProps)}
       >
         {renderIcon()}
         {renderMessage()}

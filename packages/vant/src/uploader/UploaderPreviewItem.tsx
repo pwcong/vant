@@ -1,13 +1,15 @@
-import { PropType, defineComponent } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 
 // Utils
-import { bem, isImageFile } from './utils';
+import { t, bem, isImageFile } from './utils';
 import {
   isDef,
   extend,
   Interceptor,
+  numericProp,
   getSizeStyle,
   callInterceptor,
+  makeRequiredProp,
 } from '../utils';
 
 // Components
@@ -20,17 +22,14 @@ import type { UploaderFileListItem } from './types';
 
 export default defineComponent({
   props: {
-    name: [Number, String],
+    name: numericProp,
+    item: makeRequiredProp<PropType<UploaderFileListItem>>(Object),
     index: Number,
     imageFit: String as PropType<ImageFit>,
     lazyLoad: Boolean,
     deletable: Boolean,
-    previewSize: [Number, String],
+    previewSize: numericProp,
     beforeDelete: Function as PropType<Interceptor>,
-    item: {
-      type: Object as PropType<UploaderFileListItem>,
-      required: true,
-    },
   },
 
   emits: ['delete', 'preview'],
@@ -61,8 +60,7 @@ export default defineComponent({
     const onDelete = (event: MouseEvent) => {
       const { name, item, index, beforeDelete } = props;
       event.stopPropagation();
-      callInterceptor({
-        interceptor: beforeDelete,
+      callInterceptor(beforeDelete, {
         args: [item, { name, index }],
         done: () => emit('delete'),
       });
@@ -73,7 +71,13 @@ export default defineComponent({
     const renderDeleteIcon = () => {
       if (props.deletable && props.item.status !== 'uploading') {
         return (
-          <div class={bem('preview-delete')} onClick={onDelete}>
+          <div
+            role="button"
+            class={bem('preview-delete')}
+            tabindex={0}
+            aria-label={t('delete')}
+            onClick={onDelete}
+          >
             <Icon name="cross" class={bem('preview-delete-icon')} />
           </div>
         );
@@ -97,6 +101,7 @@ export default defineComponent({
       if (isImageFile(item)) {
         return (
           <Image
+            v-slots={{ default: renderCover }}
             fit={props.imageFit}
             src={item.content || item.url}
             class={bem('preview-image')}
@@ -104,9 +109,7 @@ export default defineComponent({
             height={props.previewSize}
             lazyLoad={props.lazyLoad}
             onClick={onPreview}
-          >
-            {renderCover()}
-          </Image>
+          />
         );
       }
 

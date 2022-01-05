@@ -1,9 +1,16 @@
-import { PropType, Transition, CSSProperties, defineComponent } from 'vue';
+import {
+  Transition,
+  defineComponent,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes,
+} from 'vue';
 import {
   noop,
   isDef,
   extend,
   truthProp,
+  numericProp,
   unknownProp,
   preventDefault,
   createNamespace,
@@ -13,17 +20,21 @@ import { useLazyRender } from '../composables/use-lazy-render';
 
 const [name, bem] = createNamespace('overlay');
 
+const overlayProps = {
+  show: Boolean,
+  zIndex: numericProp,
+  duration: numericProp,
+  className: unknownProp,
+  lockScroll: truthProp,
+  customStyle: Object as PropType<CSSProperties>,
+};
+
+export type OverlayProps = ExtractPropTypes<typeof overlayProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    show: Boolean,
-    zIndex: [Number, String],
-    duration: [Number, String],
-    className: unknownProp,
-    lockScroll: truthProp,
-    customStyle: Object as PropType<CSSProperties>,
-  },
+  props: overlayProps,
 
   setup(props, { slots }) {
     const lazyRender = useLazyRender(() => props.show);
@@ -54,6 +65,8 @@ export default defineComponent({
       );
     });
 
-    return () => <Transition name="van-fade">{renderOverlay()}</Transition>;
+    return () => (
+      <Transition v-slots={{ default: renderOverlay }} name="van-fade" appear />
+    );
   },
 });

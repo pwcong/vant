@@ -5,10 +5,10 @@ import {
   computed,
   nextTick,
   reactive,
-  PropType,
   onMounted,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -17,25 +17,31 @@ import {
   extend,
   addUnit,
   FORM_KEY,
+  numericProp,
   unknownProp,
   resetScroll,
   formatNumber,
   preventDefault,
+  makeStringProp,
+  makeNumericProp,
   createNamespace,
 } from '../utils';
 import {
+  cutString,
   runSyncRule,
   endComposing,
   mapInputType,
   startComposing,
   getRuleMessage,
   resizeTextarea,
+  getStringLength,
   runRuleValidator,
 } from './utils';
-import { cellProps } from '../cell/Cell';
+import { cellSharedProps } from '../cell/Cell';
 
 // Composables
 import { CUSTOM_FIELD_INJECTION_KEY, useParent } from '@vant/use';
+import { useId } from '../composables/use-id';
 import { useExpose } from '../composables/use-expose';
 
 // Components
@@ -62,16 +68,20 @@ const [name, bem] = createNamespace('field');
 export const fieldSharedProps = {
   id: String,
   name: String,
-  formatter: Function as PropType<(value: string) => string>,
   leftIcon: String,
   rightIcon: String,
   autofocus: Boolean,
   clearable: Boolean,
-  maxlength: [Number, String],
+  maxlength: numericProp,
+  formatter: Function as PropType<(value: string) => string>,
+  clearIcon: makeStringProp('clear'),
+  modelValue: makeNumericProp(''),
   inputAlign: String as PropType<FieldTextAlign>,
   placeholder: String,
   autocomplete: String,
   errorMessage: String,
+  clearTrigger: makeStringProp<FieldClearTrigger>('focus'),
+  formatTrigger: makeStringProp<FieldFormatTrigger>('onChange'),
   error: {
     type: Boolean,
     default: null,
@@ -84,49 +94,30 @@ export const fieldSharedProps = {
     type: Boolean,
     default: null,
   },
-  clearIcon: {
-    type: String,
-    default: 'clear',
-  },
-  modelValue: {
-    type: [Number, String],
-    default: '',
-  },
-  clearTrigger: {
-    type: String as PropType<FieldClearTrigger>,
-    default: 'focus',
-  },
-  formatTrigger: {
-    type: String as PropType<FieldFormatTrigger>,
-    default: 'onChange',
-  },
 };
 
-const props = extend({}, cellProps, fieldSharedProps, {
-  rows: [Number, String],
+const fieldProps = extend({}, cellSharedProps, fieldSharedProps, {
+  rows: numericProp,
+  type: makeStringProp<FieldType>('text'),
   rules: Array as PropType<FieldRule[]>,
   autosize: [Boolean, Object] as PropType<boolean | FieldAutosizeConfig>,
-  labelWidth: [Number, String],
+  labelWidth: numericProp,
   labelClass: unknownProp,
   labelAlign: String as PropType<FieldTextAlign>,
   showWordLimit: Boolean,
   errorMessageAlign: String as PropType<FieldTextAlign>,
-  type: {
-    type: String as PropType<FieldType>,
-    default: 'text',
-  },
   colon: {
     type: Boolean,
     default: null,
   },
 });
 
-export type FieldProps = ExtractPropTypes<typeof props>;
+export type FieldProps = ExtractPropTypes<typeof fieldProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: fieldProps,
 
   emits: [
     'blur',
@@ -140,6 +131,7 @@ export default defineComponent({
   ],
 
   setup(props, { emit, slots }) {
+    const id = useId();
     const state = reactive({
       focused: false,
       validateFailed: false,
@@ -265,12 +257,12 @@ export default defineComponent({
     // see: https://github.com/youzan/vant/issues/5033
     const limitValueLength = (value: string) => {
       const { maxlength } = props;
-      if (isDef(maxlength) && value.length > maxlength) {
+      if (isDef(maxlength) && getStringLength(value) > maxlength) {
         const modelValue = getModelValue();
-        if (modelValue && modelValue.length === +maxlength) {
+        if (modelValue && getStringLength(modelValue) === +maxlength) {
           return modelValue;
         }
-        return value.slice(0, +maxlength);
+        return cutString(value, +maxlength);
       }
       return value;
     };
@@ -309,22 +301,34 @@ export default defineComponent({
     const blur = () => inputRef.value?.blur();
     const focus = () => inputRef.value?.focus();
 
+    const adjustTextareaSize = () => {
+      const input = inputRef.value;
+      if (props.type === 'textarea' && props.autosize && input) {
+        resizeTextarea(input, props.autosize);
+      }
+    };
+
     const onFocus = (event: Event) => {
       state.focused = true;
       emit('focus', event);
+      nextTick(adjustTextareaSize);
 
       // readonly not work in legacy mobile safari
-      const readonly = getProp('readonly');
-      if (readonly) {
+      if (getProp('readonly')) {
         blur();
       }
     };
 
     const onBlur = (event: Event) => {
+      if (getProp('readonly')) {
+        return;
+      }
+
       state.focused = false;
       updateValue(getModelValue(), 'onBlur');
       emit('blur', event);
       validateWithTrigger('onBlur');
+      nextTick(adjustTextareaSize);
       resetScroll();
     };
 
@@ -376,12 +380,7 @@ export default defineComponent({
       emit('keypress', event);
     };
 
-    const adjustTextareaSize = () => {
-      const input = inputRef.value;
-      if (props.type === 'textarea' && props.autosize && input) {
-        resizeTextarea(input, props.autosize);
-      }
-    };
+    const getInputId = () => props.id || `${id}-input`;
 
     const renderInput = () => {
       const controlClass = bem('control', [
@@ -402,7 +401,7 @@ export default defineComponent({
       }
 
       const inputAttrs = {
-        id: props.id,
+        id: getInputId(),
         ref: inputRef,
         name: props.name,
         rows: props.rows !== undefined ? +props.rows : undefined,
@@ -413,6 +412,7 @@ export default defineComponent({
         autofocus: props.autofocus,
         placeholder: props.placeholder,
         autocomplete: props.autocomplete,
+        'aria-labelledby': props.label ? `${id}-label` : undefined,
         onBlur,
         onFocus,
         onInput,
@@ -464,7 +464,7 @@ export default defineComponent({
 
     const renderWordLimit = () => {
       if (props.showWordLimit && props.maxlength) {
-        const count = getModelValue().length;
+        const count = getStringLength(getModelValue());
         return (
           <div class={bem('word-limit')}>
             <span class={bem('word-num')}>{count}</span>/{props.maxlength}
@@ -481,9 +481,12 @@ export default defineComponent({
       const message = props.errorMessage || state.validateMessage;
 
       if (message) {
+        const slot = slots['error-message'];
         const errorMessageAlign = getProp('errorMessageAlign');
         return (
-          <div class={bem('error-message', errorMessageAlign)}>{message}</div>
+          <div class={bem('error-message', errorMessageAlign)}>
+            {slot ? slot({ message }) : message}
+          </div>
         );
       }
     };
@@ -495,7 +498,11 @@ export default defineComponent({
         return [slots.label(), colon];
       }
       if (props.label) {
-        return <label for={props.id}>{props.label + colon}</label>;
+        return (
+          <label id={`${id}-label`} for={getInputId()}>
+            {props.label + colon}
+          </label>
+        );
       }
     };
 

@@ -16,6 +16,257 @@ Vant 遵循 [Semver](https://semver.org/lang/zh-CN/) 语义化版本规范。
 
 ## 更新内容
 
+### [v3.4.0](https://github.com/compare/v3.3.7...v3.4.0)
+
+`2022-01-01`
+
+**Bug Fixes**
+
+- Icons: 修复 URL 缺少协议导致个别浏览器出现异常的问题 [#10079](https://github.com/youzan/vant/issues/10079)
+- Picker: 修复选项为空时也会渲染选择框的问题 [#10135](https://github.com/youzan/vant/issues/10135)
+- Popup: 修复 close 事件触发两次的问题 [#10132](https://github.com/youzan/vant/issues/10132)
+- PullRefresh: 修复在个别浏览器上会触发原生回弹效果的问题 [#10080](https://github.com/youzan/vant/issues/10080)
+- Step: 修复 inactive-color 属性未正确生效的问题 [#10049](https://github.com/youzan/vant/issues/10049)
+- SwipeCell: 修复打开状态下也会触发 open 事件的问题 [#10059](https://github.com/youzan/vant/issues/10059)
+- swipe: 修复个别情况下无法正确滚动的问题 [#10052](https://github.com/youzan/vant/issues/10052) [#10069](https://github.com/youzan/vant/issues/10069)
+- Tabs: 修复标签页为空时会渲染一个错误的底部条的问题 [#10063](https://github.com/youzan/vant/issues/10063)
+
+**Feature**
+
+- ActionBarIcon: 新增 badge-props 属性 [#10096](https://github.com/youzan/vant/issues/10096)
+- ActionSheet: 新增 option 插槽 [#10065](https://github.com/youzan/vant/issues/10065)
+- Badge: 新增 badge-props 属性 [#10095](https://github.com/youzan/vant/issues/10095)
+- GridItem: 新增 badge-props 属性 [#10097](https://github.com/youzan/vant/issues/10097)
+- Icons: 新增 cash-o 图标 [#10076](https://github.com/youzan/vant/issues/10076)
+- ImagePreview: 新增 overlayClass 选项 [#10044](https://github.com/youzan/vant/issues/10044)
+- Notify: 新增 position 属性 [#10056](https://github.com/youzan/vant/issues/10056)
+- Popover: 新增 action 插槽 [#10091](https://github.com/youzan/vant/issues/10091)
+- Search: 新增 click-left-icon、click-right-icon 事件 [#10139](https://github.com/youzan/vant/issues/10139)
+- SidebarItem: 新增 badge-props 属性 [#10106](https://github.com/youzan/vant/issues/10106)
+- Swipe: indicator 插槽新增 total 参数 [#10060](https://github.com/youzan/vant/issues/10060)
+- TabbarItem: 新增 badge-props 属性 [#10092](https://github.com/youzan/vant/issues/10092)
+- Tabs: 新增 shrink 属性 [#10125](https://github.com/youzan/vant/issues/10125)
+
+**style**
+
+- PullRefresh: 移除 `user-select: none` 样式 [#10078](https://github.com/youzan/vant/issues/10078)
+- TreeSelect: 允许选中 content 插槽中的文字 [#10081](https://github.com/youzan/vant/issues/10081)
+
+**Types**
+
+- 增加所有组件的全局类型，在 volar 中提供默认提示 [#10136](https://github.com/youzan/vant/issues/10136)
+- Field: 修复 type 属性定义不全的问题 [#10042](https://github.com/youzan/vant/issues/10042)
+- Popup: 导出 PopupInstance 类型 [#10062](https://github.com/youzan/vant/issues/10062)
+- Search: 修复事件类型定义不全的问题 [#10134](https://github.com/youzan/vant/issues/10134)
+
+### [v3.3.7](https://github.com/compare/v3.3.6...v3.3.7)
+
+`2021-12-12`
+
+**Feature**
+
+- Badge: 新增 position 属性 [#10024](https://github.com/youzan/vant/issues/10024)
+
+**Bug Fixes**
+
+- DatetimePicker: 修复调用 Picker 实例方法后日期未正确更新的问题 [#10029](https://github.com/youzan/vant/issues/10029)
+- Field: 修复输入内容包含 emoji 时，长度计算错误的问题 [#10033](https://github.com/youzan/vant/issues/10033)
+- Pagination: 修复 change 事件不触发的问题 [#10018](https://github.com/youzan/vant/issues/10018)
+- 修复 tree shaking 不生效的问题 [#10034](https://github.com/youzan/vant/issues/10034)
+
+### [v3.3.6](https://github.com/compare/v3.3.5...v3.3.6)
+
+`2021-12-05`
+
+**Bug Fixes**
+
+- 修复 ssr.js 文件引用路径错误的问题 [#9999](https://github.com/youzan/vant/issues/9999)
+
+### [v3.3.5](https://github.com/compare/v3.3.4...v3.3.5)
+
+`2021-12-02`
+
+**Bug Fixes**
+
+- 修复 exports field 导致 SSR 无法正确引入的问题 [#9988](https://github.com/youzan/vant/issues/9988)
+- 修复 exports field 导致 unplugin-vue-components 引用报错的问题 [#9985](https://github.com/youzan/vant/issues/9985)
+
+### [v3.3.4](https://github.com/compare/v3.3.3...v3.3.4)
+
+`2021-12-01`
+
+- 修复 `lib/ssr.js` 文件不存在导致 SSR 失败的问题
+
+### [v3.3.3](https://github.com/compare/v3.3.2...v3.3.3)
+
+`2021-11-30`
+
+**Feature**
+
+- 支持在 nuxt3 中使用 [#9970](https://github.com/youzan/vant/issues/9970)
+- Locale: 新增 pt-BR 葡萄牙语 (巴西) [#9959](https://github.com/youzan/vant/issues/9959)
+
+**Bug Fixes**
+
+- Swipe: 修复 iOS 系统下圆角失效的问题 [#9958](https://github.com/youzan/vant/issues/9958)
+- Uploader: 修复图片预览卡顿的问题 [#9961](https://github.com/youzan/vant/issues/9961)
+
+### [v3.3.2](https://github.com/compare/v3.3.1...v3.3.2)
+
+`2021-11-28`
+
+**Feature**
+
+- 新增 `package.json` 中的 `exports` 字段 [#9952](https://github.com/youzan/vant/issues/9952)
+- Tabbar: 支持在 route 模式下匹配子路由 [#9926](https://github.com/youzan/vant/issues/9926)
+- Tabs: 将 `van-tab__pane-wrapper` 类重命名为 `van-tab__panel-wrapper` [#9951](https://github.com/youzan/vant/issues/9951)
+
+**Bug Fixes**
+
+- Calendar: 修复 show-confirm 为 false 时不会限制最大日期范围的问题 [#9948](https://github.com/youzan/vant/issues/9948)
+- Calendar: 修复 `scrollToDate` 方法无法精确滚动到对应日期的问题 [#9949](https://github.com/youzan/vant/issues/9949)
+- Swipe: 修复开始滑动时未阻止 touchmove 事件行为的问题 [#9920](https://github.com/youzan/vant/issues/9920)
+
+### [v3.3.1](https://github.com/compare/v3.3.0...v3.3.1)
+
+`2021-11-23`
+
+**Bug Fixes**
+
+- AddressEdit: 修复表单校验不通过时也会触发 save 事件的问题 [#9917](https://github.com/youzan/vant/issues/9917)
+
+### [v3.3.0](https://github.com/compare/v3.2.8...v3.3.0)
+
+`2021-11-19`
+
+**Accessibility**
+
+改善以下组件的无障碍访问体验：
+
+- Cascader: 增加 role="menu", tabindex, aria-checked, aria-disabled 属性 [#9886](https://github.com/youzan/vant/issues/9886)
+- CountDown: 增加 role="timer" 属性 [#9906](https://github.com/youzan/vant/issues/9906)
+- DropdownMenu: 增加 role="menu", tabindex, aria-labelledby 属性 [#9893](https://github.com/youzan/vant/issues/9893)
+- Field: 增加 aria-labelledby 属性 [#9883](https://github.com/youzan/vant/issues/9883)
+- List: 增加 role="button", tabindex 属性 [#9888](https://github.com/youzan/vant/issues/9888)
+- Pagination: 增加 role="navigation" 和 button 标签 [#9901](https://github.com/youzan/vant/issues/9901)
+- Popover: 增加 tabindex, aria-disabled 属性 [#9889](https://github.com/youzan/vant/issues/9889)
+- Rate: 增加 aria-disabled, aria-readonly 属性 [#9881](https://github.com/youzan/vant/issues/9881)
+- Search: 提供默认的 id 属性 属性 [#9884](https://github.com/youzan/vant/issues/9884)
+- Sidebar: 增加 role="tab", tabindex, aria-selected 属性 [#9903](https://github.com/youzan/vant/issues/9903)
+- Slider: 增加 aria-disabled, aria-readonly 属性 [#9880](https://github.com/youzan/vant/issues/9880)
+- Stepper: 增加 aria-disabled 属性 [#9877](https://github.com/youzan/vant/issues/9877)
+- Stepper: 增加 role="group" 属性 [#9876](https://github.com/youzan/vant/issues/9876)
+- Switch: 增加 tabindex 属性 [#9887](https://github.com/youzan/vant/issues/9887)
+- Tabbar: 增加 role="tab", tabindex, aria-selected 属性 [#9895](https://github.com/youzan/vant/issues/9895)
+- Tabs: 增加 aria-controls 属性 [#9882](https://github.com/youzan/vant/issues/9882)
+- Tabs: 增加 aria-disabled 属性 [#9878](https://github.com/youzan/vant/issues/9878)
+- Tabs: 增加 tabindex, aria-orientation 属性 [#9872](https://github.com/youzan/vant/issues/9872)
+- Uploader: 删除按钮增加 role="button", tabindex, aria-label 属性 [#9905](https://github.com/youzan/vant/issues/9905)
+- 移除禁用元素的 tabindex 属性 [#9879](https://github.com/youzan/vant/issues/9879)
+
+**Feature**
+
+- Popup: 移除多余的 click 事件监听 [#9896](https://github.com/youzan/vant/issues/9896)
+- Field: 导出 `FieldRuleValidator` 等多个类型定义 [#9843](https://github.com/youzan/vant/issues/9843)
+- Empty: 压缩 svg 图标 [#9869](https://github.com/youzan/vant/issues/9869)
+- NumberKeyboard: 压缩 svg 图标 [#9869](https://github.com/youzan/vant/issues/9869)
+- Tabs: 将 `van-tab__pane` 类重命名为 `van-tab__panel` [#9885](https://github.com/youzan/vant/issues/9885)
+
+**Bug Fixes**
+
+- Popover: 修复 useClickAway 方法在 SSR 时报错的问题 [#9899](https://github.com/youzan/vant/issues/9899)
+- CouponList: 修复列表高度不正确的问题 [#9874](https://github.com/youzan/vant/issues/9874)
+- Field: 修复点击只读输入框会触发表单验证的问题 [#9862](https://github.com/youzan/vant/issues/9862)
+- Switch: 修复全局设置 font-size 时样式错误的问题 [#9842](https://github.com/youzan/vant/issues/9842)
+- Tabbar: 修复 route 模式下无法触发 before-change 属性的问题 [#9856](https://github.com/youzan/vant/issues/9856)
+
+### [v3.2.8](https://github.com/compare/v3.2.7...v3.2.8)
+
+`2021-11-09`
+
+**Feature**
+
+- Cascader: 新增 options-bottom 插槽 [#9804](https://github.com/youzan/vant/issues/9804)
+- SubmitBar: 新增 SubmitBarTextAlign 类型 [f95567](https://github.com/commit/f95567ade758d453f4acad8a40d8ae717035476a)
+- PasswordInput: 新增 PasswordInputProps 类型 [#9820](https://github.com/youzan/vant/issues/9820)
+
+**Bug Fixes**
+
+- NavBar: 修复 NavBarProps 拼写错误的问题 [#9818](https://github.com/youzan/vant/issues/9818)
+- Progress: 修复圆角大小错误的问题 [#9826](https://github.com/youzan/vant/issues/9826)
+- SubmitBar: 修复未导出 SubmitBarProps 的问题 [#9819](https://github.com/youzan/vant/issues/9819)
+- Tabs: 修复 click-tab 触发顺序早于 before-change 的问题 [#9805](https://github.com/youzan/vant/issues/9805)
+
+### [v3.2.7](https://github.com/youzan/vant/compare/v3.2.6...v3.2.7)
+
+`2021-11-04`
+
+**Feature**
+
+- 导出所有组件的 Props 类型 [#9717](https://github.com/youzan/vant/issues/9717)
+- 新增 --van-text-color-2 CSS 变量 [#9759](https://github.com/youzan/vant/issues/9759)
+- 新增 --van-text-color-3 CSS 变量 [#9776](https://github.com/youzan/vant/issues/9776)
+- Cascader: 新增 options-top 插槽 [#9732](https://github.com/youzan/vant/issues/9732)
+- Coupon: 新增 --van-coupon-content-text-color CSS 变量 [#9760](https://github.com/youzan/vant/issues/9760)
+- Picker: 新增 --van-picker-mask-color CSS 变量 [#9783](https://github.com/youzan/vant/issues/9783)
+
+**Bug Fixes**
+
+- Field: 修复 textarea 在聚焦和失焦时未重新计算高度的问题 [#9719](https://github.com/youzan/vant/issues/9719)
+- 修复 --van-border-color 变量不生效的问题 [#9751](https://github.com/youzan/vant/issues/9751)
+
+### [v3.2.6](https://github.com/youzan/vant/compare/v3.2.5...v3.2.6)
+
+`2021-10-24`
+
+**Feature**
+
+- AddressEdit: 移除点击删除按钮的弹窗交互 [#9671](https://github.com/youzan/vant/issues/9671)
+- Calendar: 新增 confirm-text 插槽 [#9689](https://github.com/youzan/vant/issues/9689)
+- Progress: 新增 --van-progress-inactive-color 样式变量 [#9711](https://github.com/youzan/vant/issues/9711)
+- ShareSheet: 新增 round 属性 [#9645](https://github.com/youzan/vant/issues/9645)
+- 支持通过 css vars 定义渐变的背景色 [#9678](https://github.com/youzan/vant/issues/9678)
+
+**Performance**
+
+- 减少 useWindowSize 绑定的事件监听器数量 [#9658](https://github.com/youzan/vant/issues/9658)
+- Empty: 压缩 empty 图标 [#9673](https://github.com/youzan/vant/issues/9673)
+
+**Types**
+
+- Cascader: 新增 CascaderProps 类型 [#9684](https://github.com/youzan/vant/issues/9684)
+- Checkbox: 导出更多类型定义 [#9665](https://github.com/youzan/vant/issues/9665)
+- Steps: 新增 StepsDirection 类型 [#9664](https://github.com/youzan/vant/issues/9664)
+
+**Bug Fixes**
+
+- ActionSheet: 修复 closeOnPopstate 属性不生效的问题 [#9644](https://github.com/youzan/vant/issues/9644)
+- AddressEdit: 修复 address-edit-button-font-size 变量不生效的问题 [#9662](https://github.com/youzan/vant/issues/9662)
+- Badge: 修复使用 dot 属性且自定义大小时样式错误的问题 [#9686](https://github.com/youzan/vant/issues/9686) [#9687](https://github.com/youzan/vant/issues/9687)
+
+### [v3.2.5](https://github.com/youzan/vant/compare/v3.2.4...v3.2.5)
+
+`2021-10-08`
+
+**Feature**
+
+- Field: 新增 error-message 插槽 [#9634](https://github.com/youzan/vant/issues/9634)
+
+**Performance**
+
+- 移除 CustomEvent polyfill [#9589](https://github.com/youzan/vant/issues/9589)
+- 移除 passive event polyfill [#9590](https://github.com/youzan/vant/issues/9590)
+
+**Types**
+
+- Button: 新增 ButtonNativeType、ButtonIconPosition 类型 [#9604](https://github.com/youzan/vant/issues/9604)
+- Skeleton: 新增 SkeletonAvatarShape 类型 [#9605](https://github.com/youzan/vant/issues/9605)
+
+**Bug Fixes**
+
+- Toast: 修复同步调用 Toast.clear 不生效的问题 [a48caa](https://github.com/youzan/vant/commit/a48caa7c98f88d9c87de3f9e9f208771c1c98ab5)
+- 修复全量引入时，useCustomFieldValue 不生效的问题 [#9642](https://github.com/youzan/vant/issues/9642) [#9455](https://github.com/youzan/vant/issues/9455)
+
 ### [v3.2.4](https://github.com/youzan/vant/compare/v3.2.3...v3.2.4)
 
 `2021-09-26`
@@ -26,7 +277,7 @@ Vant 遵循 [Semver](https://semver.org/lang/zh-CN/) 语义化版本规范。
 - Search: 新增 autocomplete 属性 [#9553](https://github.com/youzan/vant/issues/9553)
 - Search: 新增 name 属性 [#9563](https://github.com/youzan/vant/issues/9563)
 
-**perf**
+**Performance**
 
 - Lazyload: 移除生产环境的 log 信息 [33d7aa](https://github.com/youzan/vant/commit/33d7aa8f1aee38576f1a0b3549560edd7b5fe0ed)
 - Lazyload: 移除 edge 15 polyfill [00b156](https://github.com/youzan/vant/commit/00b1568887321cf452ed4b8872fe99f089a74b22)

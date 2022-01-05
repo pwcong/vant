@@ -1,5 +1,5 @@
 import { App } from 'vue';
-import { camelize } from './format/string';
+import { camelize } from './format';
 
 // https://github.com/youzan/vant/issues/8302
 type EventShim = {
@@ -16,7 +16,7 @@ export type WithInstall<T> = T & {
 
 export function withInstall<T>(options: T) {
   (options as Record<string, unknown>).install = (app: App) => {
-    const { name } = options as any;
+    const { name } = options as unknown as { name: string };
     app.component(name, options);
     app.component(camelize(`-${name}`), options);
   };

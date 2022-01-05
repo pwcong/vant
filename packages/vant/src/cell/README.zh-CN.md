@@ -81,7 +81,7 @@ app.use(CellGroup);
 可以通过 `url` 属性进行 URL 跳转，或通过 `to` 属性进行路由跳转。
 
 ```html
-<van-cell title="URL 跳转" is-link url="/vant/mobile.html" />
+<van-cell title="URL 跳转" is-link url="https://github.com" />
 <van-cell title="路由跳转" is-link to="index" />
 ```
 
@@ -157,7 +157,7 @@ app.use(CellGroup);
 | value | 右侧内容 | _number \| string_ | - |
 | label | 标题下方的描述信息 | _string_ | - |
 | size | 单元格大小，可选值为 `large` | _string_ | - |
-| icon | 左侧[图标名称](#/zh-CN/icon)或图片链接 | _string_ | - |
+| icon | 左侧图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ | - |
 | icon-prefix | 图标类名前缀，等同于 Icon 组件的 [class-prefix 属性](#/zh-CN/icon#props) | _string_ | `van-icon` |
 | url | 点击后跳转的链接地址 | _string_ | - |
 | to | 点击后跳转的目标路由对象，等同于 vue-router 的 [to 属性](https://router.vuejs.org/zh/api/#to) | _string \| object_ | - |
@@ -202,7 +202,12 @@ app.use(CellGroup);
 组件导出以下类型定义：
 
 ```ts
-import type { CellArrowDirection } from 'vant';
+import type {
+  CellSize,
+  CellProps,
+  CellGroupProps,
+  CellArrowDirection,
+} from 'vant';
 ```
 
 ## 主题定制
@@ -218,22 +223,22 @@ import type { CellArrowDirection } from 'vant';
 | --van-cell-vertical-padding | _10px_ | - |
 | --van-cell-horizontal-padding | _var(--van-padding-md)_ | - |
 | --van-cell-text-color | _var(--van-text-color)_ | - |
-| --van-cell-background-color | _var(--van-white)_ | - |
+| --van-cell-background-color | _var(--van-background-color-light)_ | - |
 | --van-cell-border-color | _var(--van-border-color)_ | - |
 | --van-cell-active-color | _var(--van-active-color)_ | - |
 | --van-cell-required-color | _var(--van-danger-color)_ | - |
-| --van-cell-label-color | _var(--van-gray-6)_ | - |
+| --van-cell-label-color | _var(--van-text-color-2)_ | - |
 | --van-cell-label-font-size | _var(--van-font-size-sm)_ | - |
 | --van-cell-label-line-height | _var(--van-line-height-sm)_ | - |
 | --van-cell-label-margin-top | _var(--van-padding-base)_ | - |
-| --van-cell-value-color | _var(--van-gray-6)_ | - |
+| --van-cell-value-color | _var(--van-text-color-2)_ | - |
 | --van-cell-icon-size | _16px_ | - |
 | --van-cell-right-icon-color | _var(--van-gray-6)_ | - |
 | --van-cell-large-vertical-padding | _var(--van-padding-sm)_ | - |
 | --van-cell-large-title-font-size | _var(--van-font-size-lg)_ | - |
 | --van-cell-large-label-font-size | _var(--van-font-size-md)_ | - |
-| --van-cell-group-background-color | _var(--van-white)_ | - |
-| --van-cell-group-title-color | _var(--van-gray-6)_ | - |
+| --van-cell-group-background-color | _var(--van-background-color-light)_ | - |
+| --van-cell-group-title-color | _var(--van-text-color-2)_ | - |
 | --van-cell-group-title-padding | _var(--van-padding-md) var(--van-padding-md) var(--van-padding-xs)_ | - |
 | --van-cell-group-title-font-size | _var(--van-font-size-md)_ | - |
 | --van-cell-group-title-line-height | _16px_ | - |

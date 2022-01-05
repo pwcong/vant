@@ -4,9 +4,9 @@ import {
   computed,
   nextTick,
   reactive,
-  PropType,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -15,6 +15,9 @@ import {
   isObject,
   isMobile,
   truthProp,
+  numericProp,
+  makeArrayProp,
+  makeNumericProp,
   createNamespace,
 } from '../utils';
 
@@ -24,11 +27,11 @@ import { useExpose } from '../composables/use-expose';
 // Components
 import { Area, AreaList, AreaColumnOption, AreaInstance } from '../area';
 import { Cell } from '../cell';
-import { Field } from '../field';
+import { Form } from '../form';
+import { Field, FieldRule } from '../field';
 import { Popup } from '../popup';
 import { Toast } from '../toast';
 import { Button } from '../button';
-import { Dialog } from '../dialog';
 import { Switch } from '../switch';
 import AddressEditDetail from './AddressEditDetail';
 
@@ -50,11 +53,9 @@ const DEFAULT_DATA: AddressEditInfo = {
   addressDetail: '',
 };
 
-function isPostal(value: string) {
-  return /^\d{6}$/.test(value);
-}
+const isPostal = (value: string) => /^\d{6}$/.test(value);
 
-const props = {
+const addressEditProps = {
   areaList: Object as PropType<AreaList>,
   isSaving: Boolean,
   isDeleting: Boolean,
@@ -67,20 +68,15 @@ const props = {
   showPostal: Boolean,
   disableArea: Boolean,
   searchResult: Array as PropType<AddressEditSearchItem[]>,
-  telMaxlength: [Number, String],
+  telMaxlength: numericProp,
   showSetDefault: Boolean,
   saveButtonText: String,
   areaPlaceholder: String,
   deleteButtonText: String,
   showSearchResult: Boolean,
-  detailRows: {
-    type: [Number, String],
-    default: 1,
-  },
-  detailMaxlength: {
-    type: [Number, String],
-    default: 200,
-  },
+  detailRows: makeNumericProp(1),
+  detailMaxlength: makeNumericProp(200),
+  areaColumnsPlaceholder: makeArrayProp<string>(),
   addressInfo: {
     type: Object as PropType<Partial<AddressEditInfo>>,
     default: () => extend({}, DEFAULT_DATA),
@@ -93,18 +89,14 @@ const props = {
     type: Function as PropType<(val: string) => boolean>,
     default: isPostal,
   },
-  areaColumnsPlaceholder: {
-    type: Array as PropType<string[]>,
-    default: () => [],
-  },
 };
 
-export type AddressEditProps = ExtractPropTypes<typeof props>;
+export type AddressEditProps = ExtractPropTypes<typeof addressEditProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: addressEditProps,
 
   emits: [
     'save',
@@ -113,7 +105,6 @@ export default defineComponent({
     'click-area',
     'change-area',
     'change-detail',
-    'cancel-delete',
     'select-search',
     'change-default',
   ],
@@ -121,25 +112,16 @@ export default defineComponent({
   setup(props, { emit, slots }) {
     const areaRef = ref<AreaInstance>();
 
-    const state = reactive({
-      data: {} as AddressEditInfo,
-      showAreaPopup: false,
-      detailFocused: false,
-      errorInfo: {
-        tel: '',
-        name: '',
-        areaCode: '',
-        postalCode: '',
-        addressDetail: '',
-      } as Record<string, string>,
-    });
+    const data = reactive({} as AddressEditInfo);
+    const showAreaPopup = ref(false);
+    const detailFocused = ref(false);
 
     const areaListLoaded = computed(
       () => isObject(props.areaList) && Object.keys(props.areaList).length
     );
 
     const areaText = computed(() => {
-      const { country, province, city, county, areaCode } = state.data;
+      const { country, province, city, county, areaCode } = data;
       if (areaCode) {
         const arr = [country, province, city, county];
         if (province && province === city) {
@@ -152,7 +134,7 @@ export default defineComponent({
 
     // hide bottom field when use search && detail get focused
     const hideBottomFields = computed(
-      () => props.searchResult?.length && state.detailFocused
+      () => props.searchResult?.length && detailFocused.value
     );
 
     const assignAreaValues = () => {
@@ -160,70 +142,52 @@ export default defineComponent({
         const detail: Record<string, string> = areaRef.value.getArea();
         detail.areaCode = detail.code;
         delete detail.code;
-        extend(state.data, detail);
+        extend(data, detail);
       }
     };
 
     const onFocus = (key: string) => {
-      state.errorInfo[key] = '';
-      state.detailFocused = key === 'addressDetail';
+      detailFocused.value = key === 'addressDetail';
       emit('focus', key);
     };
 
-    const getErrorMessage = (key: string) => {
-      const value = String((state.data as any)[key] || '').trim();
+    const rules = computed<Record<string, FieldRule[]>>(() => {
+      const { validator, telValidator, postalValidator } = props;
 
-      if (props.validator) {
-        const message = props.validator(key, value);
-        if (message) {
-          return message;
-        }
-      }
-
-      switch (key) {
-        case 'name':
-          return value ? '' : t('nameEmpty');
-        case 'tel':
-          return props.telValidator(value) ? '' : t('telInvalid');
-        case 'areaCode':
-          return value ? '' : t('areaEmpty');
-        case 'addressDetail':
-          return value ? '' : t('addressEmpty');
-        case 'postalCode':
-          return value && !props.postalValidator(value) ? t('postalEmpty') : '';
-      }
-    };
-
-    const onSave = () => {
-      const items = ['name', 'tel'];
-
-      if (props.showArea) {
-        items.push('areaCode');
-      }
-
-      if (props.showDetail) {
-        items.push('addressDetail');
-      }
-
-      if (props.showPostal) {
-        items.push('postalCode');
-      }
-
-      const isValid = items.every((item) => {
-        const msg = getErrorMessage(item);
-        if (msg) {
-          state.errorInfo[item] = msg;
-        }
-        return !msg;
+      const makeRule = (name: string, emptyMessage: string): FieldRule => ({
+        validator: (value) => {
+          if (validator) {
+            const message = validator(name, value);
+            if (message) {
+              return message;
+            }
+          }
+          if (!value) {
+            return emptyMessage;
+          }
+          return true;
+        },
       });
 
-      if (isValid && !props.isSaving) {
-        emit('save', state.data);
-      }
-    };
+      return {
+        name: [makeRule('name', t('nameEmpty'))],
+        tel: [
+          makeRule('tel', t('telInvalid')),
+          { validator: telValidator, message: t('telInvalid') },
+        ],
+        areaCode: [makeRule('areaCode', t('areaEmpty'))],
+        addressDetail: [makeRule('addressDetail', t('addressEmpty'))],
+        postalCode: [
+          makeRule('addressDetail', t('postalEmpty')),
+          { validator: postalValidator, message: t('postalEmpty') },
+        ],
+      };
+    });
+
+    const onSave = () => emit('save', data);
 
     const onChangeDetail = (val: string) => {
-      state.data.addressDetail = val;
+      data.addressDetail = val;
       emit('change-detail', val);
     };
 
@@ -232,28 +196,21 @@ export default defineComponent({
 
       if (values.some((value) => !value.code)) {
         Toast(t('areaEmpty'));
-        return;
+      } else {
+        showAreaPopup.value = false;
+        assignAreaValues();
+        emit('change-area', values);
       }
-
-      state.showAreaPopup = false;
-      assignAreaValues();
-      emit('change-area', values);
     };
 
-    const onDelete = () => {
-      Dialog.confirm({
-        title: t('confirmDelete'),
-      })
-        .then(() => emit('delete', state.data))
-        .catch(() => emit('cancel-delete', state.data));
-    };
+    const onDelete = () => emit('delete', data);
 
     // get values of area component
-    const getArea = () => (areaRef.value ? areaRef.value.getValues() : []);
+    const getArea = () => areaRef.value?.getValues() || [];
 
     // set area code to area component
     const setAreaCode = (code?: string) => {
-      state.data.areaCode = code || '';
+      data.areaCode = code || '';
 
       if (code) {
         nextTick(assignAreaValues);
@@ -263,12 +220,12 @@ export default defineComponent({
     const onDetailBlur = () => {
       // await for click search event
       setTimeout(() => {
-        state.detailFocused = false;
+        detailFocused.value = false;
       });
     };
 
     const setAddressDetail = (value: string) => {
-      state.data.addressDetail = value;
+      data.addressDetail = value;
     };
 
     const renderSetDefaultCell = () => {
@@ -276,7 +233,7 @@ export default defineComponent({
         const slots = {
           'right-icon': () => (
             <Switch
-              v-model={state.data.isDefault}
+              v-model={data.isDefault}
               size="24"
               onChange={(event) => emit('change-default', event)}
             />
@@ -293,8 +250,6 @@ export default defineComponent({
           />
         );
       }
-
-      return null;
     };
 
     useExpose({
@@ -305,13 +260,13 @@ export default defineComponent({
 
     watch(
       () => props.areaList,
-      () => setAreaCode(state.data.areaCode)
+      () => setAreaCode(data.areaCode)
     );
 
     watch(
       () => props.addressInfo,
       (value) => {
-        state.data = extend({}, DEFAULT_DATA, value);
+        extend(data, DEFAULT_DATA, value);
         setAreaCode(value.areaCode);
       },
       {
@@ -321,18 +276,17 @@ export default defineComponent({
     );
 
     return () => {
-      const { data, errorInfo } = state;
       const { disableArea } = props;
 
       return (
-        <div class={bem()}>
+        <Form class={bem()} onSubmit={onSave}>
           <div class={bem('fields')}>
             <Field
               v-model={data.name}
               clearable
               label={t('name')}
+              rules={rules.value.name}
               placeholder={t('name')}
-              errorMessage={errorInfo.name}
               onFocus={() => onFocus('name')}
             />
             <Field
@@ -340,9 +294,9 @@ export default defineComponent({
               clearable
               type="tel"
               label={t('tel')}
+              rules={rules.value.tel}
               maxlength={props.telMaxlength}
               placeholder={t('tel')}
-              errorMessage={errorInfo.tel}
               onFocus={() => onFocus('tel')}
             />
             <Field
@@ -351,22 +305,22 @@ export default defineComponent({
               label={t('area')}
               is-link={!disableArea}
               modelValue={areaText.value}
+              rules={rules.value.areaCode}
               placeholder={props.areaPlaceholder || t('area')}
-              errorMessage={errorInfo.areaCode}
               onFocus={() => onFocus('areaCode')}
               onClick={() => {
                 emit('click-area');
-                state.showAreaPopup = !disableArea;
+                showAreaPopup.value = !disableArea;
               }}
             />
             <AddressEditDetail
               show={props.showDetail}
+              rows={props.detailRows}
+              rules={rules.value.addressDetail}
               value={data.addressDetail}
-              focused={state.detailFocused}
-              detailRows={props.detailRows}
-              errorMessage={errorInfo.addressDetail}
+              focused={detailFocused.value}
+              maxlength={props.detailMaxlength}
               searchResult={props.searchResult}
-              detailMaxlength={props.detailMaxlength}
               showSearchResult={props.showSearchResult}
               onBlur={onDetailBlur}
               onFocus={() => onFocus('addressDetail')}
@@ -378,10 +332,10 @@ export default defineComponent({
                 v-show={!hideBottomFields.value}
                 v-model={data.postalCode}
                 type="tel"
+                rules={rules.value.postalCode}
                 label={t('postal')}
                 maxlength="6"
                 placeholder={t('postal')}
-                errorMessage={errorInfo.postalCode}
                 onFocus={() => onFocus('postalCode')}
               />
             )}
@@ -396,7 +350,7 @@ export default defineComponent({
               text={props.saveButtonText || t('save')}
               class={bem('button')}
               loading={props.isSaving}
-              onClick={onSave}
+              nativeType="submit"
             />
             {props.showDelete && (
               <Button
@@ -410,7 +364,7 @@ export default defineComponent({
             )}
           </div>
           <Popup
-            v-model={[state.showAreaPopup, 'show']}
+            v-model:show={showAreaPopup.value}
             round
             teleport="body"
             position="bottom"
@@ -424,11 +378,11 @@ export default defineComponent({
               columnsPlaceholder={props.areaColumnsPlaceholder}
               onConfirm={onAreaConfirm}
               onCancel={() => {
-                state.showAreaPopup = false;
+                showAreaPopup.value = false;
               }}
             />
           </Popup>
-        </div>
+        </Form>
       );
     };
   },

@@ -1,5 +1,20 @@
-import { nextTick, PropType, reactive, watch, defineComponent } from 'vue';
-import { createNamespace, truthProp, extend } from '../utils';
+import {
+  ref,
+  watch,
+  nextTick,
+  defineComponent,
+  type PropType,
+  type ExtractPropTypes,
+} from 'vue';
+import {
+  extend,
+  truthProp,
+  numericProp,
+  makeArrayProp,
+  makeStringProp,
+  createNamespace,
+  HAPTICS_FEEDBACK,
+} from '../utils';
 
 // Components
 import { Tab } from '../tab';
@@ -8,59 +23,34 @@ import { Icon } from '../icon';
 
 // Types
 import type { TabsClickTabEventParams } from '../tabs/types';
+import type { CascaderTab, CascaderOption, CascaderFieldNames } from './types';
 
 const [name, bem, t] = createNamespace('cascader');
 
-export type CascaderOption = {
-  text?: string;
-  value?: string | number;
-  color?: string;
-  disabled?: boolean;
-  children?: CascaderOption[];
-  className?: unknown;
-  // for custom filed names
-  [key: string]: any;
+const cascaderProps = {
+  title: String,
+  options: makeArrayProp<CascaderOption>(),
+  closeable: truthProp,
+  swipeable: truthProp,
+  closeIcon: makeStringProp('cross'),
+  modelValue: numericProp,
+  fieldNames: Object as PropType<CascaderFieldNames>,
+  placeholder: String,
+  activeColor: String,
 };
 
-type CascaderTab = {
-  options: CascaderOption[];
-  selectedOption: CascaderOption | null;
-};
-
-export type CascaderFieldNames = {
-  text?: string;
-  value?: string;
-  children?: string;
-};
+export type CascaderProps = ExtractPropTypes<typeof cascaderProps>;
 
 export default defineComponent({
   name,
 
-  props: {
-    title: String,
-    closeable: truthProp,
-    swipeable: truthProp,
-    modelValue: [Number, String],
-    fieldNames: Object as PropType<CascaderFieldNames>,
-    placeholder: String,
-    activeColor: String,
-    options: {
-      type: Array as PropType<CascaderOption[]>,
-      default: () => [],
-    },
-    closeIcon: {
-      type: String,
-      default: 'cross',
-    },
-  },
+  props: cascaderProps,
 
-  emits: ['close', 'change', 'finish', 'update:modelValue', 'click-tab'],
+  emits: ['close', 'change', 'finish', 'click-tab', 'update:modelValue'],
 
   setup(props, { slots, emit }) {
-    const state = reactive({
-      tabs: [] as CascaderTab[],
-      activeTab: 0,
-    });
+    const tabs = ref<CascaderTab[]>([]);
+    const activeTab = ref(0);
 
     const {
       text: textKey,
@@ -79,9 +69,7 @@ export default defineComponent({
       options: CascaderOption[],
       value: string | number
     ): CascaderOption[] | undefined => {
-      for (let i = 0; i < options.length; i++) {
-        const option = options[i];
-
+      for (const option of options) {
         if (option[valueKey] === value) {
           return [option];
         }
@@ -99,19 +87,18 @@ export default defineComponent({
     };
 
     const updateTabs = () => {
-      if (props.modelValue || props.modelValue === 0) {
-        const selectedOptions = getSelectedOptionsByValue(
-          props.options,
-          props.modelValue
-        );
+      const { options, modelValue } = props;
+
+      if (modelValue !== undefined) {
+        const selectedOptions = getSelectedOptionsByValue(options, modelValue);
 
         if (selectedOptions) {
-          let optionsCursor = props.options;
+          let optionsCursor = options;
 
-          state.tabs = selectedOptions.map((option) => {
+          tabs.value = selectedOptions.map((option) => {
             const tab = {
               options: optionsCursor,
-              selectedOption: option,
+              selected: option,
             };
 
             const next = optionsCursor.find(
@@ -125,24 +112,24 @@ export default defineComponent({
           });
 
           if (optionsCursor) {
-            state.tabs.push({
+            tabs.value.push({
               options: optionsCursor,
-              selectedOption: null,
+              selected: null,
             });
           }
 
           nextTick(() => {
-            state.activeTab = state.tabs.length - 1;
+            activeTab.value = tabs.value.length - 1;
           });
 
           return;
         }
       }
 
-      state.tabs = [
+      tabs.value = [
         {
-          options: props.options,
-          selectedOption: null,
+          options,
+          selected: null,
         },
       ];
     };
@@ -152,43 +139,44 @@ export default defineComponent({
         return;
       }
 
-      state.tabs[tabIndex].selectedOption = option;
+      tabs.value[tabIndex].selected = option;
 
-      if (state.tabs.length > tabIndex + 1) {
-        state.tabs = state.tabs.slice(0, tabIndex + 1);
+      if (tabs.value.length > tabIndex + 1) {
+        tabs.value = tabs.value.slice(0, tabIndex + 1);
       }
 
       if (option[childrenKey]) {
         const nextTab = {
           options: option[childrenKey],
-          selectedOption: null,
+          selected: null,
         };
 
-        if (state.tabs[tabIndex + 1]) {
-          state.tabs[tabIndex + 1] = nextTab;
+        if (tabs.value[tabIndex + 1]) {
+          tabs.value[tabIndex + 1] = nextTab;
         } else {
-          state.tabs.push(nextTab);
+          tabs.value.push(nextTab);
         }
 
         nextTick(() => {
-          state.activeTab++;
+          activeTab.value++;
         });
       }
 
-      const selectedOptions = state.tabs
-        .map((tab) => tab.selectedOption)
+      const selectedOptions = tabs.value
+        .map((tab) => tab.selected)
         .filter(Boolean);
 
-      const eventParams = {
+      emit('update:modelValue', option[valueKey]);
+
+      const params = {
         value: option[valueKey],
         tabIndex,
         selectedOptions,
       };
-      emit('update:modelValue', option[valueKey]);
-      emit('change', eventParams);
+      emit('change', params);
 
       if (!option[childrenKey]) {
-        emit('finish', eventParams);
+        emit('finish', params);
       }
     };
 
@@ -205,7 +193,7 @@ export default defineComponent({
         {props.closeable ? (
           <Icon
             name={props.closeIcon}
-            class={bem('close-icon')}
+            class={[bem('close-icon'), HAPTICS_FEEDBACK]}
             onClick={onClose}
           />
         ) : null}
@@ -217,8 +205,10 @@ export default defineComponent({
       selectedOption: CascaderOption | null,
       tabIndex: number
     ) => {
-      const selected =
-        selectedOption && option[valueKey] === selectedOption[valueKey];
+      const { disabled } = option;
+      const selected = !!(
+        selectedOption && option[valueKey] === selectedOption[valueKey]
+      );
       const color = option.color || (selected ? props.activeColor : undefined);
 
       const Text = slots.option ? (
@@ -229,14 +219,12 @@ export default defineComponent({
 
       return (
         <li
-          class={[
-            bem('option', {
-              selected,
-              disabled: option.disabled,
-            }),
-            option.className,
-          ]}
+          role="menuitemradio"
+          class={[bem('option', { selected, disabled }), option.className]}
           style={{ color }}
+          tabindex={disabled ? undefined : selected ? 0 : -1}
+          aria-checked={selected}
+          aria-disabled={disabled || undefined}
           onClick={() => onSelect(option, tabIndex)}
         >
           {Text}
@@ -252,7 +240,7 @@ export default defineComponent({
       selectedOption: CascaderOption | null,
       tabIndex: number
     ) => (
-      <ul class={bem('options')}>
+      <ul role="menu" class={bem('options')}>
         {options.map((option) =>
           renderOption(option, selectedOption, tabIndex)
         )}
@@ -260,47 +248,45 @@ export default defineComponent({
     );
 
     const renderTab = (tab: CascaderTab, tabIndex: number) => {
-      const { options, selectedOption } = tab;
-      const title = selectedOption
-        ? selectedOption[textKey]
-        : props.placeholder || t('select');
+      const { options, selected } = tab;
+      const placeholder = props.placeholder || t('select');
+      const title = selected ? selected[textKey] : placeholder;
 
       return (
         <Tab
           title={title}
           titleClass={bem('tab', {
-            unselected: !selectedOption,
+            unselected: !selected,
           })}
         >
-          {renderOptions(options, selectedOption, tabIndex)}
+          {slots['options-top']?.({ tabIndex })}
+          {renderOptions(options, selected, tabIndex)}
+          {slots['options-bottom']?.({ tabIndex })}
         </Tab>
       );
     };
 
     const renderTabs = () => (
       <Tabs
-        v-model={[state.activeTab, 'active']}
+        v-model:active={activeTab.value}
+        shrink
         animated
         class={bem('tabs')}
         color={props.activeColor}
-        swipeThreshold={0}
         swipeable={props.swipeable}
         onClick-tab={onClickTab}
       >
-        {state.tabs.map(renderTab)}
+        {tabs.value.map(renderTab)}
       </Tabs>
     );
 
     updateTabs();
-
     watch(() => props.options, updateTabs, { deep: true });
     watch(
       () => props.modelValue,
       (value) => {
-        if (value || value === 0) {
-          const values = state.tabs.map(
-            (tab) => tab.selectedOption?.[valueKey]
-          );
+        if (value !== undefined) {
+          const values = tabs.value.map((tab) => tab.selected?.[valueKey]);
           if (values.includes(value)) {
             return;
           }

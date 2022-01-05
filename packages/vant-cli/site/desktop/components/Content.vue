@@ -1,5 +1,8 @@
 <template>
-  <div :class="['van-doc-content', `van-doc-content--${currentPage}`]">
+  <div
+    :class="['van-doc-content', `van-doc-content--${currentPage}`]"
+    @click="onClick"
+  >
     <slot />
   </div>
 </template>
@@ -18,19 +21,18 @@ export default {
     },
   },
 
-  mounted() {
-    const anchors = [].slice.call(this.$el.querySelectorAll('h2, h3, h4, h5'));
-    anchors.forEach((anchor) => {
-      anchor.addEventListener('click', this.scrollToAnchor);
-    });
-  },
-
   methods: {
-    scrollToAnchor(event) {
-      if (event.target.id) {
+    onClick({ target }) {
+      if (['H2', 'H3', 'H4', 'H5'].includes(target.tagName)) {
+        this.scrollToAnchor(target);
+      }
+    },
+
+    scrollToAnchor(target) {
+      if (target.id) {
         this.$router.push({
           name: this.$route.name,
-          hash: '#' + event.target.id,
+          hash: '#' + target.id,
         });
       }
     },
@@ -71,7 +73,7 @@ export default {
   > h6 {
     color: @van-doc-black;
     font-weight: normal;
-    line-height: 1.5;
+    line-height: 1.6;
 
     &[id] {
       cursor: pointer;
@@ -81,19 +83,23 @@ export default {
   > h3 {
     margin-bottom: 16px;
     font-weight: 600;
-    font-size: 19px;
+    font-size: 20px;
   }
 
   > h4 {
     margin: 24px 0 12px;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 18px;
   }
 
   > h5 {
     margin: 24px 0 12px;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 16px;
+  }
+
+  > p {
+    margin-top: 8px;
   }
 
   > p,
@@ -164,6 +170,10 @@ export default {
     }
   }
 
+  > ul {
+    margin: 12px 0;
+  }
+
   > ul li,
   > ol li {
     position: relative;
@@ -204,7 +214,6 @@ export default {
     font-family: inherit;
     font-weight: 600;
     word-break: keep-all;
-    background-color: @van-doc-background-color;
     border-radius: 4px;
     -webkit-font-smoothing: antialiased;
   }
@@ -246,13 +255,13 @@ export default {
 
     h1 {
       margin: 0 0 30px;
-      font-size: 30px;
+      font-size: 34px;
       cursor: default;
     }
 
     h2 {
       margin: 45px 0 20px;
-      font-size: 25px;
+      font-size: 26px;
     }
   }
 

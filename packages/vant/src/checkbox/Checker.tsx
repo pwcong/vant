@@ -1,5 +1,13 @@
-import { ref, computed, PropType, defineComponent } from 'vue';
-import { addUnit, extend, unknownProp, truthProp } from '../utils';
+import { ref, computed, defineComponent, type PropType } from 'vue';
+import {
+  extend,
+  addUnit,
+  truthProp,
+  numericProp,
+  unknownProp,
+  makeStringProp,
+  makeRequiredProp,
+} from '../utils';
 import { Icon } from '../icon';
 
 export type CheckerShape = 'square' | 'round';
@@ -16,28 +24,22 @@ export type CheckerParent = {
 
 export const checkerProps = {
   name: unknownProp,
+  shape: makeStringProp<CheckerShape>('round'),
   disabled: Boolean,
-  iconSize: [Number, String],
+  iconSize: numericProp,
   modelValue: unknownProp,
   checkedColor: String,
   labelPosition: String as PropType<CheckerLabelPosition>,
   labelDisabled: Boolean,
-  shape: {
-    type: String as PropType<CheckerShape>,
-    default: 'round',
-  },
 };
 
 export default defineComponent({
   props: extend({}, checkerProps, {
+    bem: makeRequiredProp(Function),
     role: String,
     parent: Object as PropType<CheckerParent | null>,
     checked: Boolean,
     bindGroup: truthProp,
-    bem: {
-      type: Function,
-      required: true as const,
-    },
   }),
 
   emits: ['click', 'toggle'],
@@ -114,13 +116,10 @@ export default defineComponent({
     };
 
     return () => {
-      const nodes: (JSX.Element | undefined)[] = [renderIcon()];
-
-      if (props.labelPosition === 'left') {
-        nodes.unshift(renderLabel());
-      } else {
-        nodes.push(renderLabel());
-      }
+      const nodes: (JSX.Element | undefined)[] =
+        props.labelPosition === 'left'
+          ? [renderLabel(), renderIcon()]
+          : [renderIcon(), renderLabel()];
 
       return (
         <div
@@ -132,7 +131,7 @@ export default defineComponent({
             },
             direction.value,
           ])}
-          tabindex={disabled.value ? -1 : 0}
+          tabindex={disabled.value ? undefined : 0}
           aria-checked={props.checked}
           onClick={onClick}
         >

@@ -5,40 +5,53 @@ exports[`should render demo and match snapshot 1`] = `
   <div class="van-tabs__wrap">
     <div role="tablist"
          class="van-tabs__nav van-tabs__nav--line"
+         aria-orientation="horizontal"
     >
-      <div role="tab"
-           class="van-tab van-tab--active"
+      <div id="van-tabs-0"
+           role="tab"
+           class="van-tab van-tab--line van-tab--active"
+           tabindex="0"
            aria-selected="true"
+           aria-controls="van-tab"
       >
         <span class="van-tab__text van-tab__text--ellipsis">
           Basic Usage
         </span>
       </div>
-      <div role="tab"
-           class="van-tab"
+      <div id="van-tabs-1"
+           role="tab"
+           class="van-tab van-tab--line"
+           tabindex="-1"
            aria-selected="false"
+           aria-controls="van-tab"
       >
         <span class="van-tab__text van-tab__text--ellipsis">
           Success Tip
         </span>
       </div>
-      <div role="tab"
-           class="van-tab"
+      <div id="van-tabs-2"
+           role="tab"
+           class="van-tab van-tab--line"
+           tabindex="-1"
            aria-selected="false"
+           aria-controls="van-tab"
       >
         <span class="van-tab__text van-tab__text--ellipsis">
           Custom Tips
         </span>
       </div>
       <div class="van-tabs__line"
-           style="transform: translateX(0px) translateX(-50%);"
+           style="transform: translateX(50px) translateX(-50%);"
       >
       </div>
     </div>
   </div>
   <div class="van-tabs__content">
-    <div role="tabpanel"
-         class="van-tab__pane"
+    <div id="van-tab"
+         role="tabpanel"
+         class="van-tab__panel"
+         tabindex="0"
+         aria-labelledby="van-tabs-0"
          style
     >
       <div class="van-pull-refresh">
@@ -53,13 +66,19 @@ exports[`should render demo and match snapshot 1`] = `
         </div>
       </div>
     </div>
-    <div role="tabpanel"
-         class="van-tab__pane"
+    <div id="van-tab"
+         role="tabpanel"
+         class="van-tab__panel"
+         tabindex="-1"
+         aria-labelledby="van-tabs-1"
          style="display: none;"
     >
     </div>
-    <div role="tabpanel"
-         class="van-tab__pane"
+    <div id="van-tab"
+         role="tabpanel"
+         class="van-tab__panel"
+         tabindex="-1"
+         aria-labelledby="van-tabs-2"
          style="display: none;"
     >
     </div>

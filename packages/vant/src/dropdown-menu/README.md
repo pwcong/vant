@@ -60,7 +60,7 @@ export default {
 
 ```html
 <van-dropdown-menu>
-  <van-dropdown-item v-model="value" :options="option" />
+  <van-dropdown-item v-model="value" :options="options" />
   <van-dropdown-item title="Title" ref="item">
     <van-cell center title="Title">
       <template #right-icon>
@@ -233,12 +233,12 @@ The component provides the following CSS variables, which can be used to customi
 | Name | Default Value | Description |
 | --- | --- | --- |
 | --van-dropdown-menu-height | _48px_ | - |
-| --van-dropdown-menu-background-color | _var(--van-white)_ | - |
+| --van-dropdown-menu-background-color | _var(--van-background-color-light)_ | - |
 | --van-dropdown-menu-box-shadow | _0 2px 12px fade(var(--van-gray-7), 12)_ | - |
 | --van-dropdown-menu-title-font-size | _15px_ | - |
 | --van-dropdown-menu-title-text-color | _var(--van-text-color)_ | - |
 | --van-dropdown-menu-title-active-text-color | _var(--van-danger-color)_ | - |
-| --van-dropdown-menu-title-disabled-text-color | _var(--van-gray-6)_ | - |
+| --van-dropdown-menu-title-disabled-text-color | _var(--van-text-color-2)_ | - |
 | --van-dropdown-menu-title-padding | _0 var(--van-padding-xs)_ | - |
 | --van-dropdown-menu-title-line-height | _var(--van-line-height-lg)_ | - |
 | --van-dropdown-menu-option-active-color | _var(--van-danger-color)_ | - |

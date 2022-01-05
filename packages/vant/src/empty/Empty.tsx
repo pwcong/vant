@@ -1,22 +1,28 @@
-import { defineComponent } from 'vue';
-import { createNamespace, getSizeStyle } from '../utils';
+import { defineComponent, type ExtractPropTypes } from 'vue';
+import {
+  numericProp,
+  getSizeStyle,
+  makeStringProp,
+  createNamespace,
+} from '../utils';
 import { Network } from './Network';
 
 const [name, bem] = createNamespace('empty');
 
 const PRESET_IMAGES = ['error', 'search', 'default'];
 
+const emptyProps = {
+  image: makeStringProp('default'),
+  imageSize: numericProp,
+  description: String,
+};
+
+export type EmptyProps = ExtractPropTypes<typeof emptyProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    imageSize: [Number, String],
-    description: String,
-    image: {
-      type: String,
-      default: 'default',
-    },
-  },
+  props: emptyProps,
 
   setup(props, { slots }) {
     const renderImage = () => {

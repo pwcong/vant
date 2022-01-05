@@ -214,7 +214,7 @@ export default {
 
 ```html
 <van-checkbox-group v-model="checked">
-  <van-cell-group>
+  <van-cell-group inset>
     <van-cell
       v-for="(item, index) in list"
       clickable
@@ -352,9 +352,12 @@ checkboxGroup.toggleAll({
 ```ts
 import type {
   CheckboxProps,
+  CheckboxShape,
   CheckboxInstance,
+  CheckboxLabelPosition,
   CheckboxGroupProps,
   CheckboxGroupInstance,
+  CheckboxGroupDirection,
   CheckboxGroupToggleAllOptions,
 } from 'vant';
 ```
@@ -387,5 +390,5 @@ checkboxGroupRef.value?.toggleAll();
 | --van-checkbox-label-color | _var(--van-text-color)_ | - |
 | --van-checkbox-checked-icon-color | _var(--van-primary-color)_ | - |
 | --van-checkbox-disabled-icon-color | _var(--van-gray-5)_ | - |
-| --van-checkbox-disabled-label-color | _var(--van-gray-5)_ | - |
+| --van-checkbox-disabled-label-color | _var(--van-text-color-3)_ | - |
 | --van-checkbox-disabled-background-color | _var(--van-border-color)_ | - |

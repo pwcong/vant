@@ -1,4 +1,9 @@
-import { computed, PropType, defineComponent } from 'vue';
+import {
+  computed,
+  defineComponent,
+  type PropType,
+  type ExtractPropTypes,
+} from 'vue';
 import { extend, createNamespace } from '../utils';
 import { ACTION_BAR_KEY } from '../action-bar/ActionBar';
 
@@ -12,17 +17,23 @@ import { Button, ButtonType } from '../button';
 
 const [name, bem] = createNamespace('action-bar-button');
 
+const actionBarButtonProps = extend({}, routeProps, {
+  type: String as PropType<ButtonType>,
+  text: String,
+  icon: String,
+  color: String,
+  loading: Boolean,
+  disabled: Boolean,
+});
+
+export type ActionBarButtonProps = ExtractPropTypes<
+  typeof actionBarButtonProps
+>;
+
 export default defineComponent({
   name,
 
-  props: extend({}, routeProps, {
-    type: String as PropType<ButtonType>,
-    text: String,
-    icon: String,
-    color: String,
-    loading: Boolean,
-    disabled: Boolean,
-  }),
+  props: actionBarButtonProps,
 
   setup(props, { slots }) {
     const route = useRoute();

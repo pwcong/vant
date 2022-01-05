@@ -1,29 +1,33 @@
-import { defineComponent } from 'vue';
-import { createNamespace, addUnit, unknownProp } from '../utils';
+import { defineComponent, type ExtractPropTypes } from 'vue';
+import { addUnit, numericProp, unknownProp, createNamespace } from '../utils';
 import { useCustomFieldValue } from '@vant/use';
 import { Loading } from '../loading';
 
 const [name, bem] = createNamespace('switch');
 
+const switchProps = {
+  size: numericProp,
+  loading: Boolean,
+  disabled: Boolean,
+  modelValue: unknownProp,
+  activeColor: String,
+  inactiveColor: String,
+  activeValue: {
+    type: unknownProp,
+    default: true as unknown,
+  },
+  inactiveValue: {
+    type: unknownProp,
+    default: false as unknown,
+  },
+};
+
+export type SwitchProps = ExtractPropTypes<typeof switchProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    size: [Number, String],
-    loading: Boolean,
-    disabled: Boolean,
-    modelValue: unknownProp,
-    activeColor: String,
-    inactiveColor: String,
-    activeValue: {
-      type: unknownProp,
-      default: true as unknown,
-    },
-    inactiveValue: {
-      type: unknownProp,
-      default: false as unknown,
-    },
-  },
+  props: switchProps,
 
   emits: ['change', 'update:modelValue'],
 
@@ -64,6 +68,7 @@ export default defineComponent({
             disabled,
           })}
           style={style}
+          tabindex={disabled ? undefined : 0}
           aria-checked={checked}
           onClick={onClick}
         >

@@ -89,16 +89,25 @@ export default {
 ### Step Slots
 
 | Name                 | Description          |
-| -------------------- | -------------------- | -------- | --- |
+| -------------------- | -------------------- |
+| default              | Step content         |
 | active-icon          | Custom active icon   |
 | inactive-icon        | Custom inactive icon |
-| finish-icon `v3.0.7` | Custom finish icon   | _string_ | -   |
+| finish-icon `v3.0.7` | Custom finish icon   |
 
 ### Steps Events
 
 | Event | Description | Arguments |
 | --- | --- | --- |
 | click-step | Emitted when a step's title or icon is clicked | _index: number_ |
+
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type { StepsProps, StepsDirection } from 'vant';
+```
 
 ## Theming
 
@@ -108,7 +117,7 @@ The component provides the following CSS variables, which can be used to customi
 
 | Name | Default Value | Description |
 | --- | --- | --- |
-| --van-step-text-color | _var(--van-gray-6)_ | - |
+| --van-step-text-color | _var(--van-text-color-2)_ | - |
 | --van-step-active-color | _var(--van-success-color)_ | - |
 | --van-step-process-text-color | _var(--van-text-color)_ | - |
 | --van-step-font-size | _var(--van-font-size-md)_ | - |
@@ -119,4 +128,4 @@ The component provides the following CSS variables, which can be used to customi
 | --van-step-circle-size | _5px_ | - |
 | --van-step-circle-color | _var(--van-gray-6)_ | - |
 | --van-step-horizontal-title-font-size | _var(--van-font-size-sm)_ | - |
-| --van-steps-background-color | _var(--van-white)_ | - |
+| --van-steps-background-color | _var(--van-background-color-light)_ | - |

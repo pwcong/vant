@@ -1,6 +1,6 @@
 import execa from 'execa';
-import { consola, ora } from '../common/logger';
-import { SCRIPT_EXTS } from '../common/constant';
+import { consola, ora } from '../common/logger.js';
+import { SCRIPT_EXTS } from '../common/constant.js';
 
 type RunCommandMessages = {
   start: string;
@@ -35,7 +35,7 @@ function runCommand(
 function eslint() {
   return runCommand(
     'eslint',
-    ['./src', '--fix', '--ext', [SCRIPT_EXTS, '.md'].join(',')],
+    ['./src', '--fix', '--ext', SCRIPT_EXTS.join(',')],
     {
       start: 'Running eslint...',
       succeed: 'ESLint Passed.',

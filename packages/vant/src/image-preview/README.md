@@ -142,7 +142,8 @@ export default {
 | closeIcon | Close icon name | _string_ | `clear` |
 | closeIconPosition | Close icon position，can be set to `top-left` `bottom-left` `bottom-right` | _string_ | `top-right` |
 | transition `v3.0.8` | Transition, equivalent to `name` prop of [transition](https://v3.vuejs.org/api/built-in-components.html#transition) | _string_ | `van-fade` |
-| overlay-style `v3.0.8` | Custom overlay style | _object_ | - |
+| overlayClass `v3.2.8` | Custom overlay class | _string \| Array \| object_ | - |
+| overlayStyle `v3.0.8` | Custom overlay style | _object_ | - |
 | teleport | Specifies a target element where ImagePreview will be mounted | _string \| Element_ | - |
 
 ### Props
@@ -165,6 +166,7 @@ export default {
 | close-icon | Close icon name | _string_ | `clear` |
 | close-icon-position | Close icon position，can be set to `top-left` `bottom-left` `bottom-right` | _string_ | `top-right` |
 | transition `v3.0.8` | Transition, equivalent to `name` prop of [transition](https://v3.vuejs.org/api/built-in-components.html#transition) | _string_ | `van-fade` |
+| overlay-class `v3.2.8` | Custom overlay class | _string \| Array \| object_ | - |
 | overlay-style `v3.0.8` | Custom overlay style | _object_ | - |
 | teleport | Specifies a target element where ImagePreview will be mounted | _string \| Element_ | - |
 
@@ -245,6 +247,5 @@ The component provides the following CSS variables, which can be used to customi
 | --van-image-preview-overlay-background-color | _rgba(0, 0, 0, 0.9)_ | - |
 | --van-image-preview-close-icon-size | _22px_ | - |
 | --van-image-preview-close-icon-color | _var(--van-gray-5)_ | - |
-| --van-image-preview-close-icon-active-color | _var(--van-gray-6)_ | - |
 | --van-image-preview-close-icon-margin | _var(--van-padding-md)_ | - |
 | --van-image-preview-close-icon-z-index | _1_ | - |

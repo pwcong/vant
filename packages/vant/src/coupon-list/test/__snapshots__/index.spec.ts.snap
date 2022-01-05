@@ -7,6 +7,7 @@ exports[`should be the sames as the last snapshot when render coupon list 1`] = 
       <div class="van-cell__value van-cell__value--alone van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control"
                  placeholder="Coupon code"
           >
@@ -28,35 +29,47 @@ exports[`should be the sames as the last snapshot when render coupon list 1`] = 
     <div class="van-tabs__wrap">
       <div role="tablist"
            class="van-tabs__nav van-tabs__nav--line"
+           aria-orientation="horizontal"
       >
-        <div role="tab"
-             class="van-tab van-tab--active"
+        <div id="van-tabs-0"
+             role="tab"
+             class="van-tab van-tab--line van-tab--active"
+             tabindex="0"
              aria-selected="true"
+             aria-controls="van-tab"
         >
           <span class="van-tab__text van-tab__text--ellipsis">
             Available (6)
           </span>
         </div>
-        <div role="tab"
-             class="van-tab"
+        <div id="van-tabs-1"
+             role="tab"
+             class="van-tab van-tab--line"
+             tabindex="-1"
              aria-selected="false"
+             aria-controls="van-tab"
         >
           <span class="van-tab__text van-tab__text--ellipsis">
             Unavailable (2)
           </span>
         </div>
         <div class="van-tabs__line"
-             style="transform: translateX(0px) translateX(-50%);"
+             style="transform: translateX(50px) translateX(-50%);"
         >
         </div>
       </div>
     </div>
     <div class="van-tabs__content">
-      <div role="tabpanel"
-           class="van-tab__pane"
+      <div id="van-tab"
+           role="tabpanel"
+           class="van-tab__panel"
+           tabindex="0"
+           aria-labelledby="van-tabs-0"
            style
       >
-        <div class="van-coupon-list__list van-coupon-list__list--with-bar van-coupon-list__list--with-bottom">
+        <div class="van-coupon-list__list van-coupon-list__list--with-bottom"
+             style="height: 624px;"
+        >
           <div class="van-coupon">
             <div class="van-coupon__content">
               <div class="van-coupon__head">
@@ -255,8 +268,11 @@ exports[`should be the sames as the last snapshot when render coupon list 1`] = 
           </div>
         </div>
       </div>
-      <div role="tabpanel"
-           class="van-tab__pane"
+      <div id="van-tab"
+           role="tabpanel"
+           class="van-tab__panel"
+           tabindex="-1"
+           aria-labelledby="van-tabs-1"
            style="display: none;"
       >
       </div>
@@ -283,6 +299,7 @@ exports[`should have two "van-coupon-list__empty" classes when render coupon lis
       <div class="van-cell__value van-cell__value--alone van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control"
                  placeholder="Coupon code"
           >
@@ -304,35 +321,47 @@ exports[`should have two "van-coupon-list__empty" classes when render coupon lis
     <div class="van-tabs__wrap">
       <div role="tablist"
            class="van-tabs__nav van-tabs__nav--line"
+           aria-orientation="horizontal"
       >
-        <div role="tab"
-             class="van-tab"
+        <div id="van-tabs-0"
+             role="tab"
+             class="van-tab van-tab--line"
+             tabindex="-1"
              aria-selected="false"
+             aria-controls="van-tab"
         >
           <span class="van-tab__text van-tab__text--ellipsis">
             Available (0)
           </span>
         </div>
-        <div role="tab"
-             class="van-tab van-tab--active"
+        <div id="van-tabs-1"
+             role="tab"
+             class="van-tab van-tab--line van-tab--active"
+             tabindex="0"
              aria-selected="true"
+             aria-controls="van-tab"
         >
           <span class="van-tab__text van-tab__text--ellipsis">
             Unavailable (0)
           </span>
         </div>
         <div class="van-tabs__line"
-             style="transform: translateX(0px) translateX(-50%);"
+             style="transform: translateX(50px) translateX(-50%);"
         >
         </div>
       </div>
     </div>
     <div class="van-tabs__content">
-      <div role="tabpanel"
-           class="van-tab__pane"
+      <div id="van-tab"
+           role="tabpanel"
+           class="van-tab__panel"
+           tabindex="-1"
+           aria-labelledby="van-tabs-0"
            style="display: none;"
       >
-        <div class="van-coupon-list__list van-coupon-list__list--with-bar van-coupon-list__list--with-bottom">
+        <div class="van-coupon-list__list van-coupon-list__list--with-bottom"
+             style="height: 624px;"
+        >
           <div class="van-coupon-list__empty">
             <img src="https://img.yzcdn.cn/vant/coupon-empty.png">
             <p>
@@ -341,11 +370,16 @@ exports[`should have two "van-coupon-list__empty" classes when render coupon lis
           </div>
         </div>
       </div>
-      <div role="tabpanel"
-           class="van-tab__pane"
+      <div id="van-tab"
+           role="tabpanel"
+           class="van-tab__panel"
+           tabindex="0"
+           aria-labelledby="van-tabs-1"
            style
       >
-        <div class="van-coupon-list__list van-coupon-list__list--with-bar van-coupon-list__list--with-bottom">
+        <div class="van-coupon-list__list van-coupon-list__list--with-bottom"
+             style="height: 624px;"
+        >
           <div class="van-coupon-list__empty">
             <img src="https://img.yzcdn.cn/vant/coupon-empty.png">
             <p>
@@ -377,6 +411,7 @@ exports[`should render list-footer slot correctly 1`] = `
       <div class="van-cell__value van-cell__value--alone van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control"
                  placeholder="Coupon code"
           >
@@ -398,35 +433,47 @@ exports[`should render list-footer slot correctly 1`] = `
     <div class="van-tabs__wrap">
       <div role="tablist"
            class="van-tabs__nav van-tabs__nav--line"
+           aria-orientation="horizontal"
       >
-        <div role="tab"
-             class="van-tab"
+        <div id="van-tabs-0"
+             role="tab"
+             class="van-tab van-tab--line"
+             tabindex="-1"
              aria-selected="false"
+             aria-controls="van-tab"
         >
           <span class="van-tab__text van-tab__text--ellipsis">
             Available (0)
           </span>
         </div>
-        <div role="tab"
-             class="van-tab van-tab--active"
+        <div id="van-tabs-1"
+             role="tab"
+             class="van-tab van-tab--line van-tab--active"
+             tabindex="0"
              aria-selected="true"
+             aria-controls="van-tab"
         >
           <span class="van-tab__text van-tab__text--ellipsis">
             Unavailable (0)
           </span>
         </div>
         <div class="van-tabs__line"
-             style="transform: translateX(0px) translateX(-50%); transition-duration: 0.3s;"
+             style="transform: translateX(50px) translateX(-50%); transition-duration: 0.3s;"
         >
         </div>
       </div>
     </div>
     <div class="van-tabs__content">
-      <div role="tabpanel"
-           class="van-tab__pane"
+      <div id="van-tab"
+           role="tabpanel"
+           class="van-tab__panel"
+           tabindex="-1"
+           aria-labelledby="van-tabs-0"
            style="display: none;"
       >
-        <div class="van-coupon-list__list van-coupon-list__list--with-bar van-coupon-list__list--with-bottom">
+        <div class="van-coupon-list__list van-coupon-list__list--with-bottom"
+             style="height: 624px;"
+        >
           <div class="van-coupon-list__empty">
             <img src="https://img.yzcdn.cn/vant/coupon-empty.png">
             <p>
@@ -436,11 +483,16 @@ exports[`should render list-footer slot correctly 1`] = `
           List Footer
         </div>
       </div>
-      <div role="tabpanel"
-           class="van-tab__pane"
+      <div id="van-tab"
+           role="tabpanel"
+           class="van-tab__panel"
+           tabindex="0"
+           aria-labelledby="van-tabs-1"
            style
       >
-        <div class="van-coupon-list__list van-coupon-list__list--with-bar van-coupon-list__list--with-bottom">
+        <div class="van-coupon-list__list van-coupon-list__list--with-bottom"
+             style="height: 624px;"
+        >
           <div class="van-coupon-list__empty">
             <img src="https://img.yzcdn.cn/vant/coupon-empty.png">
             <p>
@@ -473,6 +525,7 @@ exports[`should use custom src when using empty-image prop 1`] = `
       <div class="van-cell__value van-cell__value--alone van-field__value">
         <div class="van-field__body">
           <input type="text"
+                 id="van-field-input"
                  class="van-field__control"
                  placeholder="Coupon code"
           >
@@ -494,35 +547,47 @@ exports[`should use custom src when using empty-image prop 1`] = `
     <div class="van-tabs__wrap">
       <div role="tablist"
            class="van-tabs__nav van-tabs__nav--line"
+           aria-orientation="horizontal"
       >
-        <div role="tab"
-             class="van-tab van-tab--active"
+        <div id="van-tabs-0"
+             role="tab"
+             class="van-tab van-tab--line van-tab--active"
+             tabindex="0"
              aria-selected="true"
+             aria-controls="van-tab"
         >
           <span class="van-tab__text van-tab__text--ellipsis">
             Available (0)
           </span>
         </div>
-        <div role="tab"
-             class="van-tab"
+        <div id="van-tabs-1"
+             role="tab"
+             class="van-tab van-tab--line"
+             tabindex="-1"
              aria-selected="false"
+             aria-controls="van-tab"
         >
           <span class="van-tab__text van-tab__text--ellipsis">
             Unavailable (0)
           </span>
         </div>
         <div class="van-tabs__line"
-             style="transform: translateX(0px) translateX(-50%);"
+             style="transform: translateX(50px) translateX(-50%);"
         >
         </div>
       </div>
     </div>
     <div class="van-tabs__content">
-      <div role="tabpanel"
-           class="van-tab__pane"
+      <div id="van-tab"
+           role="tabpanel"
+           class="van-tab__panel"
+           tabindex="0"
+           aria-labelledby="van-tabs-0"
            style
       >
-        <div class="van-coupon-list__list van-coupon-list__list--with-bar van-coupon-list__list--with-bottom">
+        <div class="van-coupon-list__list van-coupon-list__list--with-bottom"
+             style="height: 624px;"
+        >
           <div class="van-coupon-list__empty">
             <img src="https://img.yzcdn.com/xxx.png">
             <p>
@@ -531,8 +596,11 @@ exports[`should use custom src when using empty-image prop 1`] = `
           </div>
         </div>
       </div>
-      <div role="tabpanel"
-           class="van-tab__pane"
+      <div id="van-tab"
+           role="tabpanel"
+           class="van-tab__panel"
+           tabindex="-1"
+           aria-labelledby="van-tabs-1"
            style="display: none;"
       >
       </div>

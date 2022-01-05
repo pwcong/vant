@@ -107,9 +107,27 @@ Use `action` slot to custom right button, `cancel` event will no longer be Emitt
   @search="onSearch"
 >
   <template #action>
-    <div @click="onSearch">Search</div>
+    <div @click="onClickButton">Search</div>
   </template>
 </van-search>
+```
+
+```js
+import { ref } from 'vue';
+import { Toast } from 'vant';
+
+export default {
+  setup() {
+    const value = ref('');
+    const onSearch = (val) => Toast(val);
+    const onClickButton = () => Toast(value.value);
+    return {
+      value,
+      onSearch,
+      onClickButton,
+    };
+  },
+};
 ```
 
 ## API
@@ -122,7 +140,7 @@ Use `action` slot to custom right button, `cancel` event will no longer be Emitt
 | label | Left side label | _string_ | - |
 | name `v3.2.3` | As the identifier when submitting the form | _string_ | - |
 | shape | Shape of field, can be set to `round` | _string_ | `square` |
-| id `v3.2.2` | Input id, the for attribute of the label also will be set | _string_ | - |
+| id `v3.2.2` | Input id, the for attribute of the label also will be set | _string_ | `van-search-n-input` |
 | background | Background color of field | _string_ | `#f2f2f2` |
 | maxlength | Max length of value | _number \| string_ | - |
 | placeholder | Placeholder | _string_ | - |
@@ -152,6 +170,8 @@ Use `action` slot to custom right button, `cancel` event will no longer be Emitt
 | focus | Emitted when input is focused | _event: Event_ |
 | blur | Emitted when input is blurred | _event: Event_ |
 | click-input | Emitted when the input is clicked | _event: MouseEvent_ |
+| click-left-icon `v3.4.0` | Emitted when the left icon is clicked | _event: MouseEvent_ |
+| click-right-icon `v3.4.0` | Emitted when the right icon is clicked | _event: MouseEvent_ |
 | clear | Emitted when the clear icon is clicked | _event: MouseEvent_ |
 | cancel | Emitted when the cancel button is clicked | - |
 
@@ -202,7 +222,7 @@ The component provides the following CSS variables, which can be used to customi
 | Name | Default Value | Description |
 | --- | --- | --- |
 | --van-search-padding | _10px var(--van-padding-sm)_ | - |
-| --van-search-background-color | _var(--van-white)_ | - |
+| --van-search-background-color | _var(--van-background-color-light)_ | - |
 | --van-search-content-background-color | _var(--van-gray-1)_ | - |
 | --van-search-input-height | _34px_ | - |
 | --van-search-label-padding | _0 5px_ | - |

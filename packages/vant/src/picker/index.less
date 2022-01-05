@@ -15,11 +15,12 @@
   --van-picker-option-disabled-opacity: @picker-option-disabled-opacity;
   --van-picker-loading-icon-color: @picker-loading-icon-color;
   --van-picker-loading-mask-color: @picker-loading-mask-color;
+  --van-picker-mask-color: @picker-mask-color;
 }
 
 .van-picker {
   position: relative;
-  background-color: var(--van-picker-background-color);
+  background: var(--van-picker-background-color);
   user-select: none;
 
   &__toolbar {
@@ -37,10 +38,6 @@
     background-color: transparent;
     border: none;
     cursor: pointer;
-
-    &:active {
-      opacity: var(--van-active-opacity);
-    }
   }
 
   &__confirm {
@@ -76,7 +73,7 @@
     align-items: center;
     justify-content: center;
     color: var(--van-picker-loading-icon-color);
-    background-color: var(--van-picker-loading-mask-color);
+    background: var(--van-picker-loading-mask-color);
   }
 
   &__frame {
@@ -96,12 +93,7 @@
     z-index: 1;
     width: 100%;
     height: 100%;
-    background-image: linear-gradient(
-        180deg,
-        hsla(0, 0%, 100%, 0.9),
-        hsla(0, 0%, 100%, 0.4)
-      ),
-      linear-gradient(0deg, hsla(0, 0%, 100%, 0.9), hsla(0, 0%, 100%, 0.4));
+    background-image: var(--van-picker-mask-color);
     background-repeat: no-repeat;
     background-position: top, bottom;
     // fix rendering failure during animation on safari

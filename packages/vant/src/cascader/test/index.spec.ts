@@ -102,21 +102,20 @@ test('should render option slot correctly', async () => {
   expect(wrapper.find('.van-cascader__option').html()).toMatchSnapshot();
 });
 
-// TODO
-// test('should select correct option when value changed', async () => {
-//   const wrapper = mount(Cascader, {
-//     props: {
-//       options,
-//     },
-//   });
+test('should select correct option when value changed', async () => {
+  const wrapper = mount(Cascader, {
+    props: {
+      options,
+    },
+  });
 
-//   await later();
-//   await wrapper.setProps({ modelValue: '330304' });
-//   await later();
-//   const selectedOptions = wrapper.findAll('.van-cascader__option--selected');
-//   const lastSelectedOption = selectedOptions[selectedOptions.length - 1];
-//   expect(lastSelectedOption.html()).toMatchSnapshot();
-// });
+  await later();
+  await wrapper.setProps({ modelValue: '330304' });
+  await later();
+  const selectedOptions = wrapper.findAll('.van-cascader__option--selected');
+  const lastSelectedOption = selectedOptions[selectedOptions.length - 1];
+  expect(lastSelectedOption.html()).toMatchSnapshot();
+});
 
 test('should reset selected options when value is set to empty', async () => {
   const wrapper = mount(Cascader, {
@@ -241,4 +240,24 @@ test('should allow to custom the color of option', async () => {
   await later();
   const option = wrapper.find('.van-cascader__option');
   expect(option.style.color).toEqual('red');
+});
+
+test('should render options-top、options-bottom slots correctly', async () => {
+  const wrapper = mount(Cascader, {
+    slots: {
+      'options-top': ({ tabIndex }) => `Top, tab index: ${tabIndex}`,
+      'options-bottom': ({ tabIndex }) => `Bottom, tab index: ${tabIndex}`,
+    },
+    props: {
+      options,
+    },
+  });
+
+  await later();
+  await wrapper
+    .findAll('.van-cascader__options')[0]
+    .find('.van-cascader__option')
+    .trigger('click');
+
+  expect(wrapper.find('.van-tab__panel').html()).toMatchSnapshot();
 });

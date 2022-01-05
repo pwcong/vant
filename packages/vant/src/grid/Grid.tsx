@@ -1,5 +1,16 @@
-import { PropType, defineComponent, ExtractPropTypes, InjectionKey } from 'vue';
-import { createNamespace, addUnit, truthProp } from '../utils';
+import {
+  defineComponent,
+  type PropType,
+  type InjectionKey,
+  type ExtractPropTypes,
+} from 'vue';
+import {
+  createNamespace,
+  addUnit,
+  truthProp,
+  numericProp,
+  makeNumericProp,
+} from '../utils';
 import { BORDER_TOP } from '../utils/constant';
 import { useChildren } from '@vant/use';
 
@@ -7,23 +18,22 @@ const [name, bem] = createNamespace('grid');
 
 export type GridDirection = 'horizontal' | 'vertical';
 
-const props = {
+const gridProps = {
   square: Boolean,
   center: truthProp,
   border: truthProp,
-  gutter: [Number, String],
+  gutter: numericProp,
   reverse: Boolean,
-  iconSize: [Number, String],
+  iconSize: numericProp,
   direction: String as PropType<GridDirection>,
   clickable: Boolean,
-  columnNum: {
-    type: [Number, String],
-    default: 4,
-  },
+  columnNum: makeNumericProp(4),
 };
 
+export type GridProps = ExtractPropTypes<typeof gridProps>;
+
 export type GridProvide = {
-  props: ExtractPropTypes<typeof props>;
+  props: GridProps;
 };
 
 export const GRID_KEY: InjectionKey<GridProvide> = Symbol(name);
@@ -31,7 +41,7 @@ export const GRID_KEY: InjectionKey<GridProvide> = Symbol(name);
 export default defineComponent({
   name,
 
-  props,
+  props: gridProps,
 
   setup(props, { slots }) {
     const { linkChildren } = useChildren(GRID_KEY);

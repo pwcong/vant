@@ -1,7 +1,7 @@
-import { PropType, ref, defineComponent } from 'vue';
+import { ref, defineComponent, type PropType } from 'vue';
 
 // Utils
-import { createNamespace } from '../utils';
+import { createNamespace, numericProp } from '../utils';
 
 // Components
 import { Cell } from '../cell';
@@ -9,7 +9,7 @@ import { Field } from '../field';
 
 // Types
 import type { AddressEditSearchItem } from './types';
-import type { FieldInstance } from '../field/types';
+import type { FieldRule, FieldInstance } from '../field/types';
 
 const [name, bem, t] = createNamespace('address-edit-detail');
 
@@ -18,12 +18,12 @@ export default defineComponent({
 
   props: {
     show: Boolean,
+    rows: numericProp,
     value: String,
+    rules: Array as PropType<FieldRule[]>,
     focused: Boolean,
-    detailRows: [Number, String],
+    maxlength: numericProp,
     searchResult: Array as PropType<AddressEditSearchItem[]>,
-    errorMessage: String,
-    detailMaxlength: [Number, String],
     showSearchResult: Boolean,
   },
 
@@ -86,17 +86,17 @@ export default defineComponent({
               clearable
               ref={field}
               class={bem()}
-              rows={props.detailRows}
+              rows={props.rows}
               type="textarea"
+              rules={props.rules}
               label={t('label')}
               border={!showSearchResult()}
-              maxlength={props.detailMaxlength}
+              maxlength={props.maxlength}
               modelValue={props.value}
               placeholder={t('placeholder')}
-              errorMessage={props.errorMessage}
               onBlur={onBlur}
               onFocus={onFocus}
-              {...{ 'onUpdate:modelValue': onInput }}
+              onUpdate:modelValue={onInput}
             />
             {renderSearchResult()}
           </>

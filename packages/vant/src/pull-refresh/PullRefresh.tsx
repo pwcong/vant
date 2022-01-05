@@ -1,7 +1,20 @@
-import { ref, watch, reactive, nextTick, defineComponent } from 'vue';
+import {
+  ref,
+  watch,
+  reactive,
+  nextTick,
+  defineComponent,
+  type ExtractPropTypes,
+} from 'vue';
 
 // Utils
-import { preventDefault, getScrollTop, createNamespace } from '../utils';
+import {
+  numericProp,
+  getScrollTop,
+  preventDefault,
+  createNamespace,
+  makeNumericProp,
+} from '../utils';
 
 // Composables
 import { useScrollParent } from '@vant/use';
@@ -22,33 +35,25 @@ type PullRefreshStatus =
   | 'pulling'
   | 'success';
 
+const pullRefreshProps = {
+  disabled: Boolean,
+  modelValue: Boolean,
+  headHeight: makeNumericProp(DEFAULT_HEAD_HEIGHT),
+  successText: String,
+  pullingText: String,
+  loosingText: String,
+  loadingText: String,
+  pullDistance: numericProp,
+  successDuration: makeNumericProp(500),
+  animationDuration: makeNumericProp(300),
+};
+
+export type PullRefreshProps = ExtractPropTypes<typeof pullRefreshProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    disabled: Boolean,
-    successText: String,
-    pullingText: String,
-    loosingText: String,
-    loadingText: String,
-    pullDistance: [Number, String],
-    modelValue: {
-      type: Boolean,
-      default: false,
-    },
-    successDuration: {
-      type: [Number, String],
-      default: 500,
-    },
-    animationDuration: {
-      type: [Number, String],
-      default: 300,
-    },
-    headHeight: {
-      type: [Number, String],
-      default: DEFAULT_HEAD_HEIGHT,
-    },
-  },
+  props: pullRefreshProps,
 
   emits: ['refresh', 'update:modelValue'],
 
@@ -129,7 +134,12 @@ export default defineComponent({
         nodes.push(<div class={bem('text')}>{getStatusText()}</div>);
       }
       if (status === 'loading') {
-        nodes.push(<Loading class={bem('loading')}>{getStatusText()}</Loading>);
+        nodes.push(
+          <Loading
+            v-slots={{ default: getStatusText }}
+            class={bem('loading')}
+          />
+        );
       }
 
       return nodes;

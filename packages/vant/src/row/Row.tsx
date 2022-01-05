@@ -1,11 +1,17 @@
 import {
   computed,
-  PropType,
-  ComputedRef,
-  InjectionKey,
   defineComponent,
+  type PropType,
+  type ComputedRef,
+  type InjectionKey,
+  type ExtractPropTypes,
 } from 'vue';
-import { truthProp, createNamespace } from '../utils';
+import {
+  truthProp,
+  makeStringProp,
+  makeNumericProp,
+  createNamespace,
+} from '../utils';
 import { useChildren } from '@vant/use';
 
 const [name, bem] = createNamespace('row');
@@ -27,22 +33,20 @@ export type RowJustify =
   | 'space-around'
   | 'space-between';
 
+const rowProps = {
+  tag: makeStringProp<keyof HTMLElementTagNameMap>('div'),
+  wrap: truthProp,
+  align: String as PropType<RowAlign>,
+  gutter: makeNumericProp(0),
+  justify: String as PropType<RowJustify>,
+};
+
+export type RowProps = ExtractPropTypes<typeof rowProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    wrap: truthProp,
-    align: String as PropType<RowAlign>,
-    justify: String as PropType<RowJustify>,
-    tag: {
-      type: String as PropType<keyof HTMLElementTagNameMap>,
-      default: 'div',
-    },
-    gutter: {
-      type: [Number, String],
-      default: 0,
-    },
-  },
+  props: rowProps,
 
   setup(props, { slots }) {
     const { children, linkChildren } = useChildren(ROW_KEY);

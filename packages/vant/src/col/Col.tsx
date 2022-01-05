@@ -1,24 +1,27 @@
-import { computed, PropType, defineComponent } from 'vue';
-import { createNamespace } from '../utils';
+import { computed, defineComponent, type ExtractPropTypes } from 'vue';
+import {
+  numericProp,
+  createNamespace,
+  makeNumericProp,
+  makeStringProp,
+} from '../utils';
 import { useParent } from '@vant/use';
 import { ROW_KEY } from '../row/Row';
 
 const [name, bem] = createNamespace('col');
 
+const colProps = {
+  tag: makeStringProp<keyof HTMLElementTagNameMap>('div'),
+  span: makeNumericProp(0),
+  offset: numericProp,
+};
+
+export type ColProps = ExtractPropTypes<typeof colProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    offset: [Number, String],
-    tag: {
-      type: String as PropType<keyof HTMLElementTagNameMap>,
-      default: 'div',
-    },
-    span: {
-      type: [Number, String],
-      default: 0,
-    },
-  },
+  props: colProps,
 
   setup(props, { slots }) {
     const { parent, index } = useParent(ROW_KEY);

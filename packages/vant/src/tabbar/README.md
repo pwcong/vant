@@ -190,6 +190,7 @@ export default {
 | icon-prefix | Icon className prefix | _string_ | `van-icon` |
 | dot | Whether to show red dot | _boolean_ | - |
 | badge | Content of the badge | _number \| string_ | `''` |
+| badge-props `v3.2.8` | Props of Badge，see [Badge - props](#/en-US/badge#props) | _BadgeProps_ | - |
 | url | Link | _string_ | - |
 | to | Target route of the link, same as to of vue-router | _string \| object_ | - |
 | replace | If true, the navigation will not leave a history record | _boolean_ | `false` |
@@ -199,6 +200,14 @@ export default {
 | Name | Description | SlotProps         |
 | ---- | ----------- | ----------------- |
 | icon | Custom icon | _active: boolean_ |
+
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type { TabbarProps, TabbarItemProps } from 'vant';
+```
 
 ## Theming
 
@@ -210,11 +219,11 @@ The component provides the following CSS variables, which can be used to customi
 | --- | --- | --- |
 | --van-tabbar-height | _50px_ | - |
 | --van-tabbar-z-index | _1_ | - |
-| --van-tabbar-background-color | _var(--van-white)_ | - |
+| --van-tabbar-background-color | _var(--van-background-color-light)_ | - |
 | --van-tabbar-item-font-size | _var(--van-font-size-sm)_ | - |
 | --van-tabbar-item-text-color | _var(--van-gray-7)_ | - |
 | --van-tabbar-item-active-color | _var(--van-primary-color)_ | - |
-| --van-tabbar-item-active-background-color | _var(--van-white)_ | - |
+| --van-tabbar-item-active-background-color | _var(--van-background-color-light)_ | - |
 | --van-tabbar-item-line-height | _1_ | - |
 | --van-tabbar-item-icon-size | _22px_ | - |
 | --van-tabbar-item-icon-margin-bottom | _var(--van-padding-base)_ | - |

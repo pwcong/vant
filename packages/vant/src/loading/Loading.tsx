@@ -1,5 +1,12 @@
-import { computed, PropType, defineComponent } from 'vue';
-import { createNamespace, addUnit, getSizeStyle, extend } from '../utils';
+import { computed, defineComponent, type ExtractPropTypes } from 'vue';
+import {
+  extend,
+  addUnit,
+  numericProp,
+  getSizeStyle,
+  makeStringProp,
+  createNamespace,
+} from '../utils';
 
 const [name, bem] = createNamespace('loading');
 
@@ -15,20 +22,21 @@ const CircularIcon = (
 
 export type LoadingType = 'circular' | 'spinner';
 
+const loadingProps = {
+  size: numericProp,
+  type: makeStringProp<LoadingType>('circular'),
+  color: String,
+  vertical: Boolean,
+  textSize: numericProp,
+  textColor: String,
+};
+
+export type LoadingProps = ExtractPropTypes<typeof loadingProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    size: [Number, String],
-    color: String,
-    vertical: Boolean,
-    textSize: [Number, String],
-    textColor: String,
-    type: {
-      type: String as PropType<LoadingType>,
-      default: 'circular',
-    },
-  },
+  props: loadingProps,
 
   setup(props, { slots }) {
     const spinnerStyle = computed(() =>

@@ -1,4 +1,4 @@
-import { ref, PropType, defineComponent, ExtractPropTypes } from 'vue';
+import { ref, defineComponent, type ExtractPropTypes } from 'vue';
 
 // Utils
 import {
@@ -6,11 +6,13 @@ import {
   extend,
   truthProp,
   preventDefault,
+  makeStringProp,
   createNamespace,
 } from '../utils';
 import { fieldSharedProps } from '../field/Field';
 
 // Composables
+import { useId } from '../composables/use-id';
 import { useExpose } from '../composables/use-expose';
 
 // Components
@@ -21,32 +23,37 @@ import type { SearchShape } from './types';
 
 const [name, bem, t] = createNamespace('search');
 
-const props = extend({}, fieldSharedProps, {
+const searchProps = extend({}, fieldSharedProps, {
   label: String,
+  shape: makeStringProp<SearchShape>('square'),
+  leftIcon: makeStringProp('search'),
   clearable: truthProp,
   actionText: String,
   background: String,
   showAction: Boolean,
-  shape: {
-    type: String as PropType<SearchShape>,
-    default: 'square',
-  },
-  leftIcon: {
-    type: String,
-    default: 'search',
-  },
 });
 
-export type SearchProps = ExtractPropTypes<typeof props>;
+export type SearchProps = ExtractPropTypes<typeof searchProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: searchProps,
 
-  emits: ['search', 'cancel', 'update:modelValue'],
+  emits: [
+    'blur',
+    'focus',
+    'clear',
+    'search',
+    'cancel',
+    'click-input',
+    'click-left-icon',
+    'click-right-icon',
+    'update:modelValue',
+  ],
 
   setup(props, { emit, slots, attrs }) {
+    const id = useId();
     const filedRef = ref<FieldInstance>();
 
     const onCancel = () => {
@@ -64,10 +71,12 @@ export default defineComponent({
       }
     };
 
+    const getInputId = () => props.id || `${id}-input`;
+
     const renderLabel = () => {
       if (slots.label || props.label) {
         return (
-          <label class={bem('label')} for={props.id}>
+          <label class={bem('label')} for={getInputId()}>
             {slots.label ? slots.label() : props.label}
           </label>
         );
@@ -92,13 +101,23 @@ export default defineComponent({
 
     const blur = () => filedRef.value?.blur();
     const focus = () => filedRef.value?.focus();
+    const onBlur = (event: Event) => emit('blur', event);
+    const onFocus = (event: Event) => emit('focus', event);
+    const onClear = (event: MouseEvent) => emit('clear', event);
+    const onClickInput = (event: MouseEvent) => emit('click-input', event);
+    const onClickLeftIcon = (event: MouseEvent) =>
+      emit('click-left-icon', event);
+    const onClickRightIcon = (event: MouseEvent) =>
+      emit('click-right-icon', event);
 
     const fieldPropNames = Object.keys(fieldSharedProps) as Array<
       keyof typeof fieldSharedProps
     >;
 
     const renderField = () => {
-      const fieldAttrs = extend({}, attrs, pick(props, fieldPropNames));
+      const fieldAttrs = extend({}, attrs, pick(props, fieldPropNames), {
+        id: getInputId(),
+      });
 
       const onInput = (value: string) => emit('update:modelValue', value);
 
@@ -109,9 +128,15 @@ export default defineComponent({
           type="search"
           class={bem('field')}
           border={false}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          onClear={onClear}
           onKeypress={onKeypress}
+          onClick-input={onClickInput}
+          onClick-left-icon={onClickLeftIcon}
+          onClick-right-icon={onClickRightIcon}
+          onUpdate:modelValue={onInput}
           {...fieldAttrs}
-          {...{ 'onUpdate:modelValue': onInput }}
         />
       );
     };

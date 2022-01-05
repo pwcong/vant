@@ -108,6 +108,14 @@ Use slot to custom content.
 | tags         | Custom tags         |
 | footer       | Custom footer       |
 
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type { CardProps } from 'vant';
+```
+
 ## Theming
 
 ### CSS Variables
@@ -119,15 +127,15 @@ The component provides the following CSS variables, which can be used to customi
 | --van-card-padding | _var(--van-padding-xs) var(--van-padding-md)_ | - |
 | --van-card-font-size | _var(--van-font-size-sm)_ | - |
 | --van-card-text-color | _var(--van-text-color)_ | - |
-| --van-card-background-color | _var(--van-background-color-light)_ | - |
+| --van-card-background-color | _var(--van-gray-1)_ | - |
 | --van-card-thumb-size | _88px_ | - |
 | --van-card-thumb-border-radius | _var(--van-border-radius-lg)_ | - |
 | --van-card-title-line-height | _16px_ | - |
 | --van-card-desc-color | _var(--van-gray-7)_ | - |
 | --van-card-desc-line-height | _var(--van-line-height-md)_ | - |
 | --van-card-price-color | _var(--van-gray-8)_ | - |
-| --van-card-origin-price-color | _var(--van-gray-6)_ | - |
-| --van-card-num-color | _var(--van-gray-6)_ | - |
+| --van-card-origin-price-color | _var(--van-text-color-2)_ | - |
+| --van-card-num-color | _var(--van-text-color-2)_ | - |
 | --van-card-origin-price-font-size | _var(--van-font-size-xs)_ | - |
 | --van-card-price-font-size | _var(--van-font-size-sm)_ | - |
 | --van-card-price-integer-font-size | _var(--van-font-size-lg)_ | - |

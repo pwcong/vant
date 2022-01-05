@@ -38,6 +38,35 @@
     cursor: not-allowed;
   }
 
+  &--grow {
+    flex: 1 0 auto;
+    padding: 0 var(--van-padding-sm);
+  }
+
+  &--shrink {
+    flex: none;
+    padding: 0 var(--van-padding-xs);
+  }
+
+  &--card {
+    color: var(--van-tabs-default-color);
+    border-right: var(--van-border-width-base) solid
+      var(--van-tabs-default-color);
+
+    &:last-child {
+      border-right: none;
+    }
+
+    &.van-tab--active {
+      color: var(--van-white);
+      background-color: var(--van-tabs-default-color);
+    }
+
+    &--disabled {
+      color: var(--van-tab-disabled-text-color);
+    }
+  }
+
   &__text {
     &--ellipsis {
       display: -webkit-box;
@@ -62,30 +91,23 @@
       top: auto;
       bottom: 0;
     }
-
-    &--scrollable {
-      .van-tab {
-        flex: 1 0 auto;
-        padding: 0 var(--van-padding-sm);
-      }
-
-      .van-tabs__nav {
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-
-        &::-webkit-scrollbar {
-          display: none;
-        }
-      }
-    }
   }
 
   &__nav {
     position: relative;
     display: flex;
-    background-color: var(--van-tabs-nav-background-color);
+    background: var(--van-tabs-nav-background-color);
     user-select: none;
+
+    &--complete {
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
 
     &--line {
       box-sizing: content-box;
@@ -93,6 +115,7 @@
       padding-bottom: 15px; /* 15px padding to hide scrollbar in mobile safari */
     }
 
+    &--line&--shrink,
     &--line&--complete {
       padding-right: var(--van-padding-xs);
       padding-left: var(--van-padding-xs);
@@ -104,25 +127,10 @@
       margin: 0 var(--van-padding-md);
       border: var(--van-border-width-base) solid var(--van-tabs-default-color);
       border-radius: var(--van-border-radius-sm);
+    }
 
-      .van-tab {
-        color: var(--van-tabs-default-color);
-        border-right: var(--van-border-width-base) solid
-          var(--van-tabs-default-color);
-
-        &:last-child {
-          border-right: none;
-        }
-
-        &.van-tab--active {
-          color: var(--van-white);
-          background-color: var(--van-tabs-default-color);
-        }
-
-        &--disabled {
-          color: var(--van-tab-disabled-text-color);
-        }
-      }
+    &--card&--shrink {
+      display: inline-flex;
     }
   }
 
@@ -133,7 +141,7 @@
     z-index: 1;
     width: var(--van-tabs-bottom-bar-width);
     height: var(--van-tabs-bottom-bar-height);
-    background-color: var(--van-tabs-bottom-bar-color);
+    background: var(--van-tabs-bottom-bar-color);
     border-radius: var(--van-tabs-bottom-bar-height);
   }
 

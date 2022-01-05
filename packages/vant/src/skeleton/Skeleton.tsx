@@ -1,36 +1,44 @@
-import { PropType, defineComponent } from 'vue';
-import { addUnit, truthProp, getSizeStyle, createNamespace } from '../utils';
+import { defineComponent, type PropType, type ExtractPropTypes } from 'vue';
+import {
+  addUnit,
+  truthProp,
+  numericProp,
+  getSizeStyle,
+  makeStringProp,
+  makeNumericProp,
+  createNamespace,
+} from '../utils';
 
 const [name, bem] = createNamespace('skeleton');
 const DEFAULT_ROW_WIDTH = '100%';
 const DEFAULT_LAST_ROW_WIDTH = '60%';
 
+export type SkeletonAvatarShape = 'square' | 'round';
+
+const skeletonProps = {
+  row: makeNumericProp(0),
+  title: Boolean,
+  round: Boolean,
+  avatar: Boolean,
+  loading: truthProp,
+  animate: truthProp,
+  avatarSize: numericProp,
+  titleWidth: numericProp,
+  avatarShape: makeStringProp<SkeletonAvatarShape>('round'),
+  rowWidth: {
+    type: [Number, String, Array] as PropType<
+      number | string | (number | string)[]
+    >,
+    default: DEFAULT_ROW_WIDTH,
+  },
+};
+
+export type SkeletonProps = ExtractPropTypes<typeof skeletonProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    title: Boolean,
-    round: Boolean,
-    avatar: Boolean,
-    loading: truthProp,
-    animate: truthProp,
-    avatarSize: [Number, String],
-    titleWidth: [Number, String],
-    row: {
-      type: [Number, String],
-      default: 0,
-    },
-    avatarShape: {
-      type: String as PropType<'square' | 'round'>,
-      default: 'round',
-    },
-    rowWidth: {
-      type: [Number, String, Array] as PropType<
-        number | string | (number | string)[]
-      >,
-      default: DEFAULT_ROW_WIDTH,
-    },
-  },
+  props: skeletonProps,
 
   setup(props, { slots }) {
     const renderAvatar = () => {

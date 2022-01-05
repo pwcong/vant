@@ -209,7 +209,7 @@ export default {
   {
     // 导航名称
     text: '所有城市',
-    // 导航名称右上角徽标
+    // 导航名称右上角徽标
     badge: 3,
     // 是否在导航名称右上角显示小红点
     dot: true,
@@ -239,7 +239,7 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { TreeSelectItem, TreeSelectChild } from 'vant';
+import type { TreeSelectItem, TreeSelectChild, TreeSelectProps } from 'vant';
 ```
 
 ## 主题定制
@@ -252,7 +252,7 @@ import type { TreeSelectItem, TreeSelectChild } from 'vant';
 | --- | --- | --- |
 | --van-tree-select-font-size | _var(--van-font-size-md)_ | - |
 | --van-tree-select-nav-background-color | _var(--van-background-color)_ | - |
-| --van-tree-select-content-background-color | _var(--van-white)_ | - |
+| --van-tree-select-content-background-color | _var(--van-background-color-light)_ | - |
 | --van-tree-select-nav-item-padding | _14px var(--van-padding-sm)_ | - |
 | --van-tree-select-item-height | _48px_ | - |
 | --van-tree-select-item-active-color | _var(--van-danger-color)_ | - |

@@ -62,7 +62,7 @@ export default {
 
 ```html
 <van-dropdown-menu>
-  <van-dropdown-item v-model="value" :options="option" />
+  <van-dropdown-item v-model="value" :options="options" />
   <van-dropdown-item title="筛选" ref="item">
     <van-cell center title="包邮">
       <template #right-icon>
@@ -222,11 +222,11 @@ dropdownItemRef.value?.toggle();
 
 ### Option 数据结构
 
-| 键名  | 说明                                   | 类型               |
-| ----- | -------------------------------------- | ------------------ |
-| text  | 文字                                   | _string_           |
-| value | 标识符                                 | _number \| string_ |
-| icon  | 左侧[图标名称](#/zh-CN/icon)或图片链接 | _string_           |
+| 键名 | 说明 | 类型 |
+| --- | --- | --- |
+| text | 文字 | _string_ |
+| value | 标识符 | _number \| string_ |
+| icon | 左侧图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ |
 
 ## 主题定制
 
@@ -237,12 +237,12 @@ dropdownItemRef.value?.toggle();
 | 名称 | 默认值 | 描述 |
 | --- | --- | --- |
 | --van-dropdown-menu-height | _48px_ | - |
-| --van-dropdown-menu-background-color | _var(--van-white)_ | - |
+| --van-dropdown-menu-background-color | _var(--van-background-color-light)_ | - |
 | --van-dropdown-menu-box-shadow | _0 2px 12px fade(var(--van-gray-7), 12)_ | - |
 | --van-dropdown-menu-title-font-size | _15px_ | - |
 | --van-dropdown-menu-title-text-color | _var(--van-text-color)_ | - |
 | --van-dropdown-menu-title-active-text-color | _var(--van-danger-color)_ | - |
-| --van-dropdown-menu-title-disabled-text-color | _var(--van-gray-6)_ | - |
+| --van-dropdown-menu-title-disabled-text-color | _var(--van-text-color-2)_ | - |
 | --van-dropdown-menu-title-padding | _0 var(--van-padding-xs)_ | - |
 | --van-dropdown-menu-title-line-height | _var(--van-line-height-lg)_ | - |
 | --van-dropdown-menu-option-active-color | _var(--van-danger-color)_ | - |

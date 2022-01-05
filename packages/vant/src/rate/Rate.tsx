@@ -1,10 +1,19 @@
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, type ExtractPropTypes } from 'vue';
 
 // Utils
-import { addUnit, truthProp, createNamespace, preventDefault } from '../utils';
+import {
+  addUnit,
+  truthProp,
+  numericProp,
+  preventDefault,
+  makeStringProp,
+  makeNumberProp,
+  makeNumericProp,
+  createNamespace,
+} from '../utils';
 
 // Composables
-import { useCustomFieldValue } from '@vant/use';
+import { useRect, useCustomFieldValue } from '@vant/use';
 import { useRefs } from '../composables/use-refs';
 import { useTouch } from '../composables/use-touch';
 
@@ -45,37 +54,29 @@ function getRateStatus(
   return { status: 'void', value: 0 };
 }
 
+const rateProps = {
+  size: numericProp,
+  icon: makeStringProp('star'),
+  color: String,
+  count: makeNumericProp(5),
+  gutter: numericProp,
+  readonly: Boolean,
+  disabled: Boolean,
+  voidIcon: makeStringProp('star-o'),
+  allowHalf: Boolean,
+  voidColor: String,
+  touchable: truthProp,
+  iconPrefix: String,
+  modelValue: makeNumberProp(0),
+  disabledColor: String,
+};
+
+export type RateProps = ExtractPropTypes<typeof rateProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    size: [Number, String],
-    color: String,
-    gutter: [Number, String],
-    readonly: Boolean,
-    disabled: Boolean,
-    allowHalf: Boolean,
-    voidColor: String,
-    touchable: truthProp,
-    iconPrefix: String,
-    disabledColor: String,
-    modelValue: {
-      type: Number,
-      default: 0,
-    },
-    icon: {
-      type: String,
-      default: 'star',
-    },
-    voidIcon: {
-      type: String,
-      default: 'star-o',
-    },
-    count: {
-      type: [Number, String],
-      default: 5,
-    },
-  },
+  props: rateProps,
 
   emits: ['change', 'update:modelValue'],
 
@@ -102,7 +103,7 @@ export default defineComponent({
     let ranges: Array<{ left: number; score: number }>;
 
     const updateRanges = () => {
-      const rects = itemRefs.value.map((item) => item.getBoundingClientRect());
+      const rects = itemRefs.value.map(useRect);
 
       ranges = [];
       rects.forEach((rect, index) => {
@@ -194,8 +195,8 @@ export default defineComponent({
           role="radio"
           style={style}
           class={bem('item')}
-          tabindex={0}
-          aria-setsize={+count}
+          tabindex={disabled ? undefined : 0}
+          aria-setsize={count}
           aria-posinset={score}
           aria-checked={!isVoid}
           onClick={onClickItem}
@@ -230,7 +231,9 @@ export default defineComponent({
           readonly: props.readonly,
           disabled: props.disabled,
         })}
-        tabindex={0}
+        tabindex={props.disabled ? undefined : 0}
+        aria-disabled={props.disabled}
+        aria-readonly={props.readonly}
         onTouchstart={onTouchStart}
         onTouchmove={onTouchMove}
       >

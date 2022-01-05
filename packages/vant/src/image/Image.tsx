@@ -2,11 +2,13 @@ import {
   ref,
   watch,
   computed,
-  PropType,
-  CSSProperties,
   onBeforeUnmount,
   defineComponent,
   getCurrentInstance,
+  type Slot,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -15,6 +17,8 @@ import {
   addUnit,
   inBrowser,
   truthProp,
+  numericProp,
+  makeStringProp,
   createNamespace,
 } from '../utils';
 
@@ -25,31 +29,29 @@ const [name, bem] = createNamespace('image');
 
 export type ImageFit = 'contain' | 'cover' | 'fill' | 'none' | 'scale-down';
 
+const imageProps = {
+  src: String,
+  alt: String,
+  fit: String as PropType<ImageFit>,
+  round: Boolean,
+  width: numericProp,
+  height: numericProp,
+  radius: numericProp,
+  lazyLoad: Boolean,
+  iconSize: numericProp,
+  showError: truthProp,
+  errorIcon: makeStringProp('photo-fail'),
+  iconPrefix: String,
+  showLoading: truthProp,
+  loadingIcon: makeStringProp('photo'),
+};
+
+export type ImageProps = ExtractPropTypes<typeof imageProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    src: String,
-    alt: String,
-    fit: String as PropType<ImageFit>,
-    round: Boolean,
-    width: [Number, String],
-    height: [Number, String],
-    radius: [Number, String],
-    lazyLoad: Boolean,
-    iconSize: [Number, String],
-    showError: truthProp,
-    iconPrefix: String,
-    showLoading: truthProp,
-    errorIcon: {
-      type: String,
-      default: 'photo-fail',
-    },
-    loadingIcon: {
-      type: String,
-      default: 'photo',
-    },
-  },
+  props: imageProps,
 
   emits: ['load', 'error'],
 
@@ -61,15 +63,10 @@ export default defineComponent({
     const { $Lazyload } = getCurrentInstance()!.proxy!;
 
     const style = computed(() => {
-      const style: CSSProperties = {};
-
-      if (isDef(props.width)) {
-        style.width = addUnit(props.width);
-      }
-
-      if (isDef(props.height)) {
-        style.height = addUnit(props.height);
-      }
+      const style: CSSProperties = {
+        width: addUnit(props.width),
+        height: addUnit(props.height),
+      };
 
       if (isDef(props.radius)) {
         style.overflow = 'hidden';
@@ -98,31 +95,15 @@ export default defineComponent({
       emit('error', event);
     };
 
-    const renderLoadingIcon = () => {
-      if (slots.loading) {
-        return slots.loading();
+    const renderIcon = (name: string, className: unknown, slot?: Slot) => {
+      if (slot) {
+        return slot();
       }
-
       return (
         <Icon
+          name={name}
           size={props.iconSize}
-          name={props.loadingIcon}
-          class={bem('loading-icon')}
-          classPrefix={props.iconPrefix}
-        />
-      );
-    };
-
-    const renderErrorIcon = () => {
-      if (slots.error) {
-        return slots.error();
-      }
-
-      return (
-        <Icon
-          size={props.iconSize}
-          name={props.errorIcon}
-          class={bem('error-icon')}
+          class={className}
           classPrefix={props.iconPrefix}
         />
       );
@@ -130,10 +111,18 @@ export default defineComponent({
 
     const renderPlaceholder = () => {
       if (loading.value && props.showLoading) {
-        return <div class={bem('loading')}>{renderLoadingIcon()}</div>;
+        return (
+          <div class={bem('loading')}>
+            {renderIcon(props.loadingIcon, bem('loading-icon'), slots.loading)}
+          </div>
+        );
       }
       if (error.value && props.showError) {
-        return <div class={bem('error')}>{renderErrorIcon()}</div>;
+        return (
+          <div class={bem('error')}>
+            {renderIcon(props.errorIcon, bem('error-icon'), slots.error)}
+          </div>
+        );
       }
     };
 

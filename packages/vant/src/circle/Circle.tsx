@@ -1,14 +1,28 @@
-import { watch, computed, PropType, CSSProperties, defineComponent } from 'vue';
+import {
+  watch,
+  computed,
+  defineComponent,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes,
+} from 'vue';
 import { raf, cancelRaf } from '@vant/use';
-import { isObject, getSizeStyle, truthProp, createNamespace } from '../utils';
+import {
+  isObject,
+  truthProp,
+  numericProp,
+  getSizeStyle,
+  makeStringProp,
+  makeNumberProp,
+  makeNumericProp,
+  createNamespace,
+} from '../utils';
 
 const [name, bem] = createNamespace('circle');
 
 let uid = 0;
 
-function format(rate: string | number) {
-  return Math.min(Math.max(+rate, 0), 100);
-}
+const format = (rate: string | number) => Math.min(Math.max(+rate, 0), 100);
 
 function getPath(clockwise: boolean, viewBoxSize: number) {
   const sweepFlag = clockwise ? 1 : 0;
@@ -19,41 +33,27 @@ function getPath(clockwise: boolean, viewBoxSize: number) {
 
 export type CircleStartPosition = 'top' | 'right' | 'bottom' | 'left';
 
+const circleProps = {
+  text: String,
+  size: numericProp,
+  fill: makeStringProp('none'),
+  rate: makeNumericProp(100),
+  speed: makeNumericProp(0),
+  color: [String, Object] as PropType<string | Record<string, string>>,
+  clockwise: truthProp,
+  layerColor: String,
+  currentRate: makeNumberProp(0),
+  strokeWidth: makeNumericProp(40),
+  strokeLinecap: String as PropType<CanvasLineCap>,
+  startPosition: makeStringProp<CircleStartPosition>('top'),
+};
+
+export type CircleProps = ExtractPropTypes<typeof circleProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    text: String,
-    size: [Number, String],
-    color: [String, Object] as PropType<string | Record<string, string>>,
-    clockwise: truthProp,
-    layerColor: String,
-    strokeLinecap: String as PropType<CanvasLineCap>,
-    currentRate: {
-      type: Number,
-      default: 0,
-    },
-    speed: {
-      type: [Number, String],
-      default: 0,
-    },
-    fill: {
-      type: String,
-      default: 'none',
-    },
-    rate: {
-      type: [Number, String],
-      default: 100,
-    },
-    strokeWidth: {
-      type: [Number, String],
-      default: 40,
-    },
-    startPosition: {
-      type: String as PropType<CircleStartPosition>,
-      default: 'top',
-    },
-  },
+  props: circleProps,
 
   emits: ['update:currentRate'],
 

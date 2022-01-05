@@ -71,7 +71,7 @@ const onChange = (index: number) => Toast(`${t('title')} ${index + 1}`);
 
 <style lang="less">
 .demo-sidebar {
-  background-color: var(--van-white);
+  background-color: var(--van-background-color-light);
 
   .van-sidebar {
     margin-left: var(--van-padding-md);
@@ -79,7 +79,7 @@ const onChange = (index: number) => Toast(`${t('title')} ${index + 1}`);
 
   &-title {
     margin-bottom: 16px;
-    color: var(--van-gray-6);
+    color: var(--van-text-color-2);
     font-weight: normal;
     font-size: 14px;
   }

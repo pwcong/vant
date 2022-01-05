@@ -3,14 +3,14 @@ import {
   watch,
   computed,
   nextTick,
-  PropType,
   Teleport,
   onMounted,
-  InjectionKey,
-  CSSProperties,
-  TeleportProps,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type InjectionKey,
+  type CSSProperties,
+  type TeleportProps,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
@@ -18,8 +18,10 @@ import {
   isDef,
   isHidden,
   truthProp,
+  numericProp,
   getScrollTop,
   preventDefault,
+  makeNumberProp,
   createNamespace,
   getRootScrollTop,
   setRootScrollTop,
@@ -49,29 +51,26 @@ function genAlphabet() {
 
 const [name, bem] = createNamespace('index-bar');
 
-const props = {
+const indexBarProps = {
   sticky: truthProp,
-  zIndex: [Number, String],
+  zIndex: numericProp,
   teleport: [String, Object] as PropType<TeleportProps['to']>,
   highlightColor: String,
-  stickyOffsetTop: {
-    type: Number,
-    default: 0,
-  },
+  stickyOffsetTop: makeNumberProp(0),
   indexList: {
     type: Array as PropType<string[]>,
     default: genAlphabet,
   },
 };
 
-export type IndexBarProps = ExtractPropTypes<typeof props>;
+export type IndexBarProps = ExtractPropTypes<typeof indexBarProps>;
 
 export const INDEX_BAR_KEY: InjectionKey<IndexBarProvide> = Symbol(name);
 
 export default defineComponent({
   name,
 
-  props,
+  props: indexBarProps,
 
   emits: ['select', 'change'],
 
@@ -101,16 +100,6 @@ export default defineComponent({
       }
     });
 
-    const getScrollerRect = () => {
-      if ('getBoundingClientRect' in scrollParent.value!) {
-        return useRect(scrollParent);
-      }
-      return {
-        top: 0,
-        left: 0,
-      };
-    };
-
     const getActiveAnchor = (
       scrollTop: number,
       rects: Array<{ top: number; height: number }>
@@ -134,7 +123,7 @@ export default defineComponent({
 
       const { sticky, indexList } = props;
       const scrollTop = getScrollTop(scrollParent.value!);
-      const scrollParentRect = getScrollerRect();
+      const scrollParentRect = useRect(scrollParent);
 
       const rects = children.map((item) =>
         item.getRect(scrollParent.value, scrollParentRect)

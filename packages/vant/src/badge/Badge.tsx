@@ -1,29 +1,45 @@
-import { PropType, CSSProperties, defineComponent, computed } from 'vue';
+import {
+  computed,
+  defineComponent,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes,
+} from 'vue';
 import {
   isDef,
   addUnit,
   isNumeric,
   truthProp,
+  numericProp,
+  makeStringProp,
   createNamespace,
 } from '../utils';
 
 const [name, bem] = createNamespace('badge');
 
+export type BadgePosition =
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right';
+
+const badgeProps = {
+  dot: Boolean,
+  max: numericProp,
+  tag: makeStringProp<keyof HTMLElementTagNameMap>('div'),
+  color: String,
+  offset: Array as unknown as PropType<[string | number, string | number]>,
+  content: numericProp,
+  showZero: truthProp,
+  position: makeStringProp<BadgePosition>('top-right'),
+};
+
+export type BadgeProps = ExtractPropTypes<typeof badgeProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    dot: Boolean,
-    max: [Number, String],
-    color: String,
-    offset: Array as unknown as PropType<[string | number, string | number]>,
-    content: [Number, String],
-    showZero: truthProp,
-    tag: {
-      type: String as PropType<keyof HTMLElementTagNameMap>,
-      default: 'div',
-    },
-  },
+  props: badgeProps,
 
   setup(props, { slots }) {
     const hasContent = () => {
@@ -78,7 +94,10 @@ export default defineComponent({
       if (hasContent() || props.dot) {
         return (
           <div
-            class={bem({ dot: props.dot, fixed: !!slots.default })}
+            class={bem([
+              props.position,
+              { dot: props.dot, fixed: !!slots.default },
+            ])}
             style={style.value}
           >
             {renderContent()}

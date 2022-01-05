@@ -2,13 +2,13 @@ import {
   ref,
   watch,
   reactive,
-  PropType,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
-import { isDef, createNamespace } from '../utils';
+import { isDef, createNamespace, makeNumericProp } from '../utils';
 
 // Composables
 import {
@@ -29,10 +29,12 @@ import { NoticeBarMode } from './types';
 
 const [name, bem] = createNamespace('notice-bar');
 
-const props = {
+const noticeBarProps = {
   text: String,
   mode: String as PropType<NoticeBarMode>,
   color: String,
+  delay: makeNumericProp(1),
+  speed: makeNumericProp(60),
   leftIcon: String,
   wrapable: Boolean,
   background: String,
@@ -40,22 +42,14 @@ const props = {
     type: Boolean as PropType<boolean | null>,
     default: null,
   },
-  delay: {
-    type: [Number, String],
-    default: 1,
-  },
-  speed: {
-    type: [Number, String],
-    default: 60,
-  },
 };
 
-export type NoticeBarProps = ExtractPropTypes<typeof props>;
+export type NoticeBarProps = ExtractPropTypes<typeof noticeBarProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: noticeBarProps,
 
   emits: ['close', 'replay'],
 

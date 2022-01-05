@@ -188,7 +188,8 @@ export default {
 | closeIcon | 关闭图标名称或图片链接 | _string_ | `clear` |
 | closeIconPosition | 关闭图标位置，可选值为 `top-left`<br>`bottom-left` `bottom-right` | _string_ | `top-right` |
 | transition `v3.0.8` | 动画类名，等价于 [transition](https://v3.cn.vuejs.org/api/built-in-components.html#transition) 的 `name` 属性 | _string_ | `van-fade` |
-| overlay-style `v3.0.8` | 自定义遮罩层样式 | _object_ | - |
+| overlayClass `v3.2.8` | 自定义遮罩层类名 | _string \| Array \| object_ | - |
+| overlayStyle `v3.0.8` | 自定义遮罩层样式 | _object_ | - |
 | teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://v3.cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | - |
 
 ### Props
@@ -213,6 +214,7 @@ export default {
 | close-icon | 关闭图标名称或图片链接 | _string_ | `clear` |
 | close-icon-position | 关闭图标位置，可选值为 `top-left`<br>`bottom-left` `bottom-right` | _string_ | `top-right` |
 | transition `v3.0.8` | 动画类名，等价于 [transition](https://v3.cn.vuejs.org/api/built-in-components.html#transition) 的 `name` 属性 | _string_ | `van-fade` |
+| overlay-class `v3.2.8` | 自定义遮罩层类名 | _string \| Array \| object_ | - |
 | overlay-style `v3.0.8` | 自定义遮罩层样式 | _object_ | - |
 | teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://v3.cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | - |
 
@@ -297,7 +299,6 @@ imagePreviewRef.value?.swipeTo(1);
 | --van-image-preview-overlay-background-color | _rgba(0, 0, 0, 0.9)_ | - |
 | --van-image-preview-close-icon-size | _22px_ | - |
 | --van-image-preview-close-icon-color | _var(--van-gray-5)_ | - |
-| --van-image-preview-close-icon-active-color | _var(--van-gray-6)_ | - |
 | --van-image-preview-close-icon-margin | _var(--van-padding-md)_ | - |
 | --van-image-preview-close-icon-z-index | _1_ | - |
 

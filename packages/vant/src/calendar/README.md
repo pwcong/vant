@@ -330,13 +330,14 @@ Following props are supported when the type is multiple
 
 ### Slots
 
-| Name                  | Description               | SlotProps  |
-| --------------------- | ------------------------- | ---------- |
-| title                 | Custom title              | -          |
-| subtitle `v3.1.3`     | Custom subtitle           | -          |
-| footer                | Custom footer             | -          |
-| top-info `v3.0.17`    | Custom top info of day    | _day: Day_ |
-| bottom-info `v3.0.17` | Custom bottom info of day | _day: Day_ |
+| Name                  | Description               | SlotProps               |
+| --------------------- | ------------------------- | ----------------------- |
+| title                 | Custom title              | -                       |
+| subtitle `v3.1.3`     | Custom subtitle           | -                       |
+| footer                | Custom footer             | -                       |
+| confirm-text `v3.2.6` | Custom confirm text       | _{ disabled: boolean }_ |
+| top-info `v3.0.17`    | Custom top info of day    | _day: Day_              |
+| bottom-info `v3.0.17` | Custom bottom info of day | _day: Day_              |
 
 ### Methods
 
@@ -380,7 +381,7 @@ The component provides the following CSS variables, which can be used to customi
 
 | Name | Default Value | Description |
 | --- | --- | --- |
-| --van-calendar-background-color | _var(--van-white)_ | - |
+| --van-calendar-background-color | _var(--van-background-color-light)_ | - |
 | --van-calendar-popup-height | _80%_ | - |
 | --van-calendar-header-box-shadow | _0 2px 10px rgba(125, 126, 128, 0.16)_ | - |
 | --van-calendar-header-title-height | _44px_ | - |
@@ -402,6 +403,6 @@ The component provides the following CSS variables, which can be used to customi
 | --van-calendar-info-font-size | _var(--van-font-size-xs)_ | - |
 | --van-calendar-info-line-height | _var(--van-line-height-xs)_ | - |
 | --van-calendar-selected-day-background-color | _var(--van-danger-color)_ | - |
-| --van-calendar-day-disabled-color | _var(--van-gray-5)_ | - |
+| --van-calendar-day-disabled-color | _var(--van-text-color-3)_ | - |
 | --van-calendar-confirm-button-height | _36px_ | - |
 | --van-calendar-confirm-button-margin | _7px 0_ | - |

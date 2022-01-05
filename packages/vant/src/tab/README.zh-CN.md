@@ -37,7 +37,7 @@ import { ref } from 'vue';
 
 export default {
   setup() {
-    const active = ref(2);
+    const active = ref(0);
     return { active };
   },
 };
@@ -142,6 +142,18 @@ export default {
 ```
 
 > Tips: 如果页面顶部有其他内容，可以通过 offset-top 属性设置吸顶时与顶部的距离。
+
+### 收缩布局
+
+通过 `shrink` 属性可以开启收缩布局，开启后，所有的标签会向左侧收缩对齐。
+
+```html
+<van-tabs v-model:active="active" shrink>
+  <van-tab v-for="index in 4" :title="'选项 ' + index">
+    内容 {{ index }}
+  </van-tab>
+</van-tabs>
+```
 
 ### 自定义标签
 
@@ -249,6 +261,7 @@ export default {
 | border | 是否显示标签栏外边框，仅在 `type="line"` 时有效 | _boolean_ | `false` |
 | ellipsis | 是否省略过长的标题文字 | _boolean_ | `true` |
 | sticky | 是否使用粘性布局 | _boolean_ | `false` |
+| shrink `v3.2.8` | 是否开启左侧收缩布局 | _boolean_ | `false` |
 | swipeable | 是否开启手势左右滑动切换 | _boolean_ | `false` |
 | lazy-render | 是否开启延迟渲染（首次切换到标签时才触发内容渲染） | _boolean_ | `true` |
 | scrollspy | 是否开启滚动导航 | _boolean_ | `false` |
@@ -299,7 +312,7 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { TabsType, TabsProps, TabsInstance } from 'vant';
+import type { TabProps, TabsType, TabsProps, TabsInstance } from 'vant';
 ```
 
 `TabsInstance` 是组件实例的类型，用法如下：
@@ -334,20 +347,20 @@ tabsRef.value?.scrollTo(0);
 
 组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
 
-| 名称                            | 默认值                      | 描述 |
-| ------------------------------- | --------------------------- | ---- |
-| --van-tab-text-color            | _var(--van-gray-7)_         | -    |
-| --van-tab-active-text-color     | _var(--van-text-color)_     | -    |
-| --van-tab-disabled-text-color   | _var(--van-gray-5)_         | -    |
-| --van-tab-font-size             | _var(--van-font-size-md)_   | -    |
-| --van-tab-line-height           | _var(--van-line-height-md)_ | -    |
-| --van-tabs-default-color        | _var(--van-danger-color)_   | -    |
-| --van-tabs-line-height          | _44px_                      | -    |
-| --van-tabs-card-height          | _30px_                      | -    |
-| --van-tabs-nav-background-color | _var(--van-white)_          | -    |
-| --van-tabs-bottom-bar-width     | _40px_                      | -    |
-| --van-tabs-bottom-bar-height    | _3px_                       | -    |
-| --van-tabs-bottom-bar-color     | _var(--van-danger-color)_   | -    |
+| 名称                            | 默认值                              | 描述 |
+| ------------------------------- | ----------------------------------- | ---- |
+| --van-tab-text-color            | _var(--van-gray-7)_                 | -    |
+| --van-tab-active-text-color     | _var(--van-text-color)_             | -    |
+| --van-tab-disabled-text-color   | _var(--van-text-color-3)_           | -    |
+| --van-tab-font-size             | _var(--van-font-size-md)_           | -    |
+| --van-tab-line-height           | _var(--van-line-height-md)_         | -    |
+| --van-tabs-default-color        | _var(--van-danger-color)_           | -    |
+| --van-tabs-line-height          | _44px_                              | -    |
+| --van-tabs-card-height          | _30px_                              | -    |
+| --van-tabs-nav-background-color | _var(--van-background-color-light)_ | -    |
+| --van-tabs-bottom-bar-width     | _40px_                              | -    |
+| --van-tabs-bottom-bar-height    | _3px_                               | -    |
+| --van-tabs-bottom-bar-color     | _var(--van-danger-color)_           | -    |
 
 ## 常见问题
 

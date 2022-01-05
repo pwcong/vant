@@ -1,5 +1,6 @@
-import { computed, PropType, defineComponent } from 'vue';
-import { padZero, createNamespace } from '../utils';
+import { computed, defineComponent, type PropType } from 'vue';
+import { makeStringProp, createNamespace, makeRequiredProp } from '../utils';
+import { getDate, formatAmount, formatDiscount } from './utils';
 import { Checkbox } from '../checkbox';
 
 export type CouponInfo = {
@@ -20,37 +21,14 @@ export type CouponInfo = {
 
 const [name, bem, t] = createNamespace('coupon');
 
-function getDate(timeStamp: number) {
-  const date = new Date(timeStamp * 1000);
-  return `${date.getFullYear()}.${padZero(date.getMonth() + 1)}.${padZero(
-    date.getDate()
-  )}`;
-}
-
-function formatDiscount(discount: number) {
-  return (discount / 10).toFixed(discount % 10 === 0 ? 0 : 1);
-}
-
-function formatAmount(amount: number) {
-  return (amount / 100).toFixed(
-    amount % 100 === 0 ? 0 : amount % 10 === 0 ? 1 : 2
-  );
-}
-
 export default defineComponent({
   name,
 
   props: {
     chosen: Boolean,
+    coupon: makeRequiredProp<PropType<CouponInfo>>(Object),
     disabled: Boolean,
-    coupon: {
-      type: Object as PropType<CouponInfo>,
-      required: true,
-    },
-    currency: {
-      type: String,
-      default: '¥',
-    },
+    currency: makeStringProp('¥'),
   },
 
   setup(props) {

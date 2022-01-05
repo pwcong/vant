@@ -115,6 +115,7 @@ export default {
 | title | 内容 | _string_ | `''` |
 | dot | 是否显示右上角小红点 | _boolean_ | `false` |
 | badge | 图标右上角徽标的内容 | _number \| string_ | - |
+| badge-props `v3.2.8` | 自定义徽标的属性，传入的对象会被透传给 [Badge 组件的 props](#/zh-CN/badge#props) | _BadgeProps_ | - |
 | disabled | 是否禁用该项 | _boolean_ | `false` |
 | url | 点击后跳转的链接地址 | _string_ | - |
 | to | 点击后跳转的目标路由对象，等同于 vue-router 的 [to 属性](https://router.vuejs.org/zh/api/#to) | _string \| object_ | - |
@@ -132,6 +133,14 @@ export default {
 | ----- | ----------- |
 | title | 自定义标题  |
 
+### 类型定义
+
+组件导出以下类型定义：
+
+```ts
+import type { SidebarProps, SidebarItemProps } from 'vant';
+```
+
 ## 主题定制
 
 ### 样式变量
@@ -144,7 +153,7 @@ export default {
 | --van-sidebar-font-size | _var(--van-font-size-md)_ | - |
 | --van-sidebar-line-height | _var(--van-line-height-md)_ | - |
 | --van-sidebar-text-color | _var(--van-text-color)_ | - |
-| --van-sidebar-disabled-text-color | _var(--van-gray-5)_ | - |
+| --van-sidebar-disabled-text-color | _var(--van-text-color-3)_ | - |
 | --van-sidebar-padding | _20px var(--van-padding-sm)_ | - |
 | --van-sidebar-active-color | _var(--van-active-color)_ | - |
 | --van-sidebar-background-color | _var(--van-background-color)_ | - |
@@ -153,4 +162,4 @@ export default {
 | --van-sidebar-selected-border-width | _4px_ | - |
 | --van-sidebar-selected-border-height | _16px_ | - |
 | --van-sidebar-selected-border-color | _var(--van-danger-color)_ | - |
-| --van-sidebar-selected-background-color | _var(--van-white)_ | - |
+| --van-sidebar-selected-background-color | _var(--van-background-color-light)_ | - |

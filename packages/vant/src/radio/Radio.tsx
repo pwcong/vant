@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue';
+import { defineComponent, type ExtractPropTypes } from 'vue';
 
 // Utils
 import { pick, createNamespace } from '../utils';
@@ -8,7 +8,15 @@ import { RADIO_KEY } from '../radio-group/RadioGroup';
 import { useParent } from '@vant/use';
 
 // Components
-import Checker, { checkerProps } from '../checkbox/Checker';
+import Checker, {
+  checkerProps,
+  CheckerShape,
+  CheckerLabelPosition,
+} from '../checkbox/Checker';
+
+export type RadioShape = CheckerShape;
+export type RadioLabelPosition = CheckerLabelPosition;
+export type RadioProps = ExtractPropTypes<typeof checkerProps>;
 
 const [name, bem] = createNamespace('radio');
 

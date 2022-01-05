@@ -1,13 +1,20 @@
 import {
   ref,
   computed,
-  PropType,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
-import { addUnit, setScrollTop, createNamespace, pick } from '../utils';
+import {
+  pick,
+  addUnit,
+  numericProp,
+  setScrollTop,
+  createNamespace,
+  makeRequiredProp,
+} from '../utils';
 import { getMonthEndDay } from '../datetime-picker/utils';
 import {
   t,
@@ -19,7 +26,7 @@ import {
 } from './utils';
 
 // Composables
-import { useToggle } from '@vant/use';
+import { useRect, useToggle } from '@vant/use';
 import { useExpose } from '../composables/use-expose';
 import { useHeight } from '../composables/use-height';
 
@@ -31,11 +38,14 @@ import type { CalendarType, CalendarDayItem, CalendarDayType } from './types';
 
 const [name] = createNamespace('calendar-month');
 
-const props = {
+const calendarMonthProps = {
+  date: makeRequiredProp(Date),
   type: String as PropType<CalendarType>,
   color: String,
+  minDate: makeRequiredProp(Date),
+  maxDate: makeRequiredProp(Date),
   showMark: Boolean,
-  rowHeight: [Number, String],
+  rowHeight: numericProp,
   formatter: Function as PropType<(item: CalendarDayItem) => CalendarDayItem>,
   lazyRender: Boolean,
   currentDate: [Date, Array] as PropType<Date | Date[] | null>,
@@ -43,26 +53,14 @@ const props = {
   showSubtitle: Boolean,
   showMonthTitle: Boolean,
   firstDayOfWeek: Number,
-  date: {
-    type: Date,
-    required: true as const,
-  },
-  minDate: {
-    type: Date,
-    required: true as const,
-  },
-  maxDate: {
-    type: Date,
-    required: true as const,
-  },
 };
 
-export type CalendarMonthProps = ExtractPropTypes<typeof props>;
+export type CalendarMonthProps = ExtractPropTypes<typeof calendarMonthProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: calendarMonthProps,
 
   emits: ['click', 'update-height'],
 
@@ -90,19 +88,6 @@ export default defineComponent({
     const shouldRender = computed(() => visible.value || !props.lazyRender);
 
     const getTitle = () => title.value;
-
-    const scrollIntoView = (body: Element) => {
-      const el = props.showSubtitle ? daysRef.value : monthRef.value;
-
-      if (el) {
-        const scrollTop =
-          el.getBoundingClientRect().top -
-          body.getBoundingClientRect().top +
-          body.scrollTop;
-
-        setScrollTop(body, scrollTop);
-      }
-    };
 
     const getMultipleDayType = (day: Date) => {
       const isSelected = (date: Date) =>
@@ -245,6 +230,20 @@ export default defineComponent({
       days.value.filter((day) => day.type === 'disabled')
     );
 
+    const scrollToDate = (body: Element, targetDate: Date) => {
+      if (daysRef.value) {
+        const daysRect = useRect(daysRef.value);
+        const totalRows = placeholders.value.length;
+        const currentRow = Math.ceil((targetDate.getDate() + offset.value) / 7);
+        const rowOffset = ((currentRow - 1) * daysRect.height) / totalRows;
+
+        setScrollTop(
+          body,
+          daysRect.top + rowOffset + body.scrollTop - useRect(body).top
+        );
+      }
+    };
+
     const renderDay = (item: CalendarDayItem, index: number) => (
       <CalendarDay
         v-slots={pick(slots, ['top-info', 'bottom-info'])}
@@ -268,7 +267,7 @@ export default defineComponent({
       getTitle,
       getHeight: () => height.value,
       setVisible,
-      scrollIntoView,
+      scrollToDate,
       disabledDays,
     });
 

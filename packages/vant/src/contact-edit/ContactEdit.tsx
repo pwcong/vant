@@ -1,4 +1,10 @@
-import { watch, reactive, PropType, defineComponent } from 'vue';
+import {
+  watch,
+  reactive,
+  defineComponent,
+  type PropType,
+  type ExtractPropTypes,
+} from 'vue';
 
 // Utils
 import { isMobile, createNamespace, extend } from '../utils';
@@ -8,7 +14,6 @@ import { Cell } from '../cell';
 import { Form } from '../form';
 import { Field } from '../field';
 import { Button } from '../button';
-import { Dialog } from '../dialog';
 import { Switch } from '../switch';
 
 const [name, bem, t] = createNamespace('contact-edit');
@@ -24,24 +29,28 @@ const DEFAULT_CONTACT: ContactEditInfo = {
   name: '',
 };
 
+const contactEditProps = {
+  isEdit: Boolean,
+  isSaving: Boolean,
+  isDeleting: Boolean,
+  showSetDefault: Boolean,
+  setDefaultLabel: String,
+  contactInfo: {
+    type: Object as PropType<ContactEditInfo>,
+    default: () => extend({}, DEFAULT_CONTACT),
+  },
+  telValidator: {
+    type: Function as PropType<(val: string) => boolean>,
+    default: isMobile,
+  },
+};
+
+export type ContactEditProps = ExtractPropTypes<typeof contactEditProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    isEdit: Boolean,
-    isSaving: Boolean,
-    isDeleting: Boolean,
-    showSetDefault: Boolean,
-    setDefaultLabel: String,
-    contactInfo: {
-      type: Object as PropType<ContactEditInfo>,
-      default: () => extend({}, DEFAULT_CONTACT),
-    },
-    telValidator: {
-      type: Function as PropType<(val: string) => boolean>,
-      default: isMobile,
-    },
-  },
+  props: contactEditProps,
 
   emits: ['save', 'delete', 'change-default'],
 
@@ -54,10 +63,7 @@ export default defineComponent({
       }
     };
 
-    const onDelete = () =>
-      Dialog.confirm({
-        title: t('confirmDelete'),
-      }).then(() => emit('delete', contact));
+    const onDelete = () => emit('delete', contact);
 
     const renderButtons = () => (
       <div class={bem('buttons')}>

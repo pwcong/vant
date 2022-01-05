@@ -1,32 +1,33 @@
-import { defineComponent } from 'vue';
+import { defineComponent, type ExtractPropTypes } from 'vue';
 import {
   addUnit,
   truthProp,
+  numericProp,
   BORDER_LEFT,
+  makeStringProp,
   BORDER_SURROUND,
   createNamespace,
+  makeNumericProp,
 } from '../utils';
 
 const [name, bem] = createNamespace('password-input');
 
+const passwordInputProps = {
+  info: String,
+  mask: truthProp,
+  value: makeStringProp(''),
+  gutter: numericProp,
+  length: makeNumericProp(6),
+  focused: Boolean,
+  errorInfo: String,
+};
+
+export type PasswordInputProps = ExtractPropTypes<typeof passwordInputProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    info: String,
-    mask: truthProp,
-    gutter: [Number, String],
-    focused: Boolean,
-    errorInfo: String,
-    value: {
-      type: String,
-      default: '',
-    },
-    length: {
-      type: [Number, String],
-      default: 6,
-    },
-  },
+  props: passwordInputProps,
 
   emits: ['focus'],
 

@@ -1,12 +1,11 @@
+import fse from 'fs-extra';
+import { get } from 'lodash-es';
 import { sep, join } from 'path';
-import {
-  lstatSync,
-  existsSync,
-  readdirSync,
-  readFileSync,
-  outputFileSync,
-} from 'fs-extra';
-import { SRC_DIR, getVantConfig } from './constant';
+import { SRC_DIR, getVantConfig } from './constant.js';
+import type { InlineConfig } from 'vite';
+
+const { lstatSync, existsSync, readdirSync, readFileSync, outputFileSync } =
+  fse;
 
 export const EXT_REGEXP = /\.\w+$/;
 export const SFC_REGEXP = /\.(vue)$/;
@@ -132,6 +131,16 @@ export function smartOutputFile(filePath: string, content: string) {
   }
 
   outputFileSync(filePath, content);
+}
+
+export function mergeCustomViteConfig(config: InlineConfig) {
+  const vantConfig = getVantConfig();
+  const configureVite = get(vantConfig, 'build.configureVite');
+
+  if (configureVite) {
+    return configureVite(config);
+  }
+  return config;
 }
 
 export { getVantConfig };

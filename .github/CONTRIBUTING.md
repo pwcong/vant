@@ -26,12 +26,14 @@ It's welcomed to pull request, And there are some tips about that:
 
 ## Getting started
 
+You will need [Node.js >= 14](https://nodejs.org) and [pnpm](https://pnpm.io).
+
 ```bash
 git clone git@github.com:youzan/vant.git
 
-cd packages/vant && yarn
+# Install dependencies
+pnpm i
 
-npm run dev
-
-# open http://localhost:8080
+# Start development
+pnpm dev
 ```

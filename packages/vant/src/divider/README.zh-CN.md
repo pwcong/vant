@@ -84,7 +84,7 @@ app.use(Divider);
 组件导出以下类型定义：
 
 ```ts
-import type { DividerContentPosition } from 'vant';
+import type { DividerProps, DividerContentPosition } from 'vant';
 ```
 
 ## 主题定制
@@ -96,7 +96,7 @@ import type { DividerContentPosition } from 'vant';
 | 名称                              | 默认值                    | 描述 |
 | --------------------------------- | ------------------------- | ---- |
 | --van-divider-margin              | _var(--van-padding-md) 0_ | -    |
-| --van-divider-text-color          | _var(--van-gray-6)_       | -    |
+| --van-divider-text-color          | _var(--van-text-color-2)_ | -    |
 | --van-divider-font-size           | _var(--van-font-size-md)_ | -    |
 | --van-divider-line-height         | _24px_                    | -    |
 | --van-divider-border-color        | _var(--van-border-color)_ | -    |

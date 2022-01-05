@@ -25,9 +25,9 @@ Use `v-model` to control the name of active panels.
 
 ```html
 <van-collapse v-model="activeNames">
-  <van-collapse-item title="Title1" name="1">Content</van-collapse-item>
-  <van-collapse-item title="Title2" name="2">Content</van-collapse-item>
-  <van-collapse-item title="Title3" name="3">Content</van-collapse-item>
+  <van-collapse-item title="Title1" name="1">Content 1</van-collapse-item>
+  <van-collapse-item title="Title2" name="2">Content 2</van-collapse-item>
+  <van-collapse-item title="Title3" name="3">Content 3</van-collapse-item>
 </van-collapse>
 ```
 
@@ -48,9 +48,9 @@ In accordion mode, only one panel can be expanded at the same time.
 
 ```html
 <van-collapse v-model="activeName" accordion>
-  <van-collapse-item title="Title1" name="1">Content</van-collapse-item>
-  <van-collapse-item title="Title2" name="2">Content</van-collapse-item>
-  <van-collapse-item title="Title3" name="3">Content</van-collapse-item>
+  <van-collapse-item title="Title1" name="1">Content 1</van-collapse-item>
+  <van-collapse-item title="Title2" name="2">Content 2</van-collapse-item>
+  <van-collapse-item title="Title3" name="3">Content 3</van-collapse-item>
 </van-collapse>
 ```
 
@@ -71,12 +71,12 @@ Use the `disabled` prop to disable CollapseItem.
 
 ```html
 <van-collapse v-model="activeNames">
-  <van-collapse-item title="Title1" name="1">Content</van-collapse-item>
+  <van-collapse-item title="Title1" name="1">Content 1</van-collapse-item>
   <van-collapse-item title="Title2" name="2" disabled>
-    Content
+    Content 2
   </van-collapse-item>
   <van-collapse-item title="Title3" name="3" disabled>
-    Content
+    Content 3
   </van-collapse-item>
 </van-collapse>
 ```
@@ -89,10 +89,10 @@ Use the `disabled` prop to disable CollapseItem.
     <template #title>
       <div>Title1 <van-icon name="question-o" /></div>
     </template>
-    Content
+    Content 1
   </van-collapse-item>
   <van-collapse-item title="Title2" name="2" icon="shop-o">
-    Content
+    Content 2
   </van-collapse-item>
 </van-collapse>
 ```
@@ -155,7 +155,11 @@ Use [ref](https://v3.vuejs.org/guide/component-template-refs.html) to get Collap
 The component exports the following type definitions:
 
 ```ts
-import type { CollapseItemProps, CollapseItemInstance } from 'vant';
+import type {
+  CollapseProps,
+  CollapseItemProps,
+  CollapseItemInstance,
+} from 'vant';
 ```
 
 `CollapseItemInstance` is the type of component instance:
@@ -192,6 +196,6 @@ The component provides the following CSS variables, which can be used to customi
 | --van-collapse-item-content-padding | _var(--van-padding-sm) var(--van-padding-md)_ | - |
 | --van-collapse-item-content-font-size | _var(--van-font-size-md)_ | - |
 | --van-collapse-item-content-line-height | _1.5_ | - |
-| --van-collapse-item-content-text-color | _var(--van-gray-6)_ | - |
-| --van-collapse-item-content-background-color | _var(--van-white)_ | - |
-| --van-collapse-item-title-disabled-color | _var(--van-gray-5)_ | - |
+| --van-collapse-item-content-text-color | _var(--van-text-color-2)_ | - |
+| --van-collapse-item-content-background-color | _var(--van-background-color-light)_ | - |
+| --van-collapse-item-title-disabled-color | _var(--van-text-color-3)_ | - |

@@ -1,14 +1,22 @@
-import { ref, reactive, computed, CSSProperties, defineComponent } from 'vue';
+import {
+  ref,
+  reactive,
+  computed,
+  defineComponent,
+  type CSSProperties,
+  type ExtractPropTypes,
+} from 'vue';
 
 // Utils
 import {
   extend,
+  numericProp,
   BORDER_BOTTOM,
   getZIndexStyle,
   createNamespace,
 } from '../utils';
 import { INDEX_BAR_KEY } from '../index-bar/IndexBar';
-import { getScrollTop, getRootScrollTop } from '../utils/dom/scroll';
+import { getScrollTop, getRootScrollTop } from '../utils/dom';
 
 // Composables
 import { useRect, useParent } from '@vant/use';
@@ -16,12 +24,16 @@ import { useExpose } from '../composables/use-expose';
 
 const [name, bem] = createNamespace('index-anchor');
 
+const indexAnchorProps = {
+  index: numericProp,
+};
+
+export type IndexAnchorProps = ExtractPropTypes<typeof indexAnchorProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    index: [Number, String],
-  },
+  props: indexAnchorProps,
 
   setup(props, { slots }) {
     const state = reactive({

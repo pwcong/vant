@@ -1,7 +1,15 @@
-import { nextTick, PropType, defineComponent } from 'vue';
+import { nextTick, defineComponent, type ExtractPropTypes } from 'vue';
 
 // Utils
-import { pick, extend, truthProp, createNamespace } from '../utils';
+import {
+  pick,
+  extend,
+  truthProp,
+  makeArrayProp,
+  makeStringProp,
+  createNamespace,
+  HAPTICS_FEEDBACK,
+} from '../utils';
 
 // Components
 import { Icon } from '../icon';
@@ -21,24 +29,32 @@ export type ActionSheetAction = {
   className?: unknown;
 };
 
+const actionSheetProps = extend({}, popupSharedProps, {
+  title: String,
+  round: truthProp,
+  actions: makeArrayProp<ActionSheetAction>(),
+  closeIcon: makeStringProp('cross'),
+  closeable: truthProp,
+  cancelText: String,
+  description: String,
+  closeOnPopstate: truthProp,
+  closeOnClickAction: Boolean,
+  safeAreaInsetBottom: truthProp,
+});
+
+export type ActionSheetProps = ExtractPropTypes<typeof actionSheetProps>;
+
+const popupInheritKeys = [
+  ...popupSharedPropKeys,
+  'round',
+  'closeOnPopstate',
+  'safeAreaInsetBottom',
+] as const;
+
 export default defineComponent({
   name,
 
-  props: extend({}, popupSharedProps, {
-    title: String,
-    round: truthProp,
-    actions: Array as PropType<ActionSheetAction[]>,
-    closeable: truthProp,
-    cancelText: String,
-    description: String,
-    closeOnPopstate: Boolean,
-    closeOnClickAction: Boolean,
-    safeAreaInsetBottom: truthProp,
-    closeIcon: {
-      type: String,
-      default: 'cross',
-    },
-  }),
+  props: actionSheetProps,
 
   emits: ['select', 'cancel', 'update:show'],
 
@@ -58,7 +74,7 @@ export default defineComponent({
             {props.closeable && (
               <Icon
                 name={props.closeIcon}
-                class={bem('close')}
+                class={[bem('close'), HAPTICS_FEEDBACK]}
                 onClick={onCancel}
               />
             )}
@@ -78,18 +94,23 @@ export default defineComponent({
       }
     };
 
-    const renderOption = (item: ActionSheetAction, index: number) => {
-      const { name, color, subname, loading, callback, disabled, className } =
-        item;
+    const renderActionContent = (action: ActionSheetAction, index: number) => {
+      if (action.loading) {
+        return <Loading class={bem('loading-icon')} />;
+      }
 
-      const Content = loading ? (
-        <Loading class={bem('loading-icon')} />
-      ) : (
-        [
-          <span class={bem('name')}>{name}</span>,
-          subname && <div class={bem('subname')}>{subname}</div>,
-        ]
-      );
+      if (slots.action) {
+        return slots.action({ action, index });
+      }
+
+      return [
+        <span class={bem('name')}>{action.name}</span>,
+        action.subname && <div class={bem('subname')}>{action.subname}</div>,
+      ];
+    };
+
+    const renderAction = (action: ActionSheetAction, index: number) => {
+      const { color, loading, callback, disabled, className } = action;
 
       const onClick = () => {
         if (disabled || loading) {
@@ -97,14 +118,14 @@ export default defineComponent({
         }
 
         if (callback) {
-          callback(item);
+          callback(action);
         }
 
         if (props.closeOnClickAction) {
           updateShow(false);
         }
 
-        nextTick(() => emit('select', item, index));
+        nextTick(() => emit('select', action, index));
       };
 
       return (
@@ -114,7 +135,7 @@ export default defineComponent({
           class={[bem('item', { loading, disabled }), className]}
           onClick={onClick}
         >
-          {Content}
+          {renderActionContent(action, index)}
         </button>
       );
     };
@@ -128,25 +149,17 @@ export default defineComponent({
       }
     };
 
-    const renderOptions = () => {
-      if (props.actions) {
-        return props.actions.map(renderOption);
-      }
-    };
-
     return () => (
       <Popup
         class={bem()}
-        round={props.round}
         position="bottom"
-        safeAreaInsetBottom={props.safeAreaInsetBottom}
-        {...pick(props, popupSharedPropKeys)}
-        {...{ 'onUpdate:show': updateShow }}
+        onUpdate:show={updateShow}
+        {...pick(props, popupInheritKeys)}
       >
         {renderHeader()}
         {renderDescription()}
         <div class={bem('content')}>
-          {renderOptions()}
+          {props.actions.map(renderAction)}
           {slots.default?.()}
         </div>
         {renderCancel()}

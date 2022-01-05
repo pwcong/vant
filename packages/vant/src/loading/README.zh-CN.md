@@ -100,7 +100,7 @@ app.use(Loading);
 组件导出以下类型定义：
 
 ```ts
-import type { LoadingType } from 'vant';
+import type { LoadingType, LoadingProps } from 'vant';
 ```
 
 ## 主题定制
@@ -111,7 +111,7 @@ import type { LoadingType } from 'vant';
 
 | 名称                                     | 默认值                    | 描述 |
 | ---------------------------------------- | ------------------------- | ---- |
-| --van-loading-text-color                 | _var(--van-gray-6)_       | -    |
+| --van-loading-text-color                 | _var(--van-text-color-2)_ | -    |
 | --van-loading-text-font-size             | _var(--van-font-size-md)_ | -    |
 | --van-loading-spinner-color              | _var(--van-gray-5)_       | -    |
 | --van-loading-spinner-size               | _30px_                    | -    |

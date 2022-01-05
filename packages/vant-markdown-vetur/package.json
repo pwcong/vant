@@ -3,26 +3,32 @@
   "version": "2.2.0",
   "description": "simple parse markdown to vue component description for vetur auto-completion",
   "main": "lib/index.js",
-  "license": "MIT",
-  "repository": "https://github.com/youzan/vant/tree/dev/packages/vant-markdown-vetur",
-  "author": "zhangshuai",
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
-  },
   "files": [
     "lib"
   ],
   "scripts": {
     "dev": "tsc --watch",
-    "build": "tsc",
-    "release": "npm run build && npm publish"
+    "build": "rimraf ./lib && tsc",
+    "release": "pnpm build && npm publish",
+    "prepare": "pnpm build"
   },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/youzan/vant.git",
+    "directory": "packages/vant-markdown-vetur"
+  },
+  "bugs": "https://github.com/youzan/vant/issues",
+  "author": "zhangshuai",
+  "license": "MIT",
   "dependencies": {
     "fast-glob": "^3.2.2",
-    "fs-extra": "^9.0.0"
+    "fs-extra": "^10.0.0"
   },
   "devDependencies": {
-    "@types/fs-extra": "^8.1.0"
+    "@types/fs-extra": "^9.0.13"
   }
 }

@@ -233,7 +233,7 @@ In every tree object, `text` property defines `id` stands for the unique key whi
 The component exports the following type definitions:
 
 ```ts
-import type { TreeSelectItem, TreeSelectChild } from 'vant';
+import type { TreeSelectItem, TreeSelectChild, TreeSelectProps } from 'vant';
 ```
 
 ## Theming
@@ -246,7 +246,7 @@ The component provides the following CSS variables, which can be used to customi
 | --- | --- | --- |
 | --van-tree-select-font-size | _var(--van-font-size-md)_ | - |
 | --van-tree-select-nav-background-color | _var(--van-background-color)_ | - |
-| --van-tree-select-content-background-color | _var(--van-white)_ | - |
+| --van-tree-select-content-background-color | _var(--van-background-color-light)_ | - |
 | --van-tree-select-nav-item-padding | _14px var(--van-padding-sm)_ | - |
 | --van-tree-select-item-height | _48px_ | - |
 | --van-tree-select-item-active-color | _var(--van-danger-color)_ | - |

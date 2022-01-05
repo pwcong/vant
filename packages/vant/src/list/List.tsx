@@ -2,15 +2,20 @@ import {
   ref,
   watch,
   nextTick,
-  PropType,
   onUpdated,
   onMounted,
   defineComponent,
-  ExtractPropTypes,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
-import { isHidden, truthProp, createNamespace } from '../utils';
+import {
+  isHidden,
+  truthProp,
+  makeStringProp,
+  makeNumericProp,
+  createNamespace,
+} from '../utils';
 
 // Composables
 import { useRect, useScrollParent, useEventListener } from '@vant/use';
@@ -25,30 +30,24 @@ import type { ListExpose, ListDirection } from './types';
 
 const [name, bem, t] = createNamespace('list');
 
-const props = {
+const listProps = {
   error: Boolean,
+  offset: makeNumericProp(300),
   loading: Boolean,
   finished: Boolean,
   errorText: String,
+  direction: makeStringProp<ListDirection>('down'),
   loadingText: String,
   finishedText: String,
   immediateCheck: truthProp,
-  offset: {
-    type: [Number, String],
-    default: 300,
-  },
-  direction: {
-    type: String as PropType<ListDirection>,
-    default: 'down',
-  },
 };
 
-export type ListProps = ExtractPropTypes<typeof props>;
+export type ListProps = ExtractPropTypes<typeof listProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: listProps,
 
   emits: ['load', 'update:error', 'update:loading'],
 
@@ -116,7 +115,12 @@ export default defineComponent({
         const text = slots.error ? slots.error() : props.errorText;
         if (text) {
           return (
-            <div class={bem('error-text')} onClick={clickErrorText}>
+            <div
+              role="button"
+              class={bem('error-text')}
+              tabindex={0}
+              onClick={clickErrorText}
+            >
               {text}
             </div>
           );
@@ -140,10 +144,7 @@ export default defineComponent({
       }
     };
 
-    watch(
-      [() => props.loading, () => props.finished, () => props.error],
-      check
-    );
+    watch(() => [props.loading, props.finished, props.error], check);
 
     if (tabStatus) {
       watch(tabStatus, (tabActive) => {

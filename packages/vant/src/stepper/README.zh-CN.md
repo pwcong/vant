@@ -182,7 +182,7 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { StepperTheme } from 'vant';
+import type { StepperTheme, StepperProps } from 'vant';
 ```
 
 ## 主题定制
@@ -193,7 +193,6 @@ import type { StepperTheme } from 'vant';
 
 | 名称 | 默认值 | 描述 |
 | --- | --- | --- |
-| --van-stepper-active-color | _#e8e8e8_ | - |
 | --van-stepper-background-color | _var(--van-active-color)_ | - |
 | --van-stepper-button-icon-color | _var(--van-text-color)_ | - |
 | --van-stepper-button-disabled-color | _var(--van-background-color)_ | - |
@@ -204,7 +203,7 @@ import type { StepperTheme } from 'vant';
 | --van-stepper-input-font-size | _var(--van-font-size-md)_ | - |
 | --van-stepper-input-line-height | _normal_ | - |
 | --van-stepper-input-text-color | _var(--van-text-color)_ | - |
-| --van-stepper-input-disabled-text-color | _var(--van-gray-5)_ | - |
+| --van-stepper-input-disabled-text-color | _var(--van-text-color-3)_ | - |
 | --van-stepper-input-disabled-background-color | _var(--van-active-color)_ | - |
 | --van-stepper-border-radius | _var(--van-border-radius-md)_ | - |
 

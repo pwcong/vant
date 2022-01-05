@@ -1,5 +1,29 @@
 # 更新日志
 
+## v4.0.0-rc.4
+
+- 新增 CommonJS 格式的构建产物，分别为 `lib/[name].cjs.js` 和 `lib/[name].cjs.min.js`
+- 现在 ESModule 和 CommonJS 格式的产物会自动对外部依赖进行 external 处理
+- 修复 Windows 路径兼容问题
+
+## v4.0.0-rc.3
+
+### 不兼容更新
+
+- 支持的 node 版本范围提升到 `^14.16.0 || >=16.0.0`
+- babel preset 添加了 `cjs` 后缀，现在需要通过 `@vant/cli/preset.cjs` 引入
+- vant.config.js 重命名为 `vant.config.mjs`，由 commonJs 变更为 ESModule 格式
+
+### Features
+
+- 新增 build.configureWebpack 配置项
+
+### 依赖升级
+
+对以下依赖进行了大版本升级：
+
+- eslint v8
+
 ## v4.0.0-beta.6
 
 ### 不兼容更新
@@ -17,6 +41,8 @@
 ```bash
 yarn add sass
 ```
+
+- 为了避免 Phantom dependency，不再默认依赖 `@vue/test-utils`，使用时需要手动安装
 
 ### Features
 
@@ -266,7 +292,7 @@ yarn add sass
 
 `2020-12-01`
 
--  升级 docsearch 3，优化搜索框样式
+- 升级 docsearch 3，优化搜索框样式
 
 ## v3.0.0
 
@@ -449,7 +475,7 @@ yarn add sass
 
 `2020-01-15`
 
-- 优化 help 命令 
+- 优化 help 命令
 - 优化控制台输出信息
 
 ### v2.1.6

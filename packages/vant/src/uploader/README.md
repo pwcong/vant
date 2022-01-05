@@ -307,8 +307,8 @@ export default {
 | after-read | Hook after reading the file | _Function_ | - |
 | before-read | Hook before reading the file, return false to stop reading the file, can return Promise | _Function_ | - |
 | before-delete | Hook before delete the file, return false to stop reading the file, can return Promise | _Function_ | - |
-| max-size `v3.0.17` | Max size of file | _number \| string \| (file: File) => boolean_ | - |
-| max-count | Max count of image | _number \| string_ | - |
+| max-size `v3.0.17` | Max size of file | _number \| string \| (file: File) => boolean_ | `Infinity` |
+| max-count | Max count of image | _number \| string_ | `Infinity` |
 | result-type | Type of file read result, can be set to `file` `text` | _string_ | `dataUrl` |
 | upload-text | Upload text | _string_ | - |
 | image-fit | Preview image fit mode | _string_ | `cover` |
@@ -392,7 +392,7 @@ The component provides the following CSS variables, which can be used to customi
 | --van-uploader-size | _80px_ | - |
 | --van-uploader-icon-size | _24px_ | - |
 | --van-uploader-icon-color | _var(--van-gray-4)_ | - |
-| --van-uploader-text-color | _var(--van-gray-6)_ | - |
+| --van-uploader-text-color | _var(--van-text-color-2)_ | - |
 | --van-uploader-text-font-size | _var(--van-font-size-sm)_ | - |
 | --van-uploader-upload-background-color | _var(--van-gray-1)_ | - |
 | --van-uploader-upload-active-color | _var(--van-active-color)_ | - |

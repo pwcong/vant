@@ -241,7 +241,7 @@ export default {
 
 | Event | Description | Arguments |
 | --- | --- | --- |
-| select | Emitted when an action is clicked | _action: Action, index: number_ |
+| select | Emitted when an action is clicked | _action: PopoverAction, index: number_ |
 | open | Emitted when opening Popover | - |
 | close | Emitted when closing Popover | - |
 | opened | Emitted when Popover is opened | - |
@@ -250,10 +250,11 @@ export default {
 
 ### Slots
 
-| Name      | Description       |
-| --------- | ----------------- |
-| default   | Custom content    |
-| reference | Reference Element |
+| Name | Description | SlotProps |
+| --- | --- | --- |
+| default | Custom content | - |
+| reference | Reference Element | - |
+| action `v3.4.0` | Custom the content of option | _{ action: PopoverAction, index: number }_ |
 
 ### Types
 
@@ -261,6 +262,7 @@ The component exports the following type definitions:
 
 ```ts
 import type {
+  PopoverProps,
   PopoverTheme,
   PopoverAction,
   PopoverTrigger,
@@ -284,8 +286,8 @@ The component provides the following CSS variables, which can be used to customi
 | --van-popover-action-line-height | _var(--van-line-height-md)_ | - |
 | --van-popover-action-icon-size | _20px_ | - |
 | --van-popover-light-text-color | _var(--van-text-color)_ | - |
-| --van-popover-light-background-color | _var(--van-white)_ | - |
-| --van-popover-light-action-disabled-text-color | _var(--van-gray-5)_ | - |
+| --van-popover-light-background-color | _var(--van-background-color-light)_ | - |
+| --van-popover-light-action-disabled-text-color | _var(--van-text-color-3)_ | - |
 | --van-popover-dark-text-color | _var(--van-white)_ | - |
 | --van-popover-dark-background-color | _#4a4a4a_ | - |
-| --van-popover-dark-action-disabled-text-color | _var(--van-gray-6)_ | - |
+| --van-popover-dark-action-disabled-text-color | _var(--van-text-color-2)_ | - |

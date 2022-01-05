@@ -1,14 +1,23 @@
-import { ref, computed, PropType, CSSProperties, defineComponent } from 'vue';
+import {
+  ref,
+  computed,
+  defineComponent,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes,
+} from 'vue';
 
 // Utils
 import {
   clamp,
   addUnit,
   addNumber,
+  numericProp,
   getSizeStyle,
   preventDefault,
   stopPropagation,
   createNamespace,
+  makeNumericProp,
 } from '../utils';
 
 // Composables
@@ -21,43 +30,38 @@ type NumberRange = [number, number];
 
 type SliderValue = number | NumberRange;
 
+const sliderProps = {
+  min: makeNumericProp(0),
+  max: makeNumericProp(100),
+  step: makeNumericProp(1),
+  range: Boolean,
+  reverse: Boolean,
+  disabled: Boolean,
+  readonly: Boolean,
+  vertical: Boolean,
+  barHeight: numericProp,
+  buttonSize: numericProp,
+  activeColor: String,
+  inactiveColor: String,
+  modelValue: {
+    type: [Number, Array] as PropType<SliderValue>,
+    default: 0,
+  },
+};
+
+export type SliderProps = ExtractPropTypes<typeof sliderProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    range: Boolean,
-    reverse: Boolean,
-    disabled: Boolean,
-    readonly: Boolean,
-    vertical: Boolean,
-    barHeight: [Number, String],
-    buttonSize: [Number, String],
-    activeColor: String,
-    inactiveColor: String,
-    min: {
-      type: [Number, String],
-      default: 0,
-    },
-    max: {
-      type: [Number, String],
-      default: 100,
-    },
-    step: {
-      type: [Number, String],
-      default: 1,
-    },
-    modelValue: {
-      type: [Number, Array] as PropType<SliderValue>,
-      default: 0,
-    },
-  },
+  props: sliderProps,
 
   emits: ['change', 'drag-end', 'drag-start', 'update:modelValue'],
 
   setup(props, { emit, slots }) {
     let buttonIndex: 0 | 1;
+    let current: SliderValue;
     let startValue: SliderValue;
-    let currentValue: SliderValue;
 
     const root = ref<HTMLElement>();
     const dragStatus = ref<'start' | 'dragging' | ''>();
@@ -200,12 +204,12 @@ export default defineComponent({
       }
 
       touch.start(event);
-      currentValue = props.modelValue;
+      current = props.modelValue;
 
-      if (isRange(currentValue)) {
-        startValue = currentValue.map(format) as NumberRange;
+      if (isRange(current)) {
+        startValue = current.map(format) as NumberRange;
       } else {
-        startValue = format(currentValue);
+        startValue = format(current);
       }
 
       dragStatus.value = 'start';
@@ -235,11 +239,11 @@ export default defineComponent({
 
       if (isRange(startValue)) {
         const index = props.reverse ? 1 - buttonIndex : buttonIndex;
-        (currentValue as NumberRange)[index] = startValue[index] + diff;
+        (current as NumberRange)[index] = startValue[index] + diff;
       } else {
-        currentValue = startValue + diff;
+        current = startValue + diff;
       }
-      updateValue(currentValue);
+      updateValue(current);
     };
 
     const onTouchEnd = (event: TouchEvent) => {
@@ -248,7 +252,7 @@ export default defineComponent({
       }
 
       if (dragStatus.value === 'dragging') {
-        updateValue(currentValue, true);
+        updateValue(current, true);
         emit('drag-end', event);
       }
 
@@ -281,7 +285,7 @@ export default defineComponent({
     };
 
     const renderButton = (index?: 0 | 1) => {
-      const currentValue =
+      const current =
         typeof index === 'number'
           ? (props.modelValue as NumberRange)[index]
           : (props.modelValue as number);
@@ -290,10 +294,12 @@ export default defineComponent({
         <div
           role="slider"
           class={getButtonClassName(index)}
-          tabindex={props.disabled || props.readonly ? -1 : 0}
-          aria-valuemin={+props.min}
-          aria-valuenow={currentValue}
-          aria-valuemax={+props.max}
+          tabindex={props.disabled ? undefined : 0}
+          aria-valuemin={props.min}
+          aria-valuenow={current}
+          aria-valuemax={props.max}
+          aria-disabled={props.disabled || undefined}
+          aria-readonly={props.readonly || undefined}
           aria-orientation={props.vertical ? 'vertical' : 'horizontal'}
           onTouchstart={(event) => {
             if (typeof index === 'number') {
@@ -307,7 +313,7 @@ export default defineComponent({
           onTouchcancel={onTouchEnd}
           onClick={stopPropagation}
         >
-          {renderButtonContent(currentValue, index)}
+          {renderButtonContent(current, index)}
         </div>
       );
     };

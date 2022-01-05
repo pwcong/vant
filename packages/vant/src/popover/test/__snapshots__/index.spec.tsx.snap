@@ -3,6 +3,7 @@
 exports[`should allow to custom the className of action 1`] = `
 <div role="menuitem"
      class="van-popover__action foo"
+     tabindex="0"
 >
   <div class="van-popover__action-text van-hairline--bottom">
     Option
@@ -22,6 +23,7 @@ exports[`should change icon class prefix when using icon-prefix prop 1`] = `
     >
       <div role="menuitem"
            class="van-popover__action van-popover__action--with-icon"
+           tabindex="0"
       >
         <i class="van-badge__wrapper my-icon my-icon-success van-popover__action-icon">
         </i>
@@ -41,7 +43,7 @@ exports[`should locate to reference element when showed 1`] = `
 
 exports[`should locate to reference element when showed 2`] = `
 <transition-stub>
-  <div style="z-index: 2007; position: absolute; left: 0px; top: 8px; margin: 0px;"
+  <div style="z-index: 2007; position: absolute; left: 0px; top: 108px; margin: 0px;"
        class="van-popup van-popover van-popover--light"
        data-popper-placement="bottom"
   >
@@ -70,9 +72,18 @@ exports[`should locate to reference element when showed 3`] = `
 </transition-stub>
 `;
 
+exports[`should render action slot correctly 1`] = `
+<div role="menuitem"
+     class="van-popover__action"
+     tabindex="0"
+>
+  name: Text, index: 0
+</div>
+`;
+
 exports[`should watch placement prop and update location 1`] = `
 <transition-stub>
-  <div style="z-index: 2008; position: absolute; left: 0px; top: -8px; margin: 0px;"
+  <div style="z-index: 2008; position: absolute; left: 0px; top: -108px; margin: 0px;"
        class="van-popup van-popover van-popover--light"
        data-popper-placement="top"
   >

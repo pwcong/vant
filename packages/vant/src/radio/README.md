@@ -141,7 +141,7 @@ export default {
 
 ```html
 <van-radio-group v-model="checked">
-  <van-cell-group>
+  <van-cell-group inset>
     <van-cell title="Radio 1" clickable @click="checked = '1'">
       <template #right-icon>
         <van-radio name="1" />
@@ -154,6 +154,20 @@ export default {
     </van-cell>
   </van-cell-group>
 </van-radio-group>
+```
+
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type {
+  RadioProps,
+  RadioShape,
+  RadioGroupProps,
+  RadioLabelPosition,
+  RadioGroupDirection,
+} from 'vant';
 ```
 
 ## API
@@ -214,5 +228,5 @@ The component provides the following CSS variables, which can be used to customi
 | --van-radio-label-color | _var(--van-text-color)_ | - |
 | --van-radio-checked-icon-color | _var(--van-primary-color)_ | - |
 | --van-radio-disabled-icon-color | _var(--van-gray-5)_ | - |
-| --van-radio-disabled-label-color | _var(--van-gray-5)_ | - |
+| --van-radio-disabled-label-color | _var(--van-text-color-3)_ | - |
 | --van-radio-disabled-background-color | _var(--van-border-color)_ | - |

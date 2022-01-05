@@ -5,12 +5,13 @@ import {
   computed,
   onMounted,
   onActivated,
-  InjectionKey,
-  CSSProperties,
   onDeactivated,
   onBeforeUnmount,
   defineComponent,
-  ExtractPropTypes,
+  nextTick,
+  type ExtractPropTypes,
+  type CSSProperties,
+  type InjectionKey,
 } from 'vue';
 
 // Utils
@@ -18,17 +19,16 @@ import {
   clamp,
   isHidden,
   truthProp,
+  numericProp,
+  windowWidth,
+  windowHeight,
   preventDefault,
   createNamespace,
+  makeNumericProp,
 } from '../utils';
 
 // Composables
-import {
-  doubleRaf,
-  useChildren,
-  useWindowSize,
-  usePageVisibility,
-} from '@vant/use';
+import { doubleRaf, useChildren, usePageVisibility } from '@vant/use';
 import { useTouch } from '../composables/use-touch';
 import { useExpose } from '../composables/use-expose';
 import { onPopupReopen } from '../composables/on-popup-reopen';
@@ -38,38 +38,29 @@ import { SwipeState, SwipeExpose, SwipeProvide, SwipeToOptions } from './types';
 
 const [name, bem] = createNamespace('swipe');
 
-const props = {
+const swipeProps = {
   loop: truthProp,
-  width: [Number, String],
-  height: [Number, String],
+  width: numericProp,
+  height: numericProp,
   vertical: Boolean,
+  autoplay: makeNumericProp(0),
+  duration: makeNumericProp(500),
   touchable: truthProp,
   lazyRender: Boolean,
+  initialSwipe: makeNumericProp(0),
   indicatorColor: String,
   showIndicators: truthProp,
   stopPropagation: truthProp,
-  autoplay: {
-    type: [Number, String],
-    default: 0,
-  },
-  duration: {
-    type: [Number, String],
-    default: 500,
-  },
-  initialSwipe: {
-    type: [Number, String],
-    default: 0,
-  },
 };
 
-export type SwipeProps = ExtractPropTypes<typeof props>;
+export type SwipeProps = ExtractPropTypes<typeof swipeProps>;
 
 export const SWIPE_KEY: InjectionKey<SwipeProvide> = Symbol(name);
 
 export default defineComponent({
   name,
 
-  props,
+  props: swipeProps,
 
   emits: ['change'],
 
@@ -85,7 +76,6 @@ export default defineComponent({
     });
 
     const touch = useTouch();
-    const windowSize = useWindowSize();
     const { children, linkChildren } = useChildren(SWIPE_KEY);
 
     const count = computed(() => children.length);
@@ -259,28 +249,37 @@ export default defineComponent({
         return;
       }
 
-      if (!isHidden(root)) {
-        const rect = {
-          width: root.value.offsetWidth,
-          height: root.value.offsetHeight,
-        };
-        state.rect = rect;
-        state.width = +(props.width ?? rect.width);
-        state.height = +(props.height ?? rect.height);
+      const cb = () => {
+        if (!isHidden(root)) {
+          const rect = {
+            width: root.value!.offsetWidth,
+            height: root.value!.offsetHeight,
+          };
+          state.rect = rect;
+          state.width = +(props.width ?? rect.width);
+          state.height = +(props.height ?? rect.height);
+        }
+
+        if (count.value) {
+          active = Math.min(count.value - 1, active);
+        }
+
+        state.active = active;
+        state.swiping = true;
+        state.offset = getTargetOffset(active);
+        children.forEach((swipe) => {
+          swipe.setOffset(0);
+        });
+
+        autoplay();
+      };
+
+      // issue: https://github.com/youzan/vant/issues/10052
+      if (isHidden(root)) {
+        nextTick().then(cb);
+      } else {
+        cb();
       }
-
-      if (count.value) {
-        active = Math.min(count.value - 1, active);
-      }
-
-      state.active = active;
-      state.swiping = true;
-      state.offset = getTargetOffset(active);
-      children.forEach((swipe) => {
-        swipe.setOffset(0);
-      });
-
-      autoplay();
     };
 
     const resize = () => initialize(state.active);
@@ -387,6 +386,7 @@ export default defineComponent({
       if (slots.indicator) {
         return slots.indicator({
           active: activeIndicator.value,
+          total: count.value,
         });
       }
       if (props.showIndicators && count.value > 1) {
@@ -420,7 +420,7 @@ export default defineComponent({
 
     watch(count, () => initialize(state.active));
     watch(() => props.autoplay, autoplay);
-    watch([windowSize.width, windowSize.height], resize);
+    watch([windowWidth, windowHeight], resize);
     watch(usePageVisibility(), (visible) => {
       if (visible === 'visible') {
         autoplay();

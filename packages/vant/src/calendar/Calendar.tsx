@@ -2,14 +2,22 @@ import {
   ref,
   watch,
   computed,
-  PropType,
-  TeleportProps,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type TeleportProps,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
-import { pick, isDate, truthProp, getScrollTop } from '../utils';
+import {
+  pick,
+  isDate,
+  truthProp,
+  numericProp,
+  getScrollTop,
+  makeStringProp,
+  makeNumericProp,
+} from '../utils';
 import {
   t,
   bem,
@@ -45,18 +53,21 @@ import type {
   CalendarMonthInstance,
 } from './types';
 
-const props = {
+const calendarProps = {
   show: Boolean,
+  type: makeStringProp<CalendarType>('single'),
   title: String,
   color: String,
   round: truthProp,
   readonly: Boolean,
   poppable: truthProp,
+  maxRange: makeNumericProp(null),
+  position: makeStringProp<PopupPosition>('bottom'),
   teleport: [String, Object] as PropType<TeleportProps['to']>,
   showMark: truthProp,
   showTitle: truthProp,
   formatter: Function as PropType<(item: CalendarDayItem) => CalendarDayItem>,
-  rowHeight: [Number, String],
+  rowHeight: numericProp,
   confirmText: String,
   rangePrompt: String,
   lazyRender: truthProp,
@@ -65,21 +76,10 @@ const props = {
   allowSameDay: Boolean,
   showSubtitle: truthProp,
   closeOnPopstate: truthProp,
+  showRangePrompt: truthProp,
   confirmDisabledText: String,
   closeOnClickOverlay: truthProp,
   safeAreaInsetBottom: truthProp,
-  type: {
-    type: String as PropType<CalendarType>,
-    default: 'single',
-  },
-  position: {
-    type: String as PropType<PopupPosition>,
-    default: 'bottom',
-  },
-  maxRange: {
-    type: [Number, String],
-    default: null,
-  },
   minDate: {
     type: Date,
     validator: isDate,
@@ -94,22 +94,18 @@ const props = {
     },
   },
   firstDayOfWeek: {
-    type: [Number, String],
+    type: numericProp,
     default: 0,
     validator: (val: number) => val >= 0 && val <= 6,
   },
-  showRangePrompt: {
-    type: Boolean,
-    default: true,
-  },
 };
 
-export type CalendarProps = ExtractPropTypes<typeof props>;
+export type CalendarProps = ExtractPropTypes<typeof calendarProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: calendarProps,
 
   emits: [
     'select',
@@ -274,7 +270,7 @@ export default defineComponent({
         months.value.some((month, index) => {
           if (compareMonth(month, targetDate) === 0) {
             if (bodyRef.value) {
-              monthRefs.value[index].scrollIntoView(bodyRef.value);
+              monthRefs.value[index].scrollToDate(bodyRef.value, targetDate);
             }
             return true;
           }
@@ -286,8 +282,7 @@ export default defineComponent({
       });
     };
 
-    // scroll to current month
-    const scrollIntoView = () => {
+    const scrollToCurrentDate = () => {
       if (props.poppable && !props.show) {
         return;
       }
@@ -312,13 +307,13 @@ export default defineComponent({
         // add Math.floor to avoid decimal height issues
         // https://github.com/youzan/vant/issues/5640
         bodyHeight = Math.floor(useRect(bodyRef).height);
-        scrollIntoView();
+        scrollToCurrentDate();
       });
     };
 
     const reset = (date = getInitialDate()) => {
       currentDate.value = date;
-      scrollIntoView();
+      scrollToCurrentDate();
     };
 
     const checkRange = (date: [Date, Date]) => {
@@ -348,15 +343,11 @@ export default defineComponent({
         const valid = checkRange(date as [Date, Date]);
 
         if (!valid) {
-          // auto selected to max range if showConfirm
-          if (props.showConfirm) {
-            setCurrentDate([
-              (date as Date[])[0],
-              getDayByOffset((date as Date[])[0], +props.maxRange - 1),
-            ]);
-          } else {
-            setCurrentDate(date);
-          }
+          // auto selected to max range
+          setCurrentDate([
+            (date as Date[])[0],
+            getDayByOffset((date as Date[])[0], +props.maxRange - 1),
+          ]);
           return;
         }
       }
@@ -415,8 +406,7 @@ export default defineComponent({
             );
 
             if (disabledDay) {
-              const lastAbledEndDay = getPrevDay(disabledDay);
-              select([startDay, lastAbledEndDay]);
+              select([startDay, getPrevDay(disabledDay)]);
             } else {
               select([startDay, date], true);
             }
@@ -487,10 +477,9 @@ export default defineComponent({
       }
 
       if (props.showConfirm) {
-        const text = buttonDisabled.value
-          ? props.confirmDisabledText
-          : props.confirmText;
-
+        const slot = slots['confirm-text'];
+        const disabled = buttonDisabled.value;
+        const text = disabled ? props.confirmDisabledText : props.confirmText;
         return (
           <Button
             round
@@ -498,11 +487,11 @@ export default defineComponent({
             type="danger"
             color={props.color}
             class={bem('confirm')}
-            disabled={buttonDisabled.value}
+            disabled={disabled}
             nativeType="button"
             onClick={onConfirm}
           >
-            {text || t('confirm')}
+            {slot ? slot({ disabled }) : text || t('confirm')}
           </Button>
         );
       }
@@ -528,9 +517,9 @@ export default defineComponent({
           showTitle={props.showTitle}
           showSubtitle={props.showSubtitle}
           firstDayOfWeek={dayOffset.value}
-          onClick-subtitle={(event: MouseEvent) => {
-            emit('click-subtitle', event);
-          }}
+          onClick-subtitle={(event: MouseEvent) =>
+            emit('click-subtitle', event)
+          }
         />
         <div ref={bodyRef} class={bem('body')} onScroll={onScroll}>
           {months.value.map(renderMonth)}
@@ -542,15 +531,13 @@ export default defineComponent({
     watch(() => props.show, init);
     watch(
       () => [props.type, props.minDate, props.maxDate],
-      () => {
-        reset(getInitialDate(currentDate.value));
-      }
+      () => reset(getInitialDate(currentDate.value))
     );
     watch(
       () => props.defaultDate,
       (value = null) => {
         currentDate.value = value;
-        scrollIntoView();
+        scrollToCurrentDate();
       }
     );
 
@@ -565,6 +552,7 @@ export default defineComponent({
       if (props.poppable) {
         return (
           <Popup
+            v-slots={{ default: renderCalendar }}
             show={props.show}
             class={bem('popup')}
             round={props.round}
@@ -573,10 +561,8 @@ export default defineComponent({
             teleport={props.teleport}
             closeOnPopstate={props.closeOnPopstate}
             closeOnClickOverlay={props.closeOnClickOverlay}
-            {...{ 'onUpdate:show': updateShow }}
-          >
-            {renderCalendar()}
-          </Popup>
+            onUpdate:show={updateShow}
+          />
         );
       }
 

@@ -1,13 +1,13 @@
 import {
   watch,
-  PropType,
-  InjectionKey,
   defineComponent,
-  ExtractPropTypes,
+  type PropType,
+  type InjectionKey,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
-import { createNamespace } from '../utils';
+import { numericProp, createNamespace, makeArrayProp } from '../utils';
 
 // Composables
 import { useChildren, useCustomFieldValue } from '@vant/use';
@@ -23,19 +23,16 @@ import type {
 
 const [name, bem] = createNamespace('checkbox-group');
 
-const props = {
-  max: [Number, String],
+const checkboxGroupProps = {
+  max: numericProp,
   disabled: Boolean,
+  iconSize: numericProp,
   direction: String as PropType<CheckerDirection>,
-  iconSize: [Number, String],
+  modelValue: makeArrayProp<unknown>(),
   checkedColor: String,
-  modelValue: {
-    type: Array as PropType<unknown[]>,
-    default: () => [],
-  },
 };
 
-export type CheckboxGroupProps = ExtractPropTypes<typeof props>;
+export type CheckboxGroupProps = ExtractPropTypes<typeof checkboxGroupProps>;
 
 export const CHECKBOX_GROUP_KEY: InjectionKey<CheckboxGroupProvide> =
   Symbol(name);
@@ -43,7 +40,7 @@ export const CHECKBOX_GROUP_KEY: InjectionKey<CheckboxGroupProvide> =
 export default defineComponent({
   name,
 
-  props,
+  props: checkboxGroupProps,
 
   emits: ['change', 'update:modelValue'],
 

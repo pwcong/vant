@@ -124,7 +124,11 @@ const t = useTranslate({
   </demo-block>
 
   <demo-block :title="t('router')">
-    <van-button :text="t('urlRoute')" type="primary" url="/vant/mobile.html" />
+    <van-button
+      :text="t('urlRoute')"
+      type="primary"
+      url="https://github.com/youzan/vant"
+    />
     <van-button :text="t('vueRoute')" type="primary" to="index" />
   </demo-block>
 
@@ -140,7 +144,7 @@ const t = useTranslate({
 
 <style lang="less">
 .demo-button {
-  background: var(--van-white);
+  background: var(--van-background-color-light);
 
   .van-button {
     &--large {

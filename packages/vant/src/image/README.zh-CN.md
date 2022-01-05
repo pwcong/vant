@@ -111,12 +111,12 @@ app.use(Lazyload);
 | lazy-load | 是否开启图片懒加载，须配合 [Lazyload](#/zh-CN/lazyload) 组件使用 | _boolean_ | `false` |
 | show-error | 是否展示图片加载失败提示 | _boolean_ | `true` |
 | show-loading | 是否展示图片加载中提示 | _boolean_ | `true` |
-| error-icon | 失败时提示的[图标名称](#/zh-CN/icon)或图片链接 | _string_ | `photo-fail` |
-| loading-icon | 加载时提示的[图标名称](#/zh-CN/icon)或图片链接 | _string_ | `photo` |
+| error-icon | 失败时提示的图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ | `photo-fail` |
+| loading-icon | 加载时提示的图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ | `photo` |
 | icon-size `v3.0.11` | 加载图标和失败图标的大小 | _number \| string_ | `32px` |
 | icon-prefix | 图标类名前缀，等同于 Icon 组件的 [class-prefix 属性](#/zh-CN/icon#props) | _string_ | `van-icon` |
 
-### 图片填充模式 
+### 图片填充模式
 
 | 名称       | 含义                                                   |
 | ---------- | ------------------------------------------------------ |
@@ -147,7 +147,7 @@ app.use(Lazyload);
 组件导出以下类型定义：
 
 ```ts
-import type { ImageFit } from 'vant';
+import type { ImageFit, ImageProps } from 'vant';
 ```
 
 ## 主题定制
@@ -158,7 +158,7 @@ import type { ImageFit } from 'vant';
 
 | 名称 | 默认值 | 描述 |
 | --- | --- | --- |
-| --van-image-placeholder-text-color | _var(--van-gray-6)_ | - |
+| --van-image-placeholder-text-color | _var(--van-text-color-2)_ | - |
 | --van-image-placeholder-font-size | _var(--van-font-size-md)_ | - |
 | --van-image-placeholder-background-color | _var(--van-background-color)_ | - |
 | --van-image-loading-icon-size | _32px_ | - |

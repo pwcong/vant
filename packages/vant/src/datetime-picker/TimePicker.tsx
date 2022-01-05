@@ -8,8 +8,20 @@ import {
 } from 'vue';
 
 // Utils
-import { pick, clamp, extend, padZero, createNamespace } from '../utils';
-import { times, sharedProps, pickerKeys } from './utils';
+import {
+  pick,
+  clamp,
+  extend,
+  padZero,
+  createNamespace,
+  makeNumericProp,
+} from '../utils';
+import {
+  times,
+  sharedProps,
+  pickerInheritKeys,
+  proxyPickerMethods,
+} from './utils';
 
 // Composables
 import { useExpose } from '../composables/use-expose';
@@ -23,23 +35,11 @@ export default defineComponent({
   name,
 
   props: extend({}, sharedProps, {
+    minHour: makeNumericProp(0),
+    maxHour: makeNumericProp(23),
+    minMinute: makeNumericProp(0),
+    maxMinute: makeNumericProp(59),
     modelValue: String,
-    minHour: {
-      type: [Number, String],
-      default: 0,
-    },
-    maxHour: {
-      type: [Number, String],
-      default: 23,
-    },
-    minMinute: {
-      type: [Number, String],
-      default: 0,
-    },
-    maxMinute: {
-      type: [Number, String],
-      default: 59,
-    },
   }),
 
   emits: ['confirm', 'cancel', 'change', 'update:modelValue'],
@@ -165,7 +165,8 @@ export default defineComponent({
     );
 
     useExpose({
-      getPicker: () => picker.value,
+      getPicker: () =>
+        picker.value && proxyPickerMethods(picker.value, updateInnerValue),
     });
 
     return () => (
@@ -176,7 +177,7 @@ export default defineComponent({
         onChange={onChange}
         onCancel={onCancel}
         onConfirm={onConfirm}
-        {...pick(props, pickerKeys)}
+        {...pick(props, pickerInheritKeys)}
       />
     );
   },

@@ -149,6 +149,14 @@ export default {
 | valueDesc   | Value Text                          | _string_ |
 | unitDesc    | Unit Text                           | _string_ |
 
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type { CouponCellProps, CouponListProps } from 'vant';
+```
+
 ## Theming
 
 ### CSS Variables
@@ -160,7 +168,8 @@ The component provides the following CSS variables, which can be used to customi
 | --van-coupon-margin | _0 var(--van-padding-sm) var(--van-padding-sm)_ | - |
 | --van-coupon-content-height | _84px_ | - |
 | --van-coupon-content-padding | _14px 0_ | - |
-| --van-coupon-background-color | _var(--van-white)_ | - |
+| --van-coupon-content-text-color | _var(--van-text-color)_ | - |
+| --van-coupon-background-color | _var(--van-background-color-light)_ | - |
 | --van-coupon-active-background-color | _var(--van-active-color)_ | - |
 | --van-coupon-border-radius | _var(--van-border-radius-lg)_ | - |
 | --van-coupon-box-shadow | _0 0 4px rgba(0, 0, 0, 0.1)_ | - |
@@ -169,7 +178,7 @@ The component provides the following CSS variables, which can be used to customi
 | --van-coupon-amount-font-size | _30px_ | - |
 | --van-coupon-currency-font-size | _40%_ | - |
 | --van-coupon-name-font-size | _var(--van-font-size-md)_ | - |
-| --van-coupon-disabled-text-color | _var(--van-gray-6)_ | - |
+| --van-coupon-disabled-text-color | _var(--van-text-color-2)_ | - |
 | --van-coupon-description-padding | _var(--van-padding-xs) var(--van-padding-md)_ | - |
 | --van-coupon-description-border-color | _var(--van-border-color)_ | - |
 | --van-coupon-corner-checkbox-icon-color | _var(--van-danger-color)_ | - |
@@ -178,7 +187,7 @@ The component provides the following CSS variables, which can be used to customi
 | --van-coupon-list-exchange-button-height | _32px_ | - |
 | --van-coupon-list-close-button-height | _40px_ | - |
 | --van-coupon-list-empty-image-size | _200px_ | - |
-| --van-coupon-list-empty-tip-color | _var(--van-gray-6)_ | - |
+| --van-coupon-list-empty-tip-color | _var(--van-text-color-2)_ | - |
 | --van-coupon-list-empty-tip-font-size | _var(--van-font-size-md)_ | - |
 | --van-coupon-list-empty-tip-line-height | _var(--van-line-height-md)_ | - |
 | --van-coupon-cell-selected-text-color | _var(--van-text-color)_ | - |

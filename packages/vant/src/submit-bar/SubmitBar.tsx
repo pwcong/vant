@@ -1,5 +1,10 @@
-import { PropType, CSSProperties, defineComponent } from 'vue';
-import { truthProp, createNamespace } from '../utils';
+import { defineComponent, type PropType, type ExtractPropTypes } from 'vue';
+import {
+  truthProp,
+  makeStringProp,
+  makeNumericProp,
+  createNamespace,
+} from '../utils';
 
 // Components
 import { Icon } from '../icon';
@@ -7,34 +12,31 @@ import { Button, ButtonType } from '../button';
 
 const [name, bem, t] = createNamespace('submit-bar');
 
+export type SubmitBarTextAlign = 'left' | 'right';
+
+const submitBarProps = {
+  tip: String,
+  label: String,
+  price: Number,
+  tipIcon: String,
+  loading: Boolean,
+  currency: makeStringProp('¥'),
+  disabled: Boolean,
+  textAlign: String as PropType<SubmitBarTextAlign>,
+  buttonText: String,
+  buttonType: makeStringProp<ButtonType>('danger'),
+  buttonColor: String,
+  suffixLabel: String,
+  decimalLength: makeNumericProp(2),
+  safeAreaInsetBottom: truthProp,
+};
+
+export type SubmitBarProps = ExtractPropTypes<typeof submitBarProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    tip: String,
-    label: String,
-    price: Number,
-    tipIcon: String,
-    loading: Boolean,
-    disabled: Boolean,
-    textAlign: String as PropType<CSSProperties['textAlign']>,
-    buttonText: String,
-    buttonColor: String,
-    suffixLabel: String,
-    safeAreaInsetBottom: truthProp,
-    decimalLength: {
-      type: [Number, String],
-      default: 2,
-    },
-    currency: {
-      type: String,
-      default: '¥',
-    },
-    buttonType: {
-      type: String as PropType<ButtonType>,
-      default: 'danger',
-    },
-  },
+  props: submitBarProps,
 
   emits: ['submit'],
 

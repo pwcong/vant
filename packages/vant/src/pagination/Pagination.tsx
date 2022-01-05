@@ -1,5 +1,17 @@
-import { computed, watch, PropType, defineComponent } from 'vue';
-import { BORDER, createNamespace } from '../utils';
+import {
+  computed,
+  watchEffect,
+  defineComponent,
+  type ExtractPropTypes,
+} from 'vue';
+import {
+  clamp,
+  makeStringProp,
+  makeNumberProp,
+  makeNumericProp,
+  createNamespace,
+  BORDER_SURROUND,
+} from '../utils';
 
 const [name, bem, t] = createNamespace('pagination');
 
@@ -9,48 +21,32 @@ type PageItem = {
   active?: boolean;
 };
 
-function makePage(
+const makePage = (
   number: number,
   text: string | number,
   active?: boolean
-): PageItem {
-  return { number, text, active };
-}
+): PageItem => ({ number, text, active });
 
 export type PaginationMode = 'simple' | 'multi';
+
+const paginationProps = {
+  mode: makeStringProp<PaginationMode>('multi'),
+  prevText: String,
+  nextText: String,
+  pageCount: makeNumericProp(0),
+  modelValue: makeNumberProp(0),
+  totalItems: makeNumericProp(0),
+  showPageSize: makeNumericProp(5),
+  itemsPerPage: makeNumericProp(10),
+  forceEllipses: Boolean,
+};
+
+export type PaginationProps = ExtractPropTypes<typeof paginationProps>;
 
 export default defineComponent({
   name,
 
-  props: {
-    prevText: String,
-    nextText: String,
-    forceEllipses: Boolean,
-    mode: {
-      type: String as PropType<PaginationMode>,
-      default: 'multi',
-    },
-    modelValue: {
-      type: Number,
-      default: 0,
-    },
-    pageCount: {
-      type: [Number, String],
-      default: 0,
-    },
-    totalItems: {
-      type: [Number, String],
-      default: 0,
-    },
-    itemsPerPage: {
-      type: [Number, String],
-      default: 10,
-    },
-    showPageSize: {
-      type: [Number, String],
-      default: 5,
-    },
-  },
+  props: paginationProps,
 
   emits: ['change', 'update:modelValue'],
 
@@ -66,10 +62,6 @@ export default defineComponent({
       const pageCount = count.value;
       const showPageSize = +props.showPageSize;
       const { modelValue, forceEllipses } = props;
-
-      if (props.mode !== 'multi') {
-        return items;
-      }
 
       // Default page limits
       let startPage = 1;
@@ -111,85 +103,99 @@ export default defineComponent({
       return items;
     });
 
-    const select = (page: number, emitChange?: boolean) => {
-      page = Math.min(count.value, Math.max(1, page));
+    const updateModelValue = (value: number, emitChange?: boolean) => {
+      value = clamp(value, 1, count.value);
 
-      if (props.modelValue !== page) {
-        emit('update:modelValue', page);
+      if (props.modelValue !== value) {
+        emit('update:modelValue', value);
 
         if (emitChange) {
-          emit('change', page);
+          emit('change', value);
         }
       }
     };
 
-    watch(
-      () => props.modelValue,
-      (value) => {
-        select(value);
-      },
-      { immediate: true }
+    // format modelValue
+    watchEffect(() => updateModelValue(props.modelValue));
+
+    const renderDesc = () => (
+      <li class={bem('page-desc')}>
+        {slots.pageDesc
+          ? slots.pageDesc()
+          : `${props.modelValue}/${count.value}`}
+      </li>
     );
 
-    const renderDesc = () => {
-      if (props.mode !== 'multi') {
-        return (
-          <li class={bem('page-desc')}>
-            {slots.pageDesc
-              ? slots.pageDesc()
-              : `${props.modelValue}/${count.value}`}
-          </li>
-        );
-      }
-    };
-
-    return () => {
-      const value = props.modelValue;
-      const simple = props.mode !== 'multi';
-
-      const onSelect = (value: number) => () => select(value, true);
-
+    const renderPrevButton = () => {
+      const { mode, modelValue } = props;
+      const slot = slots['prev-text'];
+      const disabled = modelValue === 1;
       return (
-        <ul class={bem({ simple })}>
-          <li
-            class={[
-              bem('item', { disabled: value === 1 }),
-              bem('prev'),
-              BORDER,
-            ]}
-            onClick={onSelect(value - 1)}
+        <li
+          class={[
+            bem('item', { disabled, border: mode === 'simple', prev: true }),
+            BORDER_SURROUND,
+          ]}
+        >
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={() => updateModelValue(modelValue - 1, true)}
           >
-            {slots['prev-text']
-              ? slots['prev-text']()
-              : props.prevText || t('prev')}
-          </li>
-          {pages.value.map((page) => (
-            <li
-              class={[
-                bem('item', { active: page.active }),
-                bem('page'),
-                BORDER,
-              ]}
-              onClick={onSelect(page.number)}
-            >
-              {slots.page ? slots.page(page) : page.text}
-            </li>
-          ))}
-          {renderDesc()}
-          <li
-            class={[
-              bem('item', { disabled: value === count.value }),
-              bem('next'),
-              BORDER,
-            ]}
-            onClick={onSelect(value + 1)}
-          >
-            {slots['next-text']
-              ? slots['next-text']()
-              : props.nextText || t('next')}
-          </li>
-        </ul>
+            {slot ? slot() : props.prevText || t('prev')}
+          </button>
+        </li>
       );
     };
+
+    const renderNextButton = () => {
+      const { mode, modelValue } = props;
+      const slot = slots['next-text'];
+      const disabled = modelValue === count.value;
+      return (
+        <li
+          class={[
+            bem('item', { disabled, border: mode === 'simple', next: true }),
+            BORDER_SURROUND,
+          ]}
+        >
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={() => updateModelValue(modelValue + 1, true)}
+          >
+            {slot ? slot() : props.nextText || t('next')}
+          </button>
+        </li>
+      );
+    };
+
+    const renderPages = () =>
+      pages.value.map((page) => (
+        <li
+          class={[
+            bem('item', { active: page.active, page: true }),
+            BORDER_SURROUND,
+          ]}
+        >
+          <button
+            type="button"
+            aria-current={page.active || undefined}
+            onClick={() => updateModelValue(page.number, true)}
+          >
+            {slots.page ? slots.page(page) : page.text}
+          </button>
+        </li>
+      ));
+
+    return () => (
+      <nav role="navigation" class={bem()}>
+        <ul class={bem('items')}>
+          {renderPrevButton()}
+          {props.mode === 'simple' ? renderDesc() : renderPages()}
+          {renderNextButton()}
+        </ul>
+      </nav>
+    );
   },
 });

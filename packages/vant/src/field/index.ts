@@ -9,9 +9,18 @@ export type {
   FieldRule,
   FieldInstance,
   FieldTextAlign,
+  FieldRuleMessage,
   FieldClearTrigger,
   FieldFormatTrigger,
+  FieldRuleValidator,
+  FiledRuleFormatter,
   FieldValidateError,
   FieldAutosizeConfig,
   FieldValidateTrigger,
 } from './types';
+
+declare module 'vue' {
+  export interface GlobalComponents {
+    VanField: typeof Field;
+  }
+}

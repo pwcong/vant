@@ -1,11 +1,18 @@
-import { ref, CSSProperties, defineComponent } from 'vue';
+import {
+  ref,
+  defineComponent,
+  type CSSProperties,
+  type ExtractPropTypes,
+} from 'vue';
 
 // Utils
 import {
   truthProp,
+  numericProp,
   BORDER_BOTTOM,
   getZIndexStyle,
   createNamespace,
+  HAPTICS_FEEDBACK,
 } from '../utils';
 
 // Composables
@@ -16,20 +23,24 @@ import { Icon } from '../icon';
 
 const [name, bem] = createNamespace('nav-bar');
 
+const navBarProps = {
+  title: String,
+  fixed: Boolean,
+  zIndex: numericProp,
+  border: truthProp,
+  leftText: String,
+  rightText: String,
+  leftArrow: Boolean,
+  placeholder: Boolean,
+  safeAreaInsetTop: Boolean,
+};
+
+export type NavBarProps = ExtractPropTypes<typeof navBarProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    title: String,
-    fixed: Boolean,
-    zIndex: [Number, String],
-    border: truthProp,
-    leftText: String,
-    rightText: String,
-    leftArrow: Boolean,
-    placeholder: Boolean,
-    safeAreaInsetTop: Boolean,
-  },
+  props: navBarProps,
 
   emits: ['click-left', 'click-right'],
 
@@ -77,7 +88,10 @@ export default defineComponent({
         >
           <div class={bem('content')}>
             {hasLeft && (
-              <div class={bem('left')} onClick={onClickLeft}>
+              <div
+                class={[bem('left'), HAPTICS_FEEDBACK]}
+                onClick={onClickLeft}
+              >
                 {renderLeft()}
               </div>
             )}
@@ -85,7 +99,10 @@ export default defineComponent({
               {slots.title ? slots.title() : title}
             </div>
             {hasRight && (
-              <div class={bem('right')} onClick={onClickRight}>
+              <div
+                class={[bem('right'), HAPTICS_FEEDBACK]}
+                onClick={onClickRight}
+              >
                 {renderRight()}
               </div>
             )}

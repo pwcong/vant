@@ -120,8 +120,8 @@ export default {
   <van-swipe-item>2</van-swipe-item>
   <van-swipe-item>3</van-swipe-item>
   <van-swipe-item>4</van-swipe-item>
-  <template #indicator="{ active }">
-    <div class="custom-indicator">{{ active + 1 }}/4</div>
+  <template #indicator="{ active, total }">
+    <div class="custom-indicator">{{ active + 1 }}/{{ total }}</div>
   </template>
 </van-swipe>
 
@@ -206,10 +206,10 @@ swipeRef.value?.next();
 
 ### Swipe Slots
 
-| Name                | Description      | SlotProps            |
-| ------------------- | ---------------- | -------------------- |
-| default             | Content          | -                    |
-| indicator `v3.0.16` | Custom indicator | _{ active: number }_ |
+| Name               | Description      | SlotProps                           |
+| ------------------ | ---------------- | ----------------------------------- |
+| default            | Content          | -                                   |
+| indicator `v3.4.0` | Custom indicator | _{ active: number, total: number }_ |
 
 ## Theming
 

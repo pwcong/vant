@@ -4,7 +4,6 @@ import {
   computed,
   nextTick,
   onMounted,
-  PropType,
   defineComponent,
 } from 'vue';
 
@@ -15,14 +14,16 @@ import {
   extend,
   isDate,
   padZero,
+  makeStringProp,
   createNamespace,
 } from '../utils';
 import {
   times,
-  pickerKeys,
   sharedProps,
   getTrueValue,
   getMonthEndDay,
+  pickerInheritKeys,
+  proxyPickerMethods,
 } from './utils';
 
 // Composables
@@ -41,11 +42,8 @@ export default defineComponent({
   name,
 
   props: extend({}, sharedProps, {
+    type: makeStringProp<DatetimePickerType>('datetime'),
     modelValue: Date,
-    type: {
-      type: String as PropType<DatetimePickerType>,
-      default: 'datetime',
-    },
     minDate: {
       type: Date,
       default: () => new Date(currentYear - 10, 0, 1),
@@ -319,7 +317,8 @@ export default defineComponent({
     );
 
     useExpose({
-      getPicker: () => picker.value,
+      getPicker: () =>
+        picker.value && proxyPickerMethods(picker.value, updateInnerValue),
     });
 
     return () => (
@@ -330,7 +329,7 @@ export default defineComponent({
         onChange={onChange}
         onCancel={onCancel}
         onConfirm={onConfirm}
-        {...pick(props, pickerKeys)}
+        {...pick(props, pickerInheritKeys)}
       />
     );
   },

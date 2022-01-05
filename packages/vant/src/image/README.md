@@ -119,7 +119,7 @@ app.use(Lazyload);
 The component exports the following type definitions:
 
 ```ts
-import type { ImageFit } from 'vant';
+import type { ImageFit, ImageProps } from 'vant';
 ```
 
 ## Theming
@@ -130,7 +130,7 @@ The component provides the following CSS variables, which can be used to customi
 
 | Name | Default Value | Description |
 | --- | --- | --- |
-| --van-image-placeholder-text-color | _var(--van-gray-6)_ | - |
+| --van-image-placeholder-text-color | _var(--van-text-color-2)_ | - |
 | --van-image-placeholder-font-size | _var(--van-font-size-md)_ | - |
 | --van-image-placeholder-background-color | _var(--van-background-color)_ | - |
 | --van-image-loading-icon-size | _32px_ | - |

@@ -126,14 +126,22 @@ Use slots to custom tips.
 
 ### Slots
 
-| Name    | Description                           | SlotProps    |
-| ------- | ------------------------------------- | ------------ |
-| default | Default slot                          | -            |
-| normal  | Content of head when at normal status | -            |
-| pulling | Content of head when at pulling       | { distance } |
-| loosing | Content of head when at loosing       | { distance } |
-| loading | Content of head when at loading       | { distance } |
-| success | Content of head when succeed          | -            |
+| Name    | Description                           | SlotProps              |
+| ------- | ------------------------------------- | ---------------------- |
+| default | Default slot                          | -                      |
+| normal  | Content of head when at normal status | -                      |
+| pulling | Content of head when at pulling       | _{ distance: number }_ |
+| loosing | Content of head when at loosing       | _{ distance: number }_ |
+| loading | Content of head when at loading       | _{ distance: number }_ |
+| success | Content of head when succeed          | -                      |
+
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type { PullRefreshProps } from 'vant';
+```
 
 ## Theming
 
@@ -145,5 +153,5 @@ The component provides the following CSS variables, which can be used to customi
 | --- | --- | --- |
 | --van-pull-refresh-head-height | _50px_ | - |
 | --van-pull-refresh-head-font-size | _var(--van-font-size-md)_ | - |
-| --van-pull-refresh-head-text-color | _var(--van-gray-6)_ | - |
+| --van-pull-refresh-head-text-color | _var(--van-text-color-2)_ | - |
 | --van-pull-refresh-loading-icon-size | _16px_ | - |

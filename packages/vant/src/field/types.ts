@@ -1,14 +1,32 @@
+/* eslint-disable no-use-before-define */
 import type { ComputedRef, ComponentPublicInstance } from 'vue';
 import type { FieldProps } from './Field';
 
 export type FieldType =
   | 'tel'
+  | 'url'
+  | 'date'
+  | 'file'
   | 'text'
+  | 'time'
+  | 'week'
+  | 'color'
   | 'digit'
+  | 'email'
+  | 'image'
+  | 'month'
+  | 'radio'
+  | 'range'
+  | 'reset'
+  | 'button'
+  | 'hidden'
   | 'number'
   | 'search'
+  | 'submit'
+  | 'checkbox'
   | 'password'
-  | 'textarea';
+  | 'textarea'
+  | 'datetime-local';
 
 export type FieldTextAlign = 'left' | 'center' | 'right';
 
@@ -28,16 +46,24 @@ export type FieldValidateError = {
   message: string;
 };
 
+export type FieldRuleMessage =
+  | string
+  | ((value: any, rule: FieldRule) => string);
+
+export type FieldRuleValidator = (
+  value: any,
+  rule: FieldRule
+) => boolean | string | Promise<boolean | string>;
+
+export type FiledRuleFormatter = (value: any, rule: FieldRule) => string;
+
 export type FieldRule = {
   pattern?: RegExp;
   trigger?: FieldValidateTrigger;
-  message?: string | ((value: any, rule: FieldRule) => string);
+  message?: FieldRuleMessage;
   required?: boolean;
-  validator?: (
-    value: any,
-    rule: FieldRule
-  ) => boolean | string | Promise<boolean | string>;
-  formatter?: (value: any, rule: FieldRule) => string;
+  validator?: FieldRuleValidator;
+  formatter?: FiledRuleFormatter;
 };
 
 // Shared props of Field and Form
@@ -57,9 +83,7 @@ export type FieldExpose = {
     rules?: FieldRule[] | undefined
   ) => Promise<void | FieldValidateError>;
   resetValidation: () => void;
-  /**
-   * @private
-   */
+  /** @private */
   formValue: ComputedRef<unknown>;
 };
 

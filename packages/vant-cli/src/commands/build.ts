@@ -1,20 +1,20 @@
 import execa from 'execa';
 import { join, relative } from 'path';
-import { remove, copy, readdirSync, existsSync } from 'fs-extra';
-import { clean } from './clean';
-import { CSS_LANG } from '../common/css';
-import { ora, consola } from '../common/logger';
-import { installDependencies } from '../common/manager';
-import { compileJs } from '../compiler/compile-js';
-import { compileSfc } from '../compiler/compile-sfc';
-import { compileStyle } from '../compiler/compile-style';
-import { compilePackage } from '../compiler/compile-package';
-import { genPackageEntry } from '../compiler/gen-package-entry';
-import { genStyleDepsMap } from '../compiler/gen-style-deps-map';
-import { genComponentStyle } from '../compiler/gen-component-style';
-import { SRC_DIR, LIB_DIR, ES_DIR } from '../common/constant';
-import { genPackageStyle } from '../compiler/gen-package-style';
-import { genVeturConfig } from '../compiler/gen-vetur-config';
+import fse from 'fs-extra';
+import { clean } from './clean.js';
+import { CSS_LANG } from '../common/css.js';
+import { ora, consola } from '../common/logger.js';
+import { installDependencies } from '../common/manager.js';
+import { compileSfc } from '../compiler/compile-sfc.js';
+import { compileStyle } from '../compiler/compile-style.js';
+import { compileScript } from '../compiler/compile-script.js';
+import { compileBundles } from '../compiler/compile-bundles.js';
+import { genPackageEntry } from '../compiler/gen-package-entry.js';
+import { genStyleDepsMap } from '../compiler/gen-style-deps-map.js';
+import { genComponentStyle } from '../compiler/gen-component-style.js';
+import { SRC_DIR, LIB_DIR, ES_DIR } from '../common/constant.js';
+import { genPackageStyle } from '../compiler/gen-package-style.js';
+import { genVeturConfig } from '../compiler/gen-vetur-config.js';
 import {
   isDir,
   isSfc,
@@ -26,30 +26,30 @@ import {
   setNodeEnv,
   setModuleEnv,
   setBuildTarget,
-} from '../common';
+} from '../common/index.js';
+
+const { remove, copy, readdir, existsSync } = fse;
 
 async function compileFile(filePath: string) {
-  if (isSfc(filePath)) {
-    return compileSfc(filePath);
-  }
-
   if (isScript(filePath)) {
-    return compileJs(filePath);
+    return compileScript(filePath);
   }
-
   if (isStyle(filePath)) {
     return compileStyle(filePath);
   }
-
   if (isAsset(filePath)) {
     return Promise.resolve();
   }
-
   return remove(filePath);
 }
 
-async function compileDir(dir: string) {
-  const files = readdirSync(dir);
+/**
+ * Pre-compile
+ * 1. Remove unneeded dirs
+ * 2. compile sfc into scripts/styles
+ */
+async function preCompileDir(dir: string) {
+  const files = await readdir(dir);
 
   await Promise.all(
     files.map((filename) => {
@@ -58,19 +58,29 @@ async function compileDir(dir: string) {
       if (isDemoDir(filePath) || isTestDir(filePath)) {
         return remove(filePath);
       }
-
       if (isDir(filePath)) {
-        return compileDir(filePath);
+        return preCompileDir(filePath);
       }
+      if (isSfc(filePath)) {
+        return compileSfc(filePath);
+      }
+      return Promise.resolve();
+    })
+  );
+}
 
-      return compileFile(filePath);
+async function compileDir(dir: string) {
+  const files = await readdir(dir);
+  await Promise.all(
+    files.map((filename) => {
+      const filePath = join(dir, filename);
+      return isDir(filePath) ? compileDir(filePath) : compileFile(filePath);
     })
   );
 }
 
 async function copySourceCode() {
-  await copy(SRC_DIR, ES_DIR);
-  await copy(SRC_DIR, LIB_DIR);
+  return Promise.all([copy(SRC_DIR, ES_DIR), copy(SRC_DIR, LIB_DIR)]);
 }
 
 async function buildESMOutputs() {
@@ -86,6 +96,8 @@ async function buildCJSOutputs() {
 }
 
 async function buildTypeDeclarations() {
+  await Promise.all([preCompileDir(ES_DIR), preCompileDir(LIB_DIR)]);
+
   const tsConfig = join(process.cwd(), 'tsconfig.declaration.json');
 
   if (existsSync(tsConfig)) {
@@ -121,8 +133,7 @@ async function buildPackageStyleEntry() {
 
 async function buildBundledOutputs() {
   setModuleEnv('esmodule');
-  await compilePackage(false);
-  await compilePackage(true);
+  await compileBundles();
   genVeturConfig();
 }
 

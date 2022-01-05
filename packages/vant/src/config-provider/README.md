@@ -156,12 +156,14 @@ There are all **Basic Variables** below, for component CSS Variables, please ref
 --van-danger-color: var(--van-red);
 --van-warning-color: var(--van-orange);
 --van-text-color: var(--van-gray-8);
+--van-text-color-2: var(--van-gray-6);
+--van-text-color-3: var(--van-gray-5);
+--van-text-link-color: #576b95;
 --van-active-color: var(--van-gray-2);
---van-active-opacity: 0.7;
+--van-active-opacity: 0.6;
 --van-disabled-opacity: 0.5;
 --van-background-color: var(--van-gray-1);
---van-background-color-light: #fafafa;
---van-text-link-color: #576b95;
+--van-background-color-light: var(--van-white);
 
 // Padding
 --van-padding-base: 4px;
@@ -211,3 +213,11 @@ There are all **Basic Variables** below, for component CSS Variables, please ref
 | theme-vars           | Theme variables          | _object_ | -          |
 | tag `v3.1.2`         | HTML Tag of root element | _string_ | `div`      |
 | icon-prefix `v3.1.3` | Icon className prefix    | _string_ | `van-icon` |
+
+### Types
+
+The component exports the following type definitions:
+
+```ts
+import type { ConfigProviderProps } from 'vant';
+```

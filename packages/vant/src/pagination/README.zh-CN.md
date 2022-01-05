@@ -39,7 +39,7 @@ export default {
 
 ### 简单模式
 
- 将 `mode` 设置为 `simple` 来切换到简单模式，此时分页器不会展示具体的页码按钮。
+将 `mode` 设置为 `simple` 来切换到简单模式，此时分页器不会展示具体的页码按钮。
 
 ```html
 <van-pagination v-model="currentPage" :page-count="12" mode="simple" />
@@ -109,7 +109,7 @@ export default {
 组件导出以下类型定义：
 
 ```ts
-import type { PaginationMode } from 'vant';
+import type { PaginationMode, PaginationProps } from 'vant';
 ```
 
 ## 主题定制
@@ -126,6 +126,6 @@ import type { PaginationMode } from 'vant';
 | --van-pagination-item-default-color | _var(--van-primary-color)_ | - |
 | --van-pagination-item-disabled-color | _var(--van-gray-7)_ | - |
 | --van-pagination-item-disabled-background-color | _var(--van-background-color)_ | - |
-| --van-pagination-background-color | _var(--van-white)_ | - |
+| --van-pagination-background-color | _var(--van-background-color-light)_ | - |
 | --van-pagination-desc-color | _var(--van-gray-7)_ | - |
 | --van-pagination-disabled-opacity | _var(--van-disabled-opacity)_ | - |

@@ -1,21 +1,26 @@
 import {
   ref,
-  Slot,
   watch,
   computed,
   Teleport,
-  PropType,
   Transition,
-  TeleportProps,
   defineComponent,
+  type Slot,
+  type PropType,
+  type TeleportProps,
+  type ExtractPropTypes,
 } from 'vue';
 
 // Utils
 import {
   truthProp,
+  numericProp,
   getZIndexStyle,
+  makeStringProp,
+  makeNumericProp,
   stopPropagation,
   createNamespace,
+  HAPTICS_FEEDBACK,
 } from '../utils';
 
 // Composables
@@ -35,40 +40,35 @@ type KeyConfig = {
   wider?: boolean;
 };
 
+const numberKeyboardProps = {
+  show: Boolean,
+  title: String,
+  theme: makeStringProp<NumberKeyboardTheme>('default'),
+  zIndex: numericProp,
+  teleport: [String, Object] as PropType<TeleportProps['to']>,
+  maxlength: makeNumericProp(Infinity),
+  modelValue: makeStringProp(''),
+  transition: truthProp,
+  blurOnClose: truthProp,
+  showDeleteKey: truthProp,
+  randomKeyOrder: Boolean,
+  closeButtonText: String,
+  deleteButtonText: String,
+  closeButtonLoading: Boolean,
+  hideOnClickOutside: truthProp,
+  safeAreaInsetBottom: truthProp,
+  extraKey: {
+    type: [String, Array] as PropType<string | string[]>,
+    default: '',
+  },
+};
+
+export type NumberKeyboardProps = ExtractPropTypes<typeof numberKeyboardProps>;
+
 export default defineComponent({
   name,
 
-  props: {
-    show: Boolean,
-    title: String,
-    zIndex: [Number, String],
-    teleport: [String, Object] as PropType<TeleportProps['to']>,
-    transition: truthProp,
-    blurOnClose: truthProp,
-    showDeleteKey: truthProp,
-    randomKeyOrder: Boolean,
-    closeButtonText: String,
-    deleteButtonText: String,
-    closeButtonLoading: Boolean,
-    hideOnClickOutside: truthProp,
-    safeAreaInsetBottom: truthProp,
-    theme: {
-      type: String as PropType<NumberKeyboardTheme>,
-      default: 'default',
-    },
-    modelValue: {
-      type: String,
-      default: '',
-    },
-    extraKey: {
-      type: [String, Array] as PropType<string | string[]>,
-      default: '',
-    },
-    maxlength: {
-      type: [Number, String],
-      default: Number.MAX_VALUE,
-    },
-  },
+  props: numberKeyboardProps,
 
   emits: [
     'show',
@@ -182,7 +182,11 @@ export default defineComponent({
           {leftSlot && <span class={bem('title-left')}>{leftSlot()}</span>}
           {title && <h2 class={bem('title')}>{title}</h2>}
           {showClose && (
-            <button type="button" class={bem('close')} onClick={onClose}>
+            <button
+              type="button"
+              class={[bem('close'), HAPTICS_FEEDBACK]}
+              onClick={onClose}
+            >
               {closeButtonText}
             </button>
           )}

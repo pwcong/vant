@@ -1,7 +1,14 @@
-import { PropType, defineComponent, ExtractPropTypes } from 'vue';
+import { defineComponent, type PropType, type ExtractPropTypes } from 'vue';
 
 // Utils
-import { truthProp, FORM_KEY, createNamespace } from '../utils';
+import {
+  FORM_KEY,
+  truthProp,
+  numericProp,
+  preventDefault,
+  makeStringProp,
+  createNamespace,
+} from '../utils';
 
 // Composables
 import { useChildren } from '@vant/use';
@@ -17,31 +24,28 @@ import type { FormExpose } from './types';
 
 const [name, bem] = createNamespace('form');
 
-const props = {
+const formProps = {
   colon: Boolean,
   disabled: Boolean,
   readonly: Boolean,
   showError: Boolean,
-  labelWidth: [Number, String],
+  labelWidth: numericProp,
   labelAlign: String as PropType<FieldTextAlign>,
   inputAlign: String as PropType<FieldTextAlign>,
   scrollToError: Boolean,
   validateFirst: Boolean,
   submitOnEnter: truthProp,
+  validateTrigger: makeStringProp<FieldValidateTrigger>('onBlur'),
   showErrorMessage: truthProp,
   errorMessageAlign: String as PropType<FieldTextAlign>,
-  validateTrigger: {
-    type: String as PropType<FieldValidateTrigger>,
-    default: 'onBlur',
-  },
 };
 
-export type FormProps = ExtractPropTypes<typeof props>;
+export type FormProps = ExtractPropTypes<typeof formProps>;
 
 export default defineComponent({
   name,
 
-  props,
+  props: formProps,
 
   emits: ['submit', 'failed'],
 
@@ -167,7 +171,7 @@ export default defineComponent({
     };
 
     const onSubmit = (event: Event) => {
-      event.preventDefault();
+      preventDefault(event);
       submit();
     };
 

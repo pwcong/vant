@@ -112,7 +112,7 @@ app.use(Button);
 可以通过 `url` 属性进行 URL 跳转，或通过 `to` 属性进行路由跳转。
 
 ```html
-<van-button type="primary" url="/vant/mobile.html">URL 跳转</van-button>
+<van-button type="primary" url="https://github.com">URL 跳转</van-button>
 <van-button type="primary" to="index">路由跳转</van-button>
 ```
 
@@ -138,7 +138,7 @@ app.use(Button);
 | size | 尺寸，可选值为 `large` `small` `mini` | _string_ | `normal` |
 | text | 按钮文字 | _string_ | - |
 | color | 按钮颜色，支持传入 `linear-gradient` 渐变色 | _string_ | - |
-| icon | 左侧[图标名称](#/zh-CN/icon)或图片链接 | _string_ | - |
+| icon | 左侧图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ | - |
 | icon-prefix | 图标类名前缀，等同于 Icon 组件的 [class-prefix 属性](#/zh-CN/icon#props) | _string_ | `van-icon` |
 | icon-position | 图标展示位置，可选值为 `right` | _string_ | `left` |
 | tag | 按钮根节点的 HTML 标签 | _string_ | `button` |
@@ -177,7 +177,13 @@ app.use(Button);
 组件导出以下类型定义：
 
 ```ts
-import type { ButtonType, ButtonSize } from 'vant';
+import type {
+  ButtonType,
+  ButtonSize,
+  ButtonProps,
+  ButtonNativeType,
+  ButtonIconPosition,
+} from 'vant';
 ```
 
 ## 主题定制
@@ -201,7 +207,7 @@ import type { ButtonType, ButtonSize } from 'vant';
 | --van-button-default-line-height | _1.2_ | - |
 | --van-button-default-font-size | _var(--van-font-size-lg)_ | - |
 | --van-button-default-color | _var(--van-text-color)_ | - |
-| --van-button-default-background-color | _var(--van-white)_ | - |
+| --van-button-default-background-color | _var(--van-background-color-light)_ | - |
 | --van-button-default-border-color | _var(--van-border-color)_ | - |
 | --van-button-primary-color | _var(--van-white)_ | - |
 | --van-button-primary-background-color | _var(--van-primary-color)_ | - |

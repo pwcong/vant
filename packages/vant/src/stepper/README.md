@@ -162,7 +162,7 @@ export default {
 The component exports the following type definitions:
 
 ```ts
-import type { StepperTheme } from 'vant';
+import type { StepperTheme, StepperProps } from 'vant';
 ```
 
 ## Theming
@@ -173,7 +173,6 @@ The component provides the following CSS variables, which can be used to customi
 
 | Name | Default Value | Description |
 | --- | --- | --- |
-| --van-stepper-active-color | _#e8e8e8_ | - |
 | --van-stepper-background-color | _var(--van-active-color)_ | - |
 | --van-stepper-button-icon-color | _var(--van-text-color)_ | - |
 | --van-stepper-button-disabled-color | _var(--van-background-color)_ | - |
@@ -184,6 +183,6 @@ The component provides the following CSS variables, which can be used to customi
 | --van-stepper-input-font-size | _var(--van-font-size-md)_ | - |
 | --van-stepper-input-line-height | _normal_ | - |
 | --van-stepper-input-text-color | _var(--van-text-color)_ | - |
-| --van-stepper-input-disabled-text-color | _var(--van-gray-5)_ | - |
+| --van-stepper-input-disabled-text-color | _var(--van-text-color-3)_ | - |
 | --van-stepper-input-disabled-background-color | _var(--van-active-color)_ | - |
 | --van-stepper-border-radius | _var(--van-border-radius-md)_ | - |

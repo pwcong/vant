@@ -10,6 +10,7 @@ function getMockRouter() {
   const $route = reactive({
     name: '/',
     path: '/',
+    matched: [{ name: '/', path: '/' }],
   });
   const push = (val: unknown) => {
     if (typeof val === 'string') {
@@ -18,6 +19,7 @@ function getMockRouter() {
     } else {
       Object.assign($route, val);
     }
+    $route.matched = [{ name: $route.name, path: $route.path }];
   };
   const $router = {
     push,
@@ -67,6 +69,34 @@ test('should match active tab by route path in route mode', async () => {
 
   await items[3].trigger('click');
   expect(items[3].classes()).not.toContain(activeClass);
+});
+
+test('should allow to use before-change prop in route mode', async () => {
+  const wrapper = mount(
+    {
+      render: () => (
+        <Tabbar route beforeChange={() => false}>
+          <TabbarItem replace to="/">
+            Tab
+          </TabbarItem>
+          <TabbarItem replace to="/search">
+            Tab
+          </TabbarItem>
+        </Tabbar>
+      ),
+    },
+    {
+      global: {
+        mocks: getMockRouter(),
+      },
+    }
+  );
+
+  const items = wrapper.findAll('.van-tabbar-item');
+  expect(items[0].classes()).toContain(activeClass);
+
+  await items[1].trigger('click');
+  expect(items[1].classes()).not.toContain(activeClass);
 });
 
 test('should match active tab by route name in route mode', async () => {
@@ -168,4 +198,22 @@ test('should render placeholder element when using placeholder prop', async () =
   await later();
   expect(wrapper.html()).toMatchSnapshot();
   restore();
+});
+
+test('should render badge-props prop correctly', async () => {
+  const wrapper = mount({
+    render() {
+      return (
+        <Tabbar>
+          <TabbarItem badge={0} badgeProps={{ color: 'blue' }}>
+            Tab
+          </TabbarItem>
+        </Tabbar>
+      );
+    },
+  });
+
+  await nextTick();
+  const badge = wrapper.find('.van-badge');
+  expect(badge.style.backgroundColor).toEqual('blue');
 });

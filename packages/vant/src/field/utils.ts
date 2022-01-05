@@ -1,6 +1,5 @@
 import { HTMLAttributes, InputHTMLAttributes } from 'vue';
 import {
-  trigger,
   isObject,
   isPromise,
   isFunction,
@@ -50,15 +49,14 @@ export function getRuleMessage(value: unknown, rule: FieldRule) {
   return message || '';
 }
 
-export function startComposing(event: Event) {
-  event.target!.composing = true;
+export function startComposing({ target }: Event) {
+  target!.composing = true;
 }
 
-export function endComposing(event: Event) {
-  const { target } = event;
+export function endComposing({ target }: Event) {
   if (target!.composing) {
     target!.composing = false;
-    trigger(target as Element, 'input');
+    target!.dispatchEvent(new Event('input'));
   }
 }
 
@@ -108,4 +106,15 @@ export function mapInputType(type: FieldType): {
   }
 
   return { type };
+}
+
+// get correct length of emoji
+// https://github.com/youzan/vant/issues/10032
+export function getStringLength(str: string) {
+  return [...str].length;
+}
+
+// cut string with emoji
+export function cutString(str: string, maxlength: number) {
+  return [...str].slice(0, maxlength).join('');
 }

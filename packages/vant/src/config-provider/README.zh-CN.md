@@ -120,7 +120,7 @@ Vant 中的 CSS 变量分为 **基础变量** 和 **组件变量**。组件变�
 
 #### 修改变量
 
-由于 CSS 变量继承机制的原因， 两者的修改方式有一定差异：
+由于 CSS 变量继承机制的原因，两者的修改方式有一定差异：
 
 - 基础变量只能通过 `root 选择器` 修改，不能通过 `ConfigProvider 组件` 修改。
 - 组件变量可以通过 `root 选择器` 和 `ConfigProvider 组件` 修改。
@@ -158,12 +158,14 @@ Vant 中的 CSS 变量分为 **基础变量** 和 **组件变量**。组件变�
 --van-danger-color: var(--van-red);
 --van-warning-color: var(--van-orange);
 --van-text-color: var(--van-gray-8);
+--van-text-color-2: var(--van-gray-6);
+--van-text-color-3: var(--van-gray-5);
+--van-text-link-color: #576b95;
 --van-active-color: var(--van-gray-2);
---van-active-opacity: 0.7;
+--van-active-opacity: 0.6;
 --van-disabled-opacity: 0.5;
 --van-background-color: var(--van-gray-1);
---van-background-color-light: #fafafa;
---van-text-link-color: #576b95;
+--van-background-color-light: var(--van-white);
 
 // Padding
 --van-padding-base: 4px;
@@ -215,3 +217,11 @@ Vant 中的 CSS 变量分为 **基础变量** 和 **组件变量**。组件变�
 | theme-vars | 自定义主题变量 | _object_ | - |
 | tag `v3.1.2` | 根节点对应的 HTML 标签名 | _string_ | `div` |
 | icon-prefix `v3.1.3` | 所有图标的类名前缀，等同于 Icon 组件的 [class-prefix 属性](#/zh-CN/icon#props) | _string_ | `van-icon` |
+
+### 类型定义
+
+组件导出以下类型定义：
+
+```ts
+import type { ConfigProviderProps } from 'vant';
+```
