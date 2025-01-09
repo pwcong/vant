@@ -3,8 +3,8 @@ import VanCell from '../../cell';
 import VanField from '../../field';
 import VanNumberKeyboard from '..';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
-import { Toast } from '../../toast';
+import { useTranslate } from '../../../docs/site';
+import { showToast } from '../../toast';
 
 const t = useTranslate({
   'zh-CN': {
@@ -44,8 +44,8 @@ const t = useTranslate({
 const value = ref('');
 const keyboard = ref('default');
 
-const onInput = (value: string) => Toast(`${t('input')}: ${value}`);
-const onDelete = () => Toast(t('delete'));
+const onInput = (value: string) => showToast(`${t('input')}: ${value}`);
+const onDelete = () => showToast(t('delete'));
 const isTest = process.env.NODE_ENV === 'test';
 </script>
 

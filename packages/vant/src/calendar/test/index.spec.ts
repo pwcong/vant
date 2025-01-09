@@ -65,7 +65,7 @@ test('select event when type is single', async () => {
   wrapper.findAll('.van-calendar__day')[15].trigger('click');
 
   expect(wrapper.emitted<[Date]>('select')![0][0]).toEqual(
-    new Date(2010, 0, 16)
+    new Date(2010, 0, 16),
   );
 });
 
@@ -166,7 +166,7 @@ test('select event when type is multiple', async () => {
   days[15].trigger('click');
 
   expect(wrapper.emitted<[Date]>('unselect')![0][0]).toEqual(
-    new Date(2010, 0, 16)
+    new Date(2010, 0, 16),
   );
 });
 
@@ -187,6 +187,26 @@ test('should not trigger select event when click disabled day', async () => {
   expect(wrapper.emitted('select')).toBeFalsy();
 });
 
+test('should trigger click-disabled-date event when click disabled day', async () => {
+  const fn = vi.fn();
+  const wrapper = mount(Calendar, {
+    props: {
+      minDate,
+      maxDate,
+      poppable: false,
+      lazyRender: false,
+      onClickDisabledDate: fn,
+    },
+  });
+
+  await later();
+
+  const disabeldDate = wrapper.findAll('.van-calendar__day--disabled')[0];
+  expect(disabeldDate).toBeDefined();
+  await disabeldDate.trigger('click');
+  expect(fn).toHaveBeenCalled();
+});
+
 test('confirm event when type is single', async () => {
   const wrapper = mount(Calendar, {
     props: {
@@ -205,7 +225,7 @@ test('confirm event when type is single', async () => {
 
   wrapper.find('.van-calendar__confirm').trigger('click');
   expect(wrapper.emitted<[Date]>('confirm')![0][0]).toEqual(
-    new Date(2010, 0, 16)
+    new Date(2010, 0, 16),
   );
 });
 
@@ -305,7 +325,7 @@ test('row-height prop', async () => {
 
   await later();
 
-  expect(wrapper.html()).toMatchSnapshot();
+  expect(wrapper.find('.van-calendar__day').style.height).toEqual('50px');
 });
 
 test('formatter prop', async () => {
@@ -339,7 +359,7 @@ test('formatter prop', async () => {
     },
   });
 
-  await later();
+  await later(50);
 
   expect(wrapper.html()).toMatchSnapshot();
 });
@@ -360,9 +380,49 @@ test('should render title、footer、subtitle slot correctly', async () => {
     },
   });
 
-  await later();
+  await later(50);
 
   expect(wrapper.html()).toMatchSnapshot();
+});
+
+test('should render subtitle slot with params', async () => {
+  const wrapper = mount(Calendar, {
+    props: {
+      minDate,
+      maxDate,
+      poppable: false,
+      defaultDate: minDate,
+      lazyRender: false,
+    },
+    slots: {
+      subtitle: ({ text }) => `Custom Subtitle ${text}`,
+    },
+  });
+
+  await later(50);
+
+  expect(
+    wrapper.find('.van-calendar__header-subtitle').html(),
+  ).toMatchSnapshot();
+});
+
+test('should render month-title slot correctly', async () => {
+  const wrapper = mount(Calendar, {
+    props: {
+      minDate,
+      maxDate: new Date(2010, 1, 20),
+      poppable: false,
+      defaultDate: minDate,
+      lazyRender: false,
+    },
+    slots: {
+      'month-title': () => ` Custom Month Title`,
+    },
+  });
+
+  await later(50);
+
+  expect(wrapper.find('.van-calendar__month-title').html()).toMatchSnapshot();
 });
 
 test('should reset when type changed', async () => {
@@ -380,7 +440,7 @@ test('should reset when type changed', async () => {
 
   wrapper.find('.van-calendar__confirm').trigger('click');
   expect(wrapper.emitted<[Date]>('confirm')![0][0]).toEqual(
-    new Date(2010, 0, 10)
+    new Date(2010, 0, 10),
   );
 
   await wrapper.setProps({
@@ -409,13 +469,13 @@ test('default-date prop in single type', async () => {
 
   wrapper.find('.van-calendar__confirm').trigger('click');
   expect(wrapper.emitted<[Date]>('confirm')![0][0]).toEqual(
-    new Date(2010, 0, 11)
+    new Date(2010, 0, 11),
   );
 
   await wrapper.setProps({ defaultDate: maxDate });
   wrapper.find('.van-calendar__confirm').trigger('click');
   expect(wrapper.emitted<[Date]>('confirm')![1][0]).toEqual(
-    new Date(2010, 0, 20)
+    new Date(2010, 0, 20),
   );
 });
 
@@ -459,11 +519,11 @@ test('popup wrapper', async () => {
     },
   });
 
-  await later();
+  await later(50);
   expect(wrapper.html()).toMatchSnapshot();
 
   await wrapper.setProps({ show: true });
-  await later();
+  await later(50);
 
   expect(wrapper.html()).toMatchSnapshot();
 
@@ -501,7 +561,9 @@ test('color prop when type is single', async () => {
 
   await later();
 
-  expect(wrapper.html()).toMatchSnapshot();
+  expect(wrapper.find('.van-calendar__selected-day').style.background).toEqual(
+    'blue',
+  );
 });
 
 test('color prop when type is range', async () => {
@@ -516,13 +578,21 @@ test('color prop when type is range', async () => {
     },
   });
 
-  await later();
+  await later(50);
 
-  expect(wrapper.html()).toMatchSnapshot();
+  expect(wrapper.find('.van-calendar__day--start').style.background).toEqual(
+    'blue',
+  );
+  expect(wrapper.find('.van-calendar__day--middle').style.color).toEqual(
+    'blue',
+  );
+  expect(wrapper.find('.van-calendar__day--end').style.background).toEqual(
+    'blue',
+  );
 });
 
 test('close event', async () => {
-  const onClose = jest.fn();
+  const onClose = vi.fn();
   const wrapper = mount(Calendar, {
     props: {
       show: true,
@@ -535,7 +605,7 @@ test('close event', async () => {
   expect(onClose).toHaveBeenCalledTimes(1);
 });
 
-test('should render top-info and bottom-info slot correctly', async () => {
+test('should render top-info, bottom-info and text slot correctly', async () => {
   const wrapper = mount(Calendar, {
     props: {
       minDate,
@@ -547,15 +617,16 @@ test('should render top-info and bottom-info slot correctly', async () => {
     slots: {
       'top-info': (item) => 'top: ' + item.text,
       'bottom-info': (item) => 'bottom: ' + item.text,
+      text: (item) => 'text: ' + item.text,
     },
   });
 
-  await later();
+  await later(50);
 
   expect(wrapper.find('.van-calendar__day').html()).toMatchSnapshot();
 });
 
-test('should emit click-subtitle event when clicking the subtitle', async () => {
+test('should emit clickSubtitle event when clicking the subtitle', async () => {
   const wrapper = mount(Calendar, {
     props: {
       minDate,
@@ -567,7 +638,7 @@ test('should emit click-subtitle event when clicking the subtitle', async () => 
 
   await later();
   wrapper.find('.van-calendar__header-subtitle').trigger('click');
-  expect(wrapper.emitted('click-subtitle')).toBeTruthy();
+  expect(wrapper.emitted('clickSubtitle')).toBeTruthy();
 });
 
 test('should render confirm-text slot correctly', async () => {
@@ -581,7 +652,23 @@ test('should render confirm-text slot correctly', async () => {
     },
   });
 
-  await later();
+  await later(50);
 
   expect(wrapper.find('.van-calendar__confirm').html()).toMatchSnapshot();
+});
+
+test('the defaultDate length of 1 should be handled correctly', async () => {
+  const wrapper = mount(Calendar, {
+    props: {
+      poppable: false,
+      defaultDate: [getNextDay(now)],
+      type: 'range',
+    },
+  });
+
+  wrapper.find('.van-calendar__confirm').trigger('click');
+  expect(wrapper.emitted<[Date]>('confirm')![0][0]).toEqual([
+    now,
+    getNextDay(now),
+  ]);
 });

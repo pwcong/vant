@@ -37,27 +37,38 @@ Use the image prop to display different placeholder images.
 <van-empty image="search" description="Description" />
 ```
 
+### Custom Size
+
+Using `image-size` prop to custom the size of image.
+
+```html
+<!-- The default unit is px -->
+<van-empty image-size="100" description="Description" />
+<!-- Support other units, such as rem, vh, vw -->
+<van-empty image-size="10rem" description="Description" />
+```
+
+You can set the width and height separately.
+
+```html
+<van-empty :image-size="[60, 40]" description="Description" />
+```
+
 ### Custom Image
 
 ```html
 <van-empty
-  class="custom-image"
-  image="https://img.yzcdn.cn/vant/leaf.jpg"
+  image="https://fastly.jsdelivr.net/npm/@vant/assets/leaf.jpeg"
+  image-size="80"
   description="Description"
 />
-
-<style>
-  .custom-image img {
-    border-radius: 100%;
-  }
-</style>
 ```
 
 ### Bottom Content
 
 ```html
 <van-empty description="Description">
-  <van-button round type="danger" class="bottom-button">Button</van-button>
+  <van-button round type="primary" class="bottom-button">Button</van-button>
 </van-empty>
 
 <style>
@@ -74,8 +85,8 @@ Use the image prop to display different placeholder images.
 
 | Attribute | Description | Type | Default |
 | --- | --- | --- | --- |
-| image | Image type，can be set to `error` `network` `search` or image URL | _string_ | `default` |
-| image-size | Image size | _number \| string_ | - |
+| image | Image type, can be set to `error` `network` `search` or image URL | _string_ | `default` |
+| image-size | Image size | _number \| string \| Array_ | - |
 | description | Description | _string_ | - |
 
 ### Slots

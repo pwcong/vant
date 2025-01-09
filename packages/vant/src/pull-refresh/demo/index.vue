@@ -3,8 +3,8 @@ import VanTabs from '../../tabs';
 import VanTab from '../../tab';
 import VanPullRefresh from '..';
 import { computed, onMounted, ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
-import { Toast } from '../../toast';
+import { cdnURL, useTranslate } from '../../../docs/site';
+import { showToast } from '../../toast';
 
 const t = useTranslate({
   'zh-CN': {
@@ -33,10 +33,10 @@ const tips = computed(() => {
   return t('try');
 });
 
-const onRefresh = (showToast: boolean) => {
+const onRefresh = (isShowToast: boolean) => {
   setTimeout(() => {
-    if (showToast) {
-      Toast(t('success'));
+    if (isShowToast) {
+      showToast(t('success'));
     }
     loading.value = false;
     count.value++;
@@ -48,8 +48,8 @@ const preloadImage = () => {
   const doge = new Image();
   const dogeFire = new Image();
 
-  doge.src = 'https://b.yzcdn.cn/vant/doge.png';
-  dogeFire.src = 'https://b.yzcdn.cn/vant/doge-fire.jpg';
+  doge.src = cdnURL('doge.png');
+  dogeFire.src = cdnURL('doge-fire.jpeg');
 };
 
 onMounted(preloadImage);
@@ -82,15 +82,15 @@ onMounted(preloadImage);
         <template #pulling="{ distance }">
           <img
             class="doge"
-            src="https://b.yzcdn.cn/vant/doge.png"
+            :src="cdnURL('doge.png')"
             :style="{ transform: `scale(${distance / 80})` }"
           />
         </template>
         <template #loosing>
-          <img src="https://b.yzcdn.cn/vant/doge.png" class="doge" />
+          <img :src="cdnURL('doge.png')" class="doge" />
         </template>
         <template #loading>
-          <img src="https://b.yzcdn.cn/vant/doge-fire.jpg" class="doge" />
+          <img :src="cdnURL('doge-fire.jpeg')" class="doge" />
         </template>
         <p>{{ tips }}</p>
       </van-pull-refresh>
@@ -100,7 +100,7 @@ onMounted(preloadImage);
 
 <style lang="less">
 .demo-pull-refresh {
-  background-color: var(--van-background-color-light);
+  background-color: var(--van-background-2);
 
   .van-pull-refresh {
     height: calc(100vh - 50px);

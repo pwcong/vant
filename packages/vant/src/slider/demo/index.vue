@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import VanSlider from '..';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
-import { Toast } from '../../toast';
+import { useTranslate } from '../../../docs/site';
+import { showToast } from '../../toast';
 
 const t = useTranslate({
   'zh-CN': {
@@ -30,16 +30,16 @@ const t = useTranslate({
 });
 
 const value1 = ref(50);
-const value2 = ref([20, 60]);
+const value2 = ref<[number, number]>([20, 60]);
 const value3 = ref(0);
 const value4 = ref(50);
 const value5 = ref(50);
 const value6 = ref(50);
 const value7 = ref(50);
 const value8 = ref(50);
-const value9 = ref([20, 60]);
+const value9 = ref<[number, number]>([20, 60]);
 
-const onChange = (value: string) => Toast(t('text') + value);
+const onChange = (value: string) => showToast(t('text') + value);
 </script>
 
 <template>
@@ -73,7 +73,7 @@ const onChange = (value: string) => Toast(t('text') + value);
   </demo-block>
 
   <demo-block :title="t('customButton')">
-    <van-slider v-model="value7" active-color="#ee0a24">
+    <van-slider v-model="value7">
       <template #button>
         <div class="custom-button">{{ value7 }}</div>
       </template>
@@ -96,7 +96,6 @@ const onChange = (value: string) => Toast(t('text') + value);
 
 <style lang="less">
 .demo-slider {
-  background: var(--van-background-color-light);
   user-select: none;
 
   .van-doc-demo-block {
@@ -113,7 +112,7 @@ const onChange = (value: string) => Toast(t('text') + value);
     font-size: 10px;
     line-height: 18px;
     text-align: center;
-    background-color: var(--van-red);
+    background-color: var(--van-primary-color);
     border-radius: 100px;
   }
 }

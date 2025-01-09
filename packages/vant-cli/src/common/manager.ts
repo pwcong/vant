@@ -1,5 +1,4 @@
-import execa from 'execa';
-import { consola } from './logger.js';
+import { logger } from 'rslog';
 import { execSync } from 'child_process';
 import { getVantConfig } from './constant.js';
 
@@ -18,7 +17,7 @@ export function hasYarn() {
   return hasYarnCache;
 }
 
-function getPackageManager() {
+export function getPackageManager() {
   const { build } = getVantConfig();
 
   if (build?.packageManager) {
@@ -29,12 +28,12 @@ function getPackageManager() {
 }
 
 export async function installDependencies() {
-  consola.info('Install Dependencies\n');
+  logger.info('Install Dependencies\n');
 
   try {
     const manager = getPackageManager();
 
-    await execa(manager, ['install', '--prod=false'], {
+    execSync(`${manager} install --prod=false`, {
       stdio: 'inherit',
     });
 

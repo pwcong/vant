@@ -2,30 +2,25 @@ export default {
   name: 'Name',
   tel: 'Phone',
   save: 'Save',
-  confirm: 'Confirm',
+  clear: 'Clear',
   cancel: 'Cancel',
+  confirm: 'Confirm',
   delete: 'Delete',
   loading: 'Loading...',
   noCoupon: 'No coupons',
   nameEmpty: 'Please fill in the name',
+  addContact: 'Add contact',
   telInvalid: 'Malformed phone number',
   vanCalendar: {
     end: 'End',
     start: 'Start',
     title: 'Calendar',
-    startEnd: 'Start/End',
     weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
     monthTitle: (year: number, month: number) => `${year}/${month}`,
     rangePrompt: (maxRange: number) => `Choose no more than ${maxRange} days`,
   },
   vanCascader: {
     select: 'Select',
-  },
-  vanContactCard: {
-    addText: 'Add contact info',
-  },
-  vanContactList: {
-    addText: 'Add new contact',
   },
   vanPagination: {
     prev: 'Previous',
@@ -36,7 +31,7 @@ export default {
     loosing: 'Loose to refresh...',
   },
   vanSubmitBar: {
-    label: 'Total：',
+    label: 'Total:',
   },
   vanCoupon: {
     unlimited: 'Unlimited',
@@ -56,15 +51,10 @@ export default {
   },
   vanAddressEdit: {
     area: 'Area',
-    postal: 'Postal',
     areaEmpty: 'Please select a receiving area',
     addressEmpty: 'Address can not be empty',
-    postalEmpty: 'Wrong postal code',
+    addressDetail: 'Address',
     defaultAddress: 'Set as the default address',
-  },
-  vanAddressEditDetail: {
-    label: 'Address',
-    placeholder: 'Address',
   },
   vanAddressList: {
     add: 'Add new address',

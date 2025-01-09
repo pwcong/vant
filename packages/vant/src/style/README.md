@@ -49,11 +49,15 @@ Add 1px border under the Retina screen for the element, based on a pseudo elemen
 <div class="van-hairline--surround"></div>
 ```
 
-### Safe Area Bottom
+### Safe Area
 
-Enable safe area inset bottom.
+Enable safe area.
 
 ```html
+<!-- top -->
+<div class="van-safe-area-top"></div>
+
+<!-- bottom -->
 <div class="van-safe-area-bottom"></div>
 ```
 
@@ -84,4 +88,22 @@ Enable safe area inset bottom.
 <transition name="van-slide-right">
   <div v-show="visible">Slide Right</div>
 </transition>
+```
+
+### Haptics Feedback
+
+Add haptics feedback for an element. When touched, the opacity of the element is reduced.
+
+Usually used in clickable elements such as button.
+
+```html
+<div class="van-haptics-feedback"></div>
+```
+
+### Clearfix
+
+Clear floated content within a container.
+
+```html
+<div class="van-clearfix"></div>
 ```

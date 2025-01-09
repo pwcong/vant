@@ -1,7 +1,13 @@
 import fse from 'fs-extra';
-import path from 'path';
+import path from 'node:path';
 import hash from 'hash-sum';
-import { parse, SFCBlock, compileTemplate } from '@vue/compiler-sfc';
+import {
+  parse,
+  SFCBlock,
+  compileTemplate,
+  compileScript,
+  compileStyle,
+} from 'vue/compiler-sfc';
 import { replaceExt } from '../common/index.js';
 
 const { remove, readFileSync, outputFile } = fse;
@@ -32,7 +38,7 @@ function injectRender(script: string, render: string) {
 }
 
 function injectScopeId(script: string, scopeId: string) {
-  script += `\n${VUEIDS}._scopeId = '${scopeId}'`;
+  script += `\n${VUEIDS}.__scopeId = '${scopeId}'`;
   return script;
 }
 
@@ -70,44 +76,57 @@ export async function compileSfc(filePath: string): Promise<any> {
   const { template, styles } = descriptor;
 
   const hasScoped = styles.some((s) => s.scoped);
-  const scopeId = hasScoped ? `data-v-${hash(source)}` : '';
+  const scopeId = hasScoped ? hash(source) : '';
+  const scopeKey = scopeId ? `data-v-${scopeId}` : '';
 
   // compile js part
-  if (descriptor.script) {
-    const lang = descriptor.script.lang || 'js';
+  if (descriptor.script || descriptor.scriptSetup) {
+    const lang =
+      descriptor.script?.lang || descriptor.scriptSetup?.lang || 'js';
     const scriptFilePath = replaceExt(filePath, `.${lang}`);
 
     tasks.push(
       new Promise((resolve) => {
         let script = '';
 
-        // the generated render fn lacks type definitions
-        if (lang === 'ts') {
-          script += '// @ts-nocheck\n';
-        }
+        const { bindings, content } = compileScript(descriptor, {
+          id: scopeKey,
+        });
 
-        script += descriptor.script!.content;
+        script += content;
         script = injectStyle(script, styles, filePath);
+
         script = script.replace(EXPORT, `const ${VUEIDS} =`);
 
         if (template) {
           const render = compileTemplate({
-            id: scopeId,
+            id: scopeKey,
             source: template.content,
+            scoped: !!scopeKey,
             filename: filePath,
+            compilerOptions: {
+              scopeId: scopeKey,
+              bindingMetadata: bindings,
+            },
           }).code;
 
           script = injectRender(script, render);
         }
 
-        if (scopeId) {
-          script = injectScopeId(script, scopeId);
+        if (scopeKey) {
+          script = injectScopeId(script, scopeKey);
         }
 
         script += `\n${EXPORT} ${VUEIDS}`;
 
+        // ts-nocheck should be placed on the first line
+        // the generated render fn lacks type definitions
+        if (lang === 'ts') {
+          script = '// @ts-nocheck\n' + script;
+        }
+
         outputFile(scriptFilePath, script).then(resolve);
-      })
+      }),
     );
   }
 
@@ -116,21 +135,18 @@ export async function compileSfc(filePath: string): Promise<any> {
     ...styles.map(async (style, index: number) => {
       const cssFilePath = getSfcStylePath(filePath, style.lang || 'css', index);
 
-      const styleSource = trim(style.content);
+      const styleSource = compileStyle({
+        source: style.content,
+        filename: path.basename(cssFilePath),
+        scoped: style.scoped,
+        id: scopeId,
+        preprocessLang: style.lang as Parameters<
+          typeof compileStyle
+        >[0]['preprocessLang'],
+      });
 
-      // TODO support scoped
-      // if (style.scoped) {
-      //   styleSource = compileUtils.compileStyle({
-      //     id: scopeId,
-      //     scoped: true,
-      //     source: styleSource,
-      //     filename: cssFilePath,
-      //     preprocessLang: style.lang,
-      //   }).code;
-      // }
-
-      return outputFile(cssFilePath, styleSource);
-    })
+      return outputFile(cssFilePath, trim(styleSource.code));
+    }),
   );
 
   return Promise.all(tasks);

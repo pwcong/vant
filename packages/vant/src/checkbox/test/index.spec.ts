@@ -91,7 +91,7 @@ test('should adjust label position when using label-position prop', () => {
 });
 
 test('should emit click event when checkbox icon is clicked', async () => {
-  const onClick = jest.fn();
+  const onClick = vi.fn();
   const wrapper = mount(Checkbox, {
     props: {
       onClick,
@@ -115,4 +115,21 @@ test('should render icon slot correctly', async () => {
   });
 
   expect(wrapper.find('.van-checkbox__icon').html()).toMatchSnapshot();
+});
+
+test('should render label slot correctly', async () => {
+  const slot = vi.fn();
+  const wrapper = mount(Checkbox, {
+    slots: {
+      default: slot,
+    },
+  });
+
+  expect(slot.mock.calls[0]).toEqual([{ checked: false, disabled: false }]);
+
+  await wrapper.setProps({ modelValue: true });
+  expect(slot.mock.calls[1]).toEqual([{ checked: true, disabled: false }]);
+
+  await wrapper.setProps({ disabled: true });
+  expect(slot.mock.calls[2]).toEqual([{ checked: true, disabled: true }]);
 });

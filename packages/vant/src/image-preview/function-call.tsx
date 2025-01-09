@@ -1,7 +1,6 @@
-import { extend, inBrowser, withInstall, ComponentInstance } from '../utils';
+import { extend, inBrowser, ComponentInstance } from '../utils';
 import { mountComponent, usePopupState } from '../utils/mount-component';
 import VanImagePreview from './ImagePreview';
-import type { App } from 'vue';
 import type { ImagePreviewOptions } from './types';
 
 let instance: ComponentInstance;
@@ -14,6 +13,7 @@ const defaultConfig: ImagePreviewOptions = {
   onScale: undefined,
   onClose: undefined,
   onChange: undefined,
+  vertical: false,
   teleport: 'body',
   className: '',
   showIndex: true,
@@ -21,12 +21,14 @@ const defaultConfig: ImagePreviewOptions = {
   closeIcon: 'clear',
   transition: undefined,
   beforeClose: undefined,
+  doubleScale: true,
   overlayStyle: undefined,
   overlayClass: undefined,
   startPosition: 0,
   swipeDuration: 300,
   showIndicators: false,
   closeOnPopstate: true,
+  closeOnClickOverlay: true,
   closeIconPosition: 'top-right',
 };
 
@@ -49,9 +51,12 @@ function initInstance() {
   }));
 }
 
-const ImagePreview = (
+/**
+ * Display a full-screen image preview component
+ */
+export const showImagePreview = (
   options: string[] | ImagePreviewOptions,
-  startPosition = 0
+  startPosition = 0,
 ) => {
   /* istanbul ignore if */
   if (!inBrowser) {
@@ -70,11 +75,3 @@ const ImagePreview = (
 
   return instance;
 };
-
-ImagePreview.Component = withInstall(VanImagePreview);
-
-ImagePreview.install = (app: App) => {
-  app.use(ImagePreview.Component);
-};
-
-export { ImagePreview };

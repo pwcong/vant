@@ -2,7 +2,7 @@
 import VanProgress from '..';
 import VanButton from '../../button';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -72,8 +72,6 @@ const reduce = () => {
 
 <style lang="less">
 .demo-progress {
-  background: var(--van-background-color-light);
-
   .van-progress {
     margin: 20px 16px;
 

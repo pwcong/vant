@@ -40,7 +40,7 @@ Use `percentage` prop to set current progress.
 
 ### Custom Style
 
-Use `pivot-text` to custom text，use `color` to custom bar color.
+Use `pivot-text` to custom text, use `color` to custom bar color.
 
 ```html
 <van-progress pivot-text="Orange" color="#f2826a" :percentage="25" />
@@ -77,31 +77,20 @@ The component exports the following type definitions:
 import type { ProgressProps, ProgressInstance } from 'vant';
 ```
 
-`ProgressInstance` is the type of component instance:
-
-```ts
-import { ref } from 'vue';
-import type { ProgressInstance } from 'vant';
-
-const progressRef = ref<ProgressInstance>();
-
-progressRef.value?.resize();
-```
-
 ## Theming
 
 ### CSS Variables
 
 The component provides the following CSS variables, which can be used to customize styles. Please refer to [ConfigProvider component](#/en-US/config-provider).
 
-| Name | Default Value | Description |
-| --- | --- | --- |
-| --van-progress-height | _4px_ | - |
-| --van-progress-color | _var(--van-primary-color)_ | - |
-| --van-progress-inactive-color | _var(--van-gray-5)_ | - |
-| --van-progress-background-color | _var(--van-gray-3)_ | - |
-| --van-progress-pivot-padding | _0 5px_ | - |
-| --van-progress-pivot-text-color | _var(--van-white)_ | - |
-| --van-progress-pivot-font-size | _var(--van-font-size-xs)_ | - |
-| --van-progress-pivot-line-height | _1.6_ | - |
-| --van-progress-pivot-background-color | _var(--van-primary-color)_ | - |
+| Name                             | Default Value              | Description |
+| -------------------------------- | -------------------------- | ----------- |
+| --van-progress-height            | _4px_                      | -           |
+| --van-progress-color             | _var(--van-primary-color)_ | -           |
+| --van-progress-inactive-color    | _var(--van-gray-5)_        | -           |
+| --van-progress-background        | _var(--van-gray-3)_        | -           |
+| --van-progress-pivot-padding     | _0 5px_                    | -           |
+| --van-progress-pivot-text-color  | _var(--van-white)_         | -           |
+| --van-progress-pivot-font-size   | _var(--van-font-size-xs)_  | -           |
+| --van-progress-pivot-line-height | _1.6_                      | -           |
+| --van-progress-pivot-background  | _var(--van-primary-color)_ | -           |

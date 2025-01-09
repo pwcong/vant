@@ -3,13 +3,13 @@ import { mount, later, triggerDrag, mockScrollTop } from '../../../test';
 import { Tab } from '..';
 import { Tabs, TabsInstance } from '../../tabs';
 
-test('should emit click-tab event when tab is clicked', async () => {
-  const onClickTab = jest.fn();
+test('should emit clickTab event when tab is clicked', async () => {
+  const onClickTab = vi.fn();
 
   const wrapper = mount({
     render() {
       return (
-        <Tabs onClick-tab={onClickTab}>
+        <Tabs onClickTab={onClickTab}>
           <Tab title="title1">1</Tab>
           <Tab title="title2">2</Tab>
         </Tabs>
@@ -26,7 +26,7 @@ test('should emit click-tab event when tab is clicked', async () => {
       name: 0,
       title: 'title1',
       disabled: false,
-    })
+    }),
   );
 });
 
@@ -48,7 +48,7 @@ test('should not render zero badge when show-zero-badge prop is false', async ()
 });
 
 test('should switch tab after click the tab title', async () => {
-  const onChange = jest.fn();
+  const onChange = vi.fn();
   const wrapper = mount({
     render() {
       return (
@@ -75,7 +75,7 @@ test('should switch tab after click the tab title', async () => {
 });
 
 test('swipe switch tab after swiping tab content', async () => {
-  const onChange = jest.fn();
+  const onChange = vi.fn();
   const wrapper = mount({
     data() {
       return {
@@ -189,13 +189,18 @@ test('should change title style when using title-style prop', async () => {
           <Tab title="title1" titleStyle="color: red;">
             Text
           </Tab>
+          <Tab title="title1" titleStyle={{ color: 'blue' }}>
+            Text
+          </Tab>
         </Tabs>
       );
     },
   });
 
   await later();
-  expect(wrapper.find('.van-tab').style.color).toEqual('red');
+  const tabs = wrapper.findAll('.van-tab');
+  expect(tabs.at(0)!.style.color).toEqual('red');
+  expect(tabs.at(1)!.style.color).toEqual('blue');
 });
 
 test('should allot to hide bottom border by border prop', async () => {
@@ -232,7 +237,7 @@ test('should render nav-left、nav-right slot correctly', async () => {
 });
 
 test('should emit rendered event after tab is rendered', async () => {
-  const onRendered = jest.fn();
+  const onRendered = vi.fn();
 
   const wrapper = mount({
     data() {
@@ -267,7 +272,7 @@ test('should emit rendered event after tab is rendered', async () => {
 });
 
 test('should not trigger rendered event when lazy-render prop is disabled', async () => {
-  const onRendered = jest.fn();
+  const onRendered = vi.fn();
 
   mount({
     render() {
@@ -285,8 +290,8 @@ test('should not trigger rendered event when lazy-render prop is disabled', asyn
 });
 
 test('should allow to set name prop', async () => {
-  const onChange = jest.fn();
-  const onClickTab = jest.fn();
+  const onChange = vi.fn();
+  const onClickTab = vi.fn();
 
   const wrapper = mount({
     data() {
@@ -299,7 +304,7 @@ test('should allow to set name prop', async () => {
         <Tabs
           v-model:active={this.active}
           onChange={onChange}
-          onClick-tab={onClickTab}
+          onClickTab={onClickTab}
         >
           <Tab title="title1" name="a">
             Text
@@ -331,12 +336,12 @@ test('should allow to set name prop', async () => {
 });
 
 test('should allow name prop to be zero', async () => {
-  const onClickTab = jest.fn();
+  const onClickTab = vi.fn();
 
   const wrapper = mount({
     render() {
       return (
-        <Tabs onClick-tab={onClickTab}>
+        <Tabs onClickTab={onClickTab}>
           <Tab title="title1" name={1}>
             Text
           </Tab>
@@ -355,8 +360,8 @@ test('should allow name prop to be zero', async () => {
 });
 
 test('should change active tab after scrolling when using scrollspy prop', async () => {
-  const onChange = jest.fn();
-  window.scrollTo = jest.fn();
+  const onChange = vi.fn();
+  window.scrollTo = vi.fn();
 
   mount({
     data() {
@@ -385,7 +390,7 @@ test('should change active tab after scrolling when using scrollspy prop', async
 });
 
 test('should allow to call scrollTo method when scrollspy is enabled', async () => {
-  const onChange = jest.fn();
+  const onChange = vi.fn();
   const tabs = ref<TabsInstance>();
 
   mount({
@@ -412,8 +417,28 @@ test('should allow to call scrollTo method when scrollspy is enabled', async () 
   expect(onChange).toHaveBeenCalledWith('b', 'title2');
 });
 
+test('should not render header when showHeader is false', async () => {
+  const wrapper = mount({
+    render() {
+      return (
+        <Tabs showHeader={false}>
+          <Tab title="title1">Text</Tab>
+          <Tab title="title2">Text</Tab>
+          <Tab title="title3">Text</Tab>
+          <Tab title="title4">Text</Tab>
+          <Tab title="title5">Text</Tab>
+        </Tabs>
+      );
+    },
+  });
+
+  await later();
+  const tabs = wrapper.findAll('.van-tabs__wrap,.van-sticky');
+  expect(tabs.length).toEqual(0);
+});
+
 test('should call before-change prop before changing', async () => {
-  const onChange = jest.fn();
+  const onChange = vi.fn();
   const beforeChange = (name: number) => {
     switch (name) {
       case 1:
@@ -457,4 +482,35 @@ test('should call before-change prop before changing', async () => {
   await tabs[4].trigger('click');
   expect(onChange).toHaveBeenCalledTimes(2);
   expect(onChange).toHaveBeenLastCalledWith(4, 'title5');
+});
+
+test('should re-render when line-width or line-height changed', async () => {
+  const wrapper = mount({
+    data() {
+      return {
+        lineWidth: 20,
+        lineHeight: 5,
+      };
+    },
+    render() {
+      return (
+        <Tabs lineWidth={this.lineWidth} lineHeight={this.lineHeight}>
+          <Tab>1</Tab>
+        </Tabs>
+      );
+    },
+  });
+
+  await later();
+  const line = wrapper.find('.van-tabs__line');
+  expect(line.style.width).toEqual('20px');
+  expect(line.style.height).toEqual('5px');
+
+  await wrapper.setData({
+    lineWidth: 30,
+    lineHeight: 10,
+  });
+  await later();
+  expect(line.style.width).toEqual('30px');
+  expect(line.style.height).toEqual('10px');
 });

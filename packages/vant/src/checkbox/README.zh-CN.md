@@ -51,7 +51,21 @@ export default {
 将 `shape` 属性设置为 `square`，复选框的形状会变成方形。
 
 ```html
-<van-checkbox v-model="checked" shape="square">复选框</van-checkbox>
+<van-checkbox-group v-model="checked" shape="square">
+  <van-checkbox name="a">复选框 a</van-checkbox>
+  <van-checkbox name="b">复选框 b</van-checkbox>
+</van-checkbox-group>
+```
+
+```js
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const checked = ref(['a', 'b']);
+    return { checked };
+  },
+};
 ```
 
 ### 自定义颜色
@@ -97,11 +111,21 @@ export default {
     const checked = ref(true);
     return {
       checked,
-      activeIcon: 'https://img.yzcdn.cn/vant/user-active.png',
-      inactiveIcon: 'https://img.yzcdn.cn/vant/user-inactive.png',
+      activeIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-active.png',
+      inactiveIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-inactive.png',
     };
   },
 };
+```
+
+### 左侧文本
+
+将 `label-position` 属性设置为 `'left'`，可以将文本位置调整到复选框左侧。
+
+```html
+<van-checkbox v-model="checked" label-position="left">复选框</van-checkbox>
 ```
 
 ### 禁用文本点击
@@ -190,7 +214,6 @@ export default {
   setup() {
     const checked = ref([]);
     const checkboxGroup = ref(null);
-
     const checkAll = () => {
       checkboxGroup.value.toggleAll(true);
     }
@@ -259,21 +282,76 @@ export default {
 };
 ```
 
+### 不确定状态
+
+通过 `indeterminate` 设置复选框是否为不确定状态。
+
+```html
+<van-checkbox
+  v-model="isCheckAll"
+  :indeterminate="isIndeterminate"
+  @change="checkAllChange"
+>
+  全选
+</van-checkbox>
+
+<van-checkbox-group v-model="checkedResult" @change="checkedResultChange">
+  <van-checkbox v-for="item in list" :key="item" :name="item">
+    复选框 {{ item }}
+  </van-checkbox>
+</van-checkbox-group>
+```
+
+```js
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const list = ['a', 'b', 'c', 'd']
+
+    const isCheckAll = ref(false);
+    const checkedResult = ref(['a', 'b', 'd']);
+    const isIndeterminate = ref(true);
+
+    const checkAllChange = (val: boolean) => {
+      checkedResult.value = val ? list : []
+      isIndeterminate.value = false
+    }
+
+    const checkedResultChange = (value: string[]) => {
+      const checkedCount = value.length
+      isCheckAll.value = checkedCount === list.length
+      isIndeterminate.value = checkedCount > 0 && checkedCount < list.length
+    }
+
+    return {
+      list,
+      isCheckAll,
+      checkedResult,
+      checkAllChange,
+      isIndeterminate,
+      checkedResultChange
+    };
+  },
+};
+```
+
 ## API
 
 ### Checkbox Props
 
-| 参数           | 说明                      | 类型               | 默认值    |
-| -------------- | ------------------------- | ------------------ | --------- |
-| v-model        | 是否为选中状态            | _boolean_          | `false`   |
-| name           | 标识符                    | _any_              | -         |
-| shape          | 形状，可选值为 `square`   | _string_           | `round`   |
-| disabled       | 是否禁用复选框            | _boolean_          | `false`   |
-| label-disabled | 是否禁用复选框文本点击    | _boolean_          | `false`   |
-| label-position | 文本位置，可选值为 `left` | _string_           | `right`   |
-| icon-size      | 图标大小，默认单位为 `px` | _number \| string_ | `20px`    |
-| checked-color  | 选中状态颜色              | _string_           | `#1989fa` |
-| bind-group     | 是否与复选框组绑定        | _boolean_          | `true`    |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| v-model | 是否为选中状态 | _boolean_ | `false` |
+| name | 标识符，通常为一个唯一的字符串或数字 | _any_ | - |
+| shape | 形状，可选值为 `square` | _string_ | `round` |
+| disabled | 是否禁用复选框 | _boolean_ | `false` |
+| label-disabled | 是否禁用复选框文本点击 | _boolean_ | `false` |
+| label-position | 文本位置，可选值为 `left` | _string_ | `right` |
+| icon-size | 图标大小，默认单位为 `px` | _number \| string_ | `20px` |
+| checked-color | 选中状态颜色 | _string_ | `#1989fa` |
+| bind-group | 是否与复选框组绑定 | _boolean_ | `true` |
+| indeterminate | 是否为不确定状态 | _boolean_ | `false` |
 
 ### CheckboxGroup Props
 
@@ -285,6 +363,7 @@ export default {
 | direction | 排列方向，可选值为 `horizontal` | _string_ | `vertical` |
 | icon-size | 所有复选框的图标大小，默认单位为 `px` | _number \| string_ | `20px` |
 | checked-color | 所有复选框的选中状态颜色 | _string_ | `#1989fa` |
+| shape `v4.6.3` | 形状，可选值为 `square` | _string_ | `round` |
 
 ### Checkbox Events
 
@@ -303,7 +382,7 @@ export default {
 
 | 名称    | 说明       | 参数                                      |
 | ------- | ---------- | ----------------------------------------- |
-| default | 自定义文本 | -                                         |
+| default | 自定义文本 | _{ checked: boolean, disabled: boolean }_ |
 | icon    | 自定义图标 | _{ checked: boolean, disabled: boolean }_ |
 
 ### CheckboxGroup 方法
@@ -317,21 +396,24 @@ export default {
 ### toggleAll 方法示例
 
 ```js
-const { checkboxGroup } = this.$refs;
+import { ref } from 'vue';
+import type { CheckboxGroupInstance } from 'vant';
+
+const checkboxGroupRef = ref<CheckboxGroupInstance>();
 
 // 全部反选
-checkboxGroup.toggleAll();
+checkboxGroupRef?.value.toggleAll();
 // 全部选中
-checkboxGroup.toggleAll(true);
+checkboxGroupRef?.value.toggleAll(true);
 // 全部取消
-checkboxGroup.toggleAll(false);
+checkboxGroupRef?.value.toggleAll(false);
 
 // 全部反选，并跳过禁用的复选框
-checkboxGroup.toggleAll({
+checkboxGroupRef?.value.toggleAll({
   skipDisabled: true,
 });
 // 全部选中，并跳过禁用的复选框
-checkboxGroup.toggleAll({
+checkboxGroupRef?.value.toggleAll({
   checked: true,
   skipDisabled: true,
 });
@@ -381,14 +463,14 @@ checkboxGroupRef.value?.toggleAll();
 
 组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
 
-| 名称 | 默认值 | 描述 |
-| --- | --- | --- |
-| --van-checkbox-size | _20px_ | - |
-| --van-checkbox-border-color | _var(--van-gray-5)_ | - |
-| --van-checkbox-transition-duration | _var(--van-animation-duration-fast)_ | - |
-| --van-checkbox-label-margin | _var(--van-padding-xs)_ | - |
-| --van-checkbox-label-color | _var(--van-text-color)_ | - |
-| --van-checkbox-checked-icon-color | _var(--van-primary-color)_ | - |
-| --van-checkbox-disabled-icon-color | _var(--van-gray-5)_ | - |
-| --van-checkbox-disabled-label-color | _var(--van-text-color-3)_ | - |
-| --van-checkbox-disabled-background-color | _var(--van-border-color)_ | - |
+| 名称                                | 默认值                     | 描述 |
+| ----------------------------------- | -------------------------- | ---- |
+| --van-checkbox-size                 | _20px_                     | -    |
+| --van-checkbox-border-color         | _var(--van-gray-5)_        | -    |
+| --van-checkbox-duration             | _var(--van-duration-fast)_ | -    |
+| --van-checkbox-label-margin         | _var(--van-padding-xs)_    | -    |
+| --van-checkbox-label-color          | _var(--van-text-color)_    | -    |
+| --van-checkbox-checked-icon-color   | _var(--van-primary-color)_ | -    |
+| --van-checkbox-disabled-icon-color  | _var(--van-gray-5)_        | -    |
+| --van-checkbox-disabled-label-color | _var(--van-text-color-3)_  | -    |
+| --van-checkbox-disabled-background  | _var(--van-border-color)_  | -    |

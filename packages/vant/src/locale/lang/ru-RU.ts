@@ -2,30 +2,25 @@ export default {
   name: 'Имя',
   tel: 'Телефон',
   save: 'Сохранить',
-  confirm: 'Подтвердить',
+  clear: 'Прозрачный',
   cancel: 'Отмена',
+  confirm: 'Подтвердить',
   delete: 'Удалить',
   loading: 'Загрузка...',
   noCoupon: 'Нет купонов',
   nameEmpty: 'Пожалуйста укажите имя',
+  addContact: 'Создать контакт',
   telInvalid: 'Некорректный номер телефона',
   vanCalendar: {
     end: 'Конец',
     start: 'Начало',
-    title: 'Каленарь',
-    startEnd: 'Начало/Конец',
+    title: 'Календарь',
     weekdays: ['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'],
     monthTitle: (year: number, month: number) => `${year}/${month}`,
     rangePrompt: (maxRange: number) => `Укажите более ${maxRange} дней`,
   },
   vanCascader: {
     select: 'Выбрать',
-  },
-  vanContactCard: {
-    addText: 'Добавить информацию',
-  },
-  vanContactList: {
-    addText: 'Создать контакт',
   },
   vanPagination: {
     prev: 'Назад',
@@ -36,7 +31,7 @@ export default {
     loosing: 'Отпустите для обновления...',
   },
   vanSubmitBar: {
-    label: 'Всего：',
+    label: 'Всего:',
   },
   vanCoupon: {
     unlimited: 'Безлимитный',
@@ -56,15 +51,10 @@ export default {
   },
   vanAddressEdit: {
     area: 'Область',
-    postal: 'Индекс',
     areaEmpty: 'Укажите зону доставки',
     addressEmpty: 'Адрес не может быть пустым',
-    postalEmpty: 'Некорректный индекс',
+    addressDetail: 'Адрес',
     defaultAddress: 'Сделать адресом по умолчанию',
-  },
-  vanAddressEditDetail: {
-    label: 'Адрес',
-    placeholder: 'Адрес',
   },
   vanAddressList: {
     add: 'Новый адрес',

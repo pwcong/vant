@@ -1,4 +1,12 @@
-import { Ref, watch, isRef, unref, onUnmounted, onDeactivated } from 'vue';
+import {
+  Ref,
+  watch,
+  isRef,
+  unref,
+  onUnmounted,
+  onDeactivated,
+  type WatchStopHandle,
+} from 'vue';
 import { onMountedOrActivated } from '../onMountedOrActivated';
 import { inBrowser } from '../utils';
 
@@ -10,10 +18,20 @@ export type UseEventListenerOptions = {
   passive?: boolean;
 };
 
+export function useEventListener<K extends keyof DocumentEventMap>(
+  type: K,
+  listener: (event: DocumentEventMap[K]) => void,
+  options?: UseEventListenerOptions,
+): () => void;
 export function useEventListener(
   type: string,
   listener: EventListener,
-  options: UseEventListenerOptions = {}
+  options?: UseEventListenerOptions,
+): () => void;
+export function useEventListener(
+  type: string,
+  listener: EventListener,
+  options: UseEventListenerOptions = {},
 ) {
   if (!inBrowser) {
     return;
@@ -21,18 +39,28 @@ export function useEventListener(
 
   const { target = window, passive = false, capture = false } = options;
 
+  let cleaned = false;
   let attached: boolean;
 
   const add = (target?: TargetRef) => {
+    if (cleaned) {
+      return;
+    }
     const element = unref(target);
 
     if (element && !attached) {
-      element.addEventListener(type, listener, { capture, passive });
+      element.addEventListener(type, listener, {
+        capture,
+        passive,
+      });
       attached = true;
     }
   };
 
   const remove = (target?: TargetRef) => {
+    if (cleaned) {
+      return;
+    }
     const element = unref(target);
 
     if (element && attached) {
@@ -45,10 +73,21 @@ export function useEventListener(
   onDeactivated(() => remove(target));
   onMountedOrActivated(() => add(target));
 
+  let stopWatch: WatchStopHandle;
+
   if (isRef(target)) {
-    watch(target, (val, oldVal) => {
+    stopWatch = watch(target, (val, oldVal) => {
       remove(oldVal);
       add(val);
     });
   }
+
+  /**
+   * Clean up the event listener
+   */
+  return () => {
+    stopWatch?.();
+    remove(target);
+    cleaned = true;
+  };
 }

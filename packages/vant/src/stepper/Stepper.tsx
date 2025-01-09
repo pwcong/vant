@@ -24,6 +24,8 @@ import {
   callInterceptor,
   makeNumericProp,
   HAPTICS_FEEDBACK,
+  LONG_PRESS_START_TIME,
+  type Numeric,
 } from '../utils';
 
 // Composables
@@ -32,14 +34,13 @@ import { useCustomFieldValue } from '@vant/use';
 const [name, bem] = createNamespace('stepper');
 
 const LONG_PRESS_INTERVAL = 200;
-const LONG_PRESS_START_TIME = 600;
 
-const isEqual = (value1?: string | number, value2?: string | number) =>
+const isEqual = (value1?: Numeric, value2?: Numeric) =>
   String(value1) === String(value2);
 
 export type StepperTheme = 'default' | 'round';
 
-const stepperProps = {
+export const stepperProps = {
   min: makeNumericProp(1),
   max: makeNumericProp(Infinity),
   name: makeNumericProp(''),
@@ -51,6 +52,7 @@ const stepperProps = {
   showMinus: truthProp,
   showInput: truthProp,
   longPress: truthProp,
+  autoFixed: truthProp,
   allowEmpty: Boolean,
   modelValue: numericProp,
   inputWidth: numericProp,
@@ -82,7 +84,7 @@ export default defineComponent({
   ],
 
   setup(props, { emit }) {
-    const format = (value: string | number) => {
+    const format = (value: Numeric, autoFixed = true) => {
       const { min, max, allowEmpty, decimalLength } = props;
 
       if (allowEmpty && value === '') {
@@ -92,7 +94,9 @@ export default defineComponent({
       value = formatNumber(String(value), !props.integer);
       value = value === '' ? 0 : +value;
       value = Number.isNaN(value) ? +min : value;
-      value = Math.max(Math.min(+max, value), +min);
+
+      // whether to format the value entered by the user
+      value = autoFixed ? Math.max(Math.min(+max, value), +min) : value;
 
       // format decimal
       if (isDef(decimalLength)) {
@@ -118,11 +122,12 @@ export default defineComponent({
     const current = ref(getInitialValue());
 
     const minusDisabled = computed(
-      () => props.disabled || props.disableMinus || current.value <= +props.min
+      () =>
+        props.disabled || props.disableMinus || +current.value <= +props.min,
     );
 
     const plusDisabled = computed(
-      () => props.disabled || props.disablePlus || current.value >= +props.max
+      () => props.disabled || props.disablePlus || +current.value >= +props.max,
     );
 
     const inputStyle = computed(() => ({
@@ -139,7 +144,7 @@ export default defineComponent({
       }
     };
 
-    const setValue = (value: string | number) => {
+    const setValue = (value: Numeric) => {
       if (props.beforeChange) {
         callInterceptor(props.beforeChange, {
           args: [value],
@@ -203,7 +208,7 @@ export default defineComponent({
 
     const onBlur = (event: Event) => {
       const input = event.target as HTMLInputElement;
-      const value = format(input.value);
+      const value = format(input.value, props.autoFixed);
       input.value = String(value);
       current.value = value;
       nextTick(() => {
@@ -213,7 +218,7 @@ export default defineComponent({
     };
 
     let isLongPress: boolean;
-    let longPressTimer: NodeJS.Timeout;
+    let longPressTimer: ReturnType<typeof setTimeout>;
 
     const longPressStep = () => {
       longPressTimer = setTimeout(() => {
@@ -245,7 +250,7 @@ export default defineComponent({
 
     const onMousedown = (event: MouseEvent) => {
       // fix mobile safari page scroll down issue
-      // see: https://github.com/youzan/vant/issues/7690
+      // see: https://github.com/vant-ui/vant/issues/7690
       if (props.disableInput) {
         preventDefault(event);
       }
@@ -258,7 +263,7 @@ export default defineComponent({
         actionType = type;
         onChange();
       },
-      onTouchstart: () => {
+      onTouchstartPassive: () => {
         actionType = type;
         onTouchStart();
       },
@@ -268,7 +273,7 @@ export default defineComponent({
 
     watch(
       () => [props.max, props.min, props.integer, props.decimalLength],
-      check
+      check,
     );
 
     watch(
@@ -277,7 +282,7 @@ export default defineComponent({
         if (!isEqual(value, current.value)) {
           current.value = format(value!);
         }
-      }
+      },
     );
 
     watch(current, (value) => {
@@ -313,6 +318,7 @@ export default defineComponent({
           // set keyboard in modern browsers
           inputmode={props.integer ? 'numeric' : 'decimal'}
           placeholder={props.placeholder}
+          autocomplete="off"
           aria-valuemax={props.max}
           aria-valuemin={props.min}
           aria-valuenow={current.value}

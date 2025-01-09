@@ -2,16 +2,18 @@
 import { ref } from 'vue';
 import VanTabs from '../../tabs';
 import VanTab from '..';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
     tab: '标签 ',
     shrink: '收缩布局',
+    content: '内容',
   },
   'en-US': {
     tab: 'Tab ',
     shrink: 'Shrink',
+    content: 'content of tab',
   },
 });
 

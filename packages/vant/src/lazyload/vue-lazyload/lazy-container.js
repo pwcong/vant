@@ -1,3 +1,8 @@
+/**
+ * This is a fork of [vue-lazyload](https://github.com/hilongjw/vue-lazyload) with Vue 3 support.
+ * license at https://github.com/hilongjw/vue-lazyload/blob/master/LICENSE
+ */
+
 /* eslint-disable max-classes-per-file */
 /* eslint-disable prefer-object-spread */
 import { remove } from './util';
@@ -39,7 +44,7 @@ class LazyContainer {
                 : el.getAttribute('data-loading')) || this.options.loading,
           },
         }),
-        this.vnode
+        this.vnode,
       );
     });
   }

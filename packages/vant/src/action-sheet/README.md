@@ -29,7 +29,7 @@ Use `actions` prop to set options of action-sheet.
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
@@ -41,7 +41,42 @@ export default {
     ];
     const onSelect = (item) => {
       show.value = false;
-      Toast(item.name);
+      showToast(item.name);
+    };
+
+    return {
+      show,
+      actions,
+      onSelect,
+    };
+  },
+};
+```
+
+### Show Icon
+
+Use the `icon` field of `actions` to set the icon for the option.
+
+```html
+<van-cell is-link title="Show Icon" @click="show = true" />
+<van-action-sheet v-model:show="show" :actions="actions" @select="onSelect" />
+```
+
+```js
+import { ref } from 'vue';
+import { showToast } from 'vant';
+
+export default {
+  setup() {
+    const show = ref(false);
+    const actions = [
+      { name: 'Option 1', icon: 'cart-o' },
+      { name: 'Option 2', icon: 'shop-o' },
+      { name: 'Option 3', icon: 'star-o' },
+    ];
+    const onSelect = (item) => {
+      show.value = false;
+      showToast(item.name);
     };
 
     return {
@@ -67,7 +102,7 @@ export default {
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
@@ -77,7 +112,7 @@ export default {
       { name: 'Option 2' },
       { name: 'Option 3' },
     ];
-    const onCancel = () => Toast('cancel');
+    const onCancel = () => showToast('cancel');
 
     return {
       show,
@@ -179,6 +214,7 @@ export default {
 | closeable | Whether to show close icon | _boolean_ | `true` |
 | close-icon | Close icon name | _string_ | `cross` |
 | duration | Transition duration, unit second | _number \| string_ | `0.3` |
+| z-index | Set the z-index to a fixed value | _number \| string_ | `2000+` |
 | round | Whether to show round corner | _boolean_ | `true` |
 | overlay | Whether to show overlay | _boolean_ | `true` |
 | overlay-class | Custom overlay class | _string \| Array \| object_ | - |
@@ -190,19 +226,20 @@ export default {
 | close-on-click-overlay | Whether to close when overlay is clicked | _boolean_ | `true` |
 | safe-area-inset-bottom | Whether to enable bottom safe area adaptation | _boolean_ | `true` |
 | teleport | Specifies a target element where ActionSheet will be mounted | _string \| Element_ | - |
-| before-close `v3.1.4` | Callback function before close | _(action: string) => boolean \| Promise\<boolean\>_ | - |
+| before-close | Callback function before close | _(action: string) => boolean \| Promise\<boolean\>_ | - |
 
 ### Data Structure of ActionSheetAction
 
-| Key       | Description                     | Type                        |
-| --------- | ------------------------------- | --------------------------- |
-| name      | Title                           | _string_                    |
-| subname   | Subtitle                        | _string_                    |
-| color     | Text color                      | _string_                    |
-| className | className for the option        | _string \| Array \| object_ |
-| loading   | Whether to be loading status    | _boolean_                   |
-| disabled  | Whether to be disabled          | _boolean_                   |
-| callback  | Callback function after clicked | _action: ActionSheetAction_ |
+| Key | Description | Type |
+| --- | --- | --- |
+| name | Title | _string_ |
+| subname | Subtitle | _string_ |
+| color | Text color | _string_ |
+| icon `v4.8.6` | Icon name or URL | _string_ |
+| className | className for the option | _string \| Array \| object_ |
+| loading | Whether to be loading status | _boolean_ |
+| disabled | Whether to be disabled | _boolean_ |
+| callback | Callback function after clicked | _action: ActionSheetAction_ |
 
 ### Events
 
@@ -222,8 +259,8 @@ export default {
 | --- | --- | --- |
 | default | Custom content |
 | description | Custom description above the options |
-| cancel `v3.0.10` | Custom the content of cancel button |
-| action `v3.4.0` | Custom the content of action | _{ action: ActionSheetAction, index: number }_ |
+| cancel | Custom the content of cancel button |
+| action | Custom the content of action | _{ action: ActionSheetAction, index: number }_ |
 
 ### Types
 
@@ -247,11 +284,13 @@ The component provides the following CSS variables, which can be used to customi
 | --van-action-sheet-description-color | _var(--van-text-color-2)_ | - |
 | --van-action-sheet-description-font-size | _var(--van-font-size-md)_ | - |
 | --van-action-sheet-description-line-height | _var(--van-line-height-md)_ | - |
-| --van-action-sheet-item-background | _var(--van-background-color-light)_ | - |
+| --van-action-sheet-item-background | _var(--van-background-2)_ | - |
 | --van-action-sheet-item-font-size | _var(--van-font-size-lg)_ | - |
 | --van-action-sheet-item-line-height | _var(--van-line-height-lg)_ | - |
 | --van-action-sheet-item-text-color | _var(--van-text-color)_ | - |
 | --van-action-sheet-item-disabled-text-color | _var(--van-text-color-3)_ | - |
+| --van-action-sheet-item-icon-size | _18px_ | - |
+| --van-action-sheet-item-icon-margin-right | _var(--van-padding-xs)_ | - |
 | --van-action-sheet-subname-color | _var(--van-text-color-2)_ | - |
 | --van-action-sheet-subname-font-size | _var(--van-font-size-sm)_ | - |
 | --van-action-sheet-subname-line-height | _var(--van-line-height-sm)_ | - |
@@ -260,5 +299,5 @@ The component provides the following CSS variables, which can be used to customi
 | --van-action-sheet-close-icon-padding | _0 var(--van-padding-md)_ | - |
 | --van-action-sheet-cancel-text-color | _var(--van-gray-7)_ | - |
 | --van-action-sheet-cancel-padding-top | _var(--van-padding-xs)_ | - |
-| --van-action-sheet-cancel-padding-color | _var(--van-background-color)_ | - |
+| --van-action-sheet-cancel-padding-color | _var(--van-background)_ | - |
 | --van-action-sheet-loading-icon-size | _22px_ | - |

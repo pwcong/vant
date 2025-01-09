@@ -90,23 +90,23 @@ export default {
 
 ### CouponCell Props
 
-| Attribute     | Description                  | Type               | Default  |
-| ------------- | ---------------------------- | ------------------ | -------- |
-| title         | Cell title                   | _string_           | `Coupon` |
-| chosen-coupon | Index of chosen coupon       | _number \| string_ | `-1`     |
-| coupons       | Coupon list                  | _Coupon[]_         | `[]`     |
-| editable      | Cell editable                | _boolean_          | `true`   |
-| border        | Whether to show inner border | _boolean_          | `true`   |
-| currency      | Currency symbol              | _string_           | `¥`      |
+| Attribute | Description | Type | Default |
+| --- | --- | --- | --- |
+| title | Cell title | _string_ | `Coupon` |
+| chosen-coupon | Index of chosen coupon | _number \| number[]_ | `-1` |
+| coupons | Coupon list | _Coupon[]_ | `[]` |
+| editable | Cell editable | _boolean_ | `true` |
+| border | Whether to show inner border | _boolean_ | `true` |
+| currency | Currency symbol | _string_ | `¥` |
 
 ### CouponList Props
 
 | Attribute | Description | Type | Default |
 | --- | --- | --- | --- |
 | v-model | Current exchange code | _string_ | - |
-| chosen-coupon | Index of chosen coupon | _number_ | `-1` |
-| coupons | Coupon list | _Coupon[]_ | `[]` |
-| disabled-coupons | Disabled coupon list | _Coupon[]_ | `[]` |
+| chosen-coupon | Index of chosen coupons, support multiple selection (type is `[]`) | _number \| number[]_ | `-1` |
+| coupons | Coupon list | _CouponInfo[]_ | `[]` |
+| disabled-coupons | Disabled coupon list | _CouponInfo[]_ | `[]` |
 | enabled-title | Title of coupon list | _string_ | `Available` |
 | disabled-title | Title of disabled coupon list | _string_ | `Unavailable` |
 | exchange-button-text | Exchange button text | _string_ | `Exchange` |
@@ -117,7 +117,7 @@ export default {
 | close-button-text | Close button text | _string_ | `Close` |
 | input-placeholder | Input placeholder | _string_ | `Coupon code` |
 | currency | Currency symbol | _string_ | `¥` |
-| empty-image | Placeholder image when list is empty | _string_ | `https://img.yzcdn.cn/vant/coupon-empty.png` |
+| empty-image | Placeholder image when list is empty | _string_ | - |
 | show-count | Whether to show coupon count in tab title | _boolean_ | `true` |
 
 ### CouponList Events
@@ -129,12 +129,13 @@ export default {
 
 ### CouponList Slots
 
-| Name                           | Description                     |
-| ------------------------------ | ------------------------------- |
-| list-footer `v3.0.18`          | Coupon list bottom              |
-| disabled-list-footer `v3.0.18` | Unavailable coupons list bottom |
+| Name                 | Description                     |
+| -------------------- | ------------------------------- |
+| list-footer          | Coupon list bottom              |
+| disabled-list-footer | Unavailable coupons list bottom |
+| list-button          | Customize the bottom button     |
 
-### Data Structure of Coupon
+### Data Structure of CouponInfo
 
 | Key         | Description                         | Type     |
 | ----------- | ----------------------------------- | -------- |
@@ -154,7 +155,7 @@ export default {
 The component exports the following type definitions:
 
 ```ts
-import type { CouponCellProps, CouponListProps } from 'vant';
+import type { CouponCellProps, CouponListProps, CouponInfo } from 'vant';
 ```
 
 ## Theming
@@ -169,10 +170,10 @@ The component provides the following CSS variables, which can be used to customi
 | --van-coupon-content-height | _84px_ | - |
 | --van-coupon-content-padding | _14px 0_ | - |
 | --van-coupon-content-text-color | _var(--van-text-color)_ | - |
-| --van-coupon-background-color | _var(--van-background-color-light)_ | - |
-| --van-coupon-active-background-color | _var(--van-active-color)_ | - |
-| --van-coupon-border-radius | _var(--van-border-radius-lg)_ | - |
-| --van-coupon-box-shadow | _0 0 4px rgba(0, 0, 0, 0.1)_ | - |
+| --van-coupon-background | _var(--van-background-2)_ | - |
+| --van-coupon-active-background | _var(--van-active-color)_ | - |
+| --van-coupon-radius | _var(--van-radius-lg)_ | - |
+| --van-coupon-shadow | _0 0 4px rgba(0, 0, 0, 0.1)_ | - |
 | --van-coupon-head-width | _96px_ | - |
 | --van-coupon-amount-color | _var(--van-danger-color)_ | - |
 | --van-coupon-amount-font-size | _30px_ | - |
@@ -181,12 +182,11 @@ The component provides the following CSS variables, which can be used to customi
 | --van-coupon-disabled-text-color | _var(--van-text-color-2)_ | - |
 | --van-coupon-description-padding | _var(--van-padding-xs) var(--van-padding-md)_ | - |
 | --van-coupon-description-border-color | _var(--van-border-color)_ | - |
-| --van-coupon-corner-checkbox-icon-color | _var(--van-danger-color)_ | - |
-| --van-coupon-list-background-color | _var(--van-background-color)_ | - |
+| --van-coupon-checkbox-color | _var(--van-danger-color)_ | - |
+| --van-coupon-list-background | _var(--van-background)_ | - |
 | --van-coupon-list-field-padding | _5px 0 5px var(--van-padding-md)_ | - |
 | --van-coupon-list-exchange-button-height | _32px_ | - |
 | --van-coupon-list-close-button-height | _40px_ | - |
-| --van-coupon-list-empty-image-size | _200px_ | - |
 | --van-coupon-list-empty-tip-color | _var(--van-text-color-2)_ | - |
 | --van-coupon-list-empty-tip-font-size | _var(--van-font-size-md)_ | - |
 | --van-coupon-list-empty-tip-line-height | _var(--van-line-height-md)_ | - |

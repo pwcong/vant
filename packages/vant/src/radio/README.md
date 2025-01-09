@@ -62,9 +62,14 @@ export default {
 ### Custom Shape
 
 ```html
-<van-radio-group v-model="checked">
-  <van-radio name="1" shape="square">Radio 1</van-radio>
-  <van-radio name="2" shape="square">Radio 2</van-radio>
+<van-radio-group v-model="checked" shape="square">
+  <van-radio name="1">Radio 1</van-radio>
+  <van-radio name="2">Radio 2</van-radio>
+</van-radio-group>
+
+<van-radio-group v-model="checked" shape="dot">
+  <van-radio name="1">Radio 1</van-radio>
+  <van-radio name="2">Radio 2</van-radio>
 </van-radio-group>
 ```
 
@@ -121,11 +126,24 @@ export default {
     const checked = ref('1');
     return {
       checked,
-      activeIcon: 'https://img.yzcdn.cn/vant/user-active.png',
-      inactiveIcon: 'https://img.yzcdn.cn/vant/user-inactive.png',
+      activeIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-active.png',
+      inactiveIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-inactive.png',
     };
   },
 };
+```
+
+### Left Label
+
+Set `label-position` prop to `'left'` to adjust the label position to the left of the Radio.
+
+```html
+<van-radio-group v-model="checked">
+  <van-radio name="1" label-position="left">Radio 1</van-radio>
+  <van-radio name="2" label-position="left">Radio 2</van-radio>
+</van-radio-group>
 ```
 
 ### Disable Label Click
@@ -176,8 +194,8 @@ import type {
 
 | Attribute | Description | Type | Default |
 | --- | --- | --- | --- |
-| name | Radio name | _any_ | - |
-| shape | Can be set to `square` | _string_ | `round` |
+| name | Radio name, usually a unique string or number | _any_ | - |
+| shape | Can be set to `square` `dot` | _string_ | `round` |
 | disabled | Whether to disable radio | _boolean_ | `false` |
 | label-disabled | Whether to disable label click | _boolean_ | `false` |
 | label-position | Can be set to `left` | _string_ | `right` |
@@ -193,6 +211,7 @@ import type {
 | direction | Direction, can be set to `horizontal` | _string_ | `vertical` |
 | icon-size | Icon size of all radios | _number \| string_ | `20px` |
 | checked-color | Checked color of all radios | _string_ | `#1989fa` |
+| shape `v4.6.3` | Can be set to `square` `dot` | _string_ | `round` |
 
 ### Radio Events
 
@@ -210,7 +229,7 @@ import type {
 
 | Name    | Description  | SlotProps                                 |
 | ------- | ------------ | ----------------------------------------- |
-| default | Custom label | -                                         |
+| default | Custom label | _{ checked: boolean, disabled: boolean }_ |
 | icon    | Custom icon  | _{ checked: boolean, disabled: boolean }_ |
 
 ## Theming
@@ -222,11 +241,12 @@ The component provides the following CSS variables, which can be used to customi
 | Name | Default Value | Description |
 | --- | --- | --- |
 | --van-radio-size | _20px_ | - |
+| --van-radio-dot-size | _8px_ | The distance between the dot and the border |
 | --van-radio-border-color | _var(--van-gray-5)_ | - |
-| --van-radio-transition-duration | _var(--van-animation-duration-fast)_ | - |
+| --van-radio-duration | _var(--van-duration-fast)_ | - |
 | --van-radio-label-margin | _var(--van-padding-xs)_ | - |
 | --van-radio-label-color | _var(--van-text-color)_ | - |
 | --van-radio-checked-icon-color | _var(--van-primary-color)_ | - |
 | --van-radio-disabled-icon-color | _var(--van-gray-5)_ | - |
 | --van-radio-disabled-label-color | _var(--van-text-color-3)_ | - |
-| --van-radio-disabled-background-color | _var(--van-border-color)_ | - |
+| --van-radio-disabled-background | _var(--van-border-color)_ | - |

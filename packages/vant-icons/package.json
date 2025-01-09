@@ -1,6 +1,6 @@
 {
   "name": "@vant/icons",
-  "version": "1.7.3",
+  "version": "3.0.2",
   "description": "vant icons",
   "main": "./src/config.js",
   "types": "./src/config.d.ts",
@@ -8,7 +8,7 @@
     "src"
   ],
   "scripts": {
-    "release": "release-it"
+    "release": "vant-cli release"
   },
   "publishConfig": {
     "access": "public",
@@ -16,21 +16,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/youzan/vant.git",
+    "url": "https://github.com/vant-ui/vant.git",
     "directory": "packages/vant-icons"
   },
-  "bugs": "https://github.com/youzan/vant/issues",
+  "bugs": "https://github.com/vant-ui/vant/issues",
   "author": "chenjiahan",
-  "license": "MIT",
-  "devDependencies": {
-    "release-it": "^14.11.6"
-  },
-  "release-it": {
-    "git": {
-      "tag": false,
-      "commitMessage": "release: @vant/icons ${version}",
-      "addUntrackedFiles": true,
-      "requireCleanWorkingDir": false
-    }
-  }
+  "license": "MIT"
 }

@@ -5,7 +5,7 @@ import VanCell from '../../cell';
 import VanSwitch from '../../switch';
 import VanButton from '../../button';
 import { computed, ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 import type { DropdownItemInstance } from '../../dropdown-item';
 
 const t = useTranslate({
@@ -17,6 +17,7 @@ const t = useTranslate({
     expandDirection: '向上展开',
     customContent: '自定义菜单内容',
     customActiveColor: '自定义选中态颜色',
+    swipeItems: '横向滚动',
     option1: [
       { text: '全部商品', value: 0 },
       { text: '新款商品', value: 1 },
@@ -36,6 +37,7 @@ const t = useTranslate({
     expandDirection: 'Expand Direction',
     customContent: 'Custom Content',
     customActiveColor: 'Custom Active Color',
+    swipeItems: 'Swipe Items',
     option1: [
       { text: 'Option1', value: 0 },
       { text: 'Option2', value: 1 },
@@ -78,17 +80,17 @@ const onConfirm = () => {
       <van-dropdown-item :title="t('itemTitle')" ref="item">
         <van-cell center :title="t('switchTitle1')">
           <template #right-icon>
-            <van-switch v-model="switch1" size="24" active-color="#ee0a24" />
+            <van-switch v-model="switch1" />
           </template>
         </van-cell>
         <van-cell center :title="t('switchTitle2')">
           <template #right-icon>
-            <van-switch v-model="switch2" size="24" active-color="#ee0a24" />
+            <van-switch v-model="switch2" />
           </template>
         </van-cell>
         <div style="padding: 5px 16px">
           <van-button
-            type="danger"
+            type="primary"
             block
             round
             style="height: 40px"
@@ -102,8 +104,18 @@ const onConfirm = () => {
   </demo-block>
 
   <demo-block :title="t('customActiveColor')">
-    <van-dropdown-menu active-color="#1989fa">
+    <van-dropdown-menu active-color="#ee0a24">
       <van-dropdown-item v-model="value1" :options="option1" />
+      <van-dropdown-item v-model="value2" :options="option2" />
+    </van-dropdown-menu>
+  </demo-block>
+
+  <demo-block :title="t('swipeItems')">
+    <van-dropdown-menu swipe-threshold="4">
+      <van-dropdown-item v-model="value1" :options="option1" />
+      <van-dropdown-item v-model="value2" :options="option2" />
+      <van-dropdown-item v-model="value2" :options="option2" />
+      <van-dropdown-item v-model="value2" :options="option2" />
       <van-dropdown-item v-model="value2" :options="option2" />
     </van-dropdown-menu>
   </demo-block>

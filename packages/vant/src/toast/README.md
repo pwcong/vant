@@ -16,18 +16,38 @@ const app = createApp();
 app.use(Toast);
 ```
 
+### Function Call
+
+Vant provides some utility functions that can quickly evoke global `Toast` components.
+
+For example, calling the `showToast` function will render a Toast directly in the page.
+
+```js
+import { showToast } from 'vant';
+
+showToast('Some messages');
+```
+
 ## Usage
 
 ### Text
 
+Use the `showToast` method to display a text toast in the center of the screen.
+
 ```js
-Toast('Some messages');
+import { showToast } from 'vant';
+
+showToast('Some messages');
 ```
 
 ### Loading
 
+Use the `showLoadingToast` method to display a loading toast. The `forbidClick` option can be used to disable background clicks.
+
 ```js
-Toast.loading({
+import { showLoadingToast } from 'vant';
+
+showLoadingToast({
   message: 'Loading...',
   forbidClick: true,
 });
@@ -35,25 +55,37 @@ Toast.loading({
 
 ### Success/Fail
 
+Use the `showSuccessToast` method to display a success message, and use the `showFailToast` method to display a failure message.
+
 ```js
-Toast.success('Success');
-Toast.fail('Fail');
+import { showSuccessToast, showFailToast } from 'vant';
+
+showSuccessToast('Success');
+showFailToast('Fail');
 ```
 
 ### Custom Icon
 
+The `icon` option allows you to customize the icon by specifying either the icon name or an image URL, which is equivalent to the `name` attribute of the Icon component.
+
 ```js
-Toast({
+import { showToast, showLoadingToast } from 'vant';
+
+showToast({
   message: 'Custom Icon',
   icon: 'like-o',
 });
 
-Toast({
+showToast({
   message: 'Custom Image',
-  icon: 'https://img.yzcdn.cn/vant/logo.png',
+  icon: 'https://fastly.jsdelivr.net/npm/@vant/assets/logo.png',
 });
+```
 
-Toast.loading({
+The `loadingType` option allows you to customize the type of loading icon.
+
+```js
+showLoadingToast({
   message: 'Loading...',
   forbidClick: true,
   loadingType: 'spinner',
@@ -62,22 +94,48 @@ Toast.loading({
 
 ### Custom Position
 
+By default, the Toast is rendered in the center of the screen. You can control the position of the Toast by using the `position` option.
+
 ```js
-Toast({
+import { showToast } from 'vant';
+
+showToast({
   message: 'Top',
   position: 'top',
 });
 
-Toast({
+showToast({
   message: 'Bottom',
   position: 'bottom',
 });
 ```
 
-### Update Message
+### Word Break
+
+The `wordBreak` option controls how the text in the Toast is truncated when it exceeds the available space. The default value is `break-all`, and the optional values are `break-word` and `normal`.
 
 ```js
-const toast = Toast.loading({
+import { showToast } from 'vant';
+
+showToast({
+  message: 'This message will contain a incomprehensibilities long word.',
+  wordBreak: 'break-all',
+});
+
+showToast({
+  message: 'This message will contain a incomprehensibilities long word.',
+  wordBreak: 'break-word',
+});
+```
+
+### Update Message
+
+When executing the Toast method, it returns the corresponding Toast instance. You can dynamically update the message by modifying the `message` property on the instance.
+
+```js
+import { showLoadingToast, closeToast } from 'vant';
+
+const toast = showLoadingToast({
   duration: 0,
   forbidClick: true,
   loadingType: 'spinner',
@@ -91,73 +149,93 @@ const timer = setInterval(() => {
     toast.message = `${second} seconds`;
   } else {
     clearInterval(timer);
-    Toast.clear();
+    closeToast();
   }
 }, 1000);
 ```
 
-### Global Method
-
-After registering the Toast component through `app.use`, the `$toast` method will be automatically mounted on all subcomponents of the app.
-
-```js
-export default {
-  mounted() {
-    this.$toast('Some messages');
-  },
-};
-```
-
 ### Singleton
 
-Toast use singleton mode by default, if you need to pop multiple Toast at the same time, you can refer to the following example:
+The Toast is implemented as a singleton by default, which means that only one Toast can exist at a time. If you need to display multiple Toasts at the same time, you can refer to the following example:
 
 ```js
-Toast.allowMultiple();
+import { showToast, showSuccessToast, allowMultipleToast } from 'vant';
 
-const toast1 = Toast('First Toast');
-const toast2 = Toast.success('Second Toast');
+allowMultipleToast();
 
-toast1.clear();
-toast2.clear();
+const toast1 = showToast('First Toast');
+const toast2 = showSuccessToast('Second Toast');
+
+toast1.close();
+toast2.close();
 ```
 
 ### Set Default Options
 
-The Toast default configuration can be globally modified with the `Toast.setDefaultOptions` function.
+You can globally modify the default configuration of the `showToast` and other methods by using the `setToastDefaultOptions` function.
 
 ```js
-Toast.setDefaultOptions({ duration: 2000 });
+import { setToastDefaultOptions, resetToastDefaultOptions } from 'vant';
 
-Toast.setDefaultOptions('loading', { forbidClick: true });
+setToastDefaultOptions({ duration: 2000 });
 
-Toast.resetDefaultOptions();
+setToastDefaultOptions('loading', { forbidClick: true });
 
-Toast.resetDefaultOptions('loading');
+resetToastDefaultOptions();
+
+resetToastDefaultOptions('loading');
+```
+
+### Use Toast Component
+
+If you need to embed components or other custom content within the Toast, you can directly use the Toast component and customize it using the message slot. Before using it, you need to register the component using `app.use` or other methods.
+
+```html
+<van-toast v-model:show="show" style="padding: 0">
+  <template #message>
+    <van-image :src="image" width="200" height="140" style="display: block" />
+  </template>
+</van-toast>
+```
+
+```js
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const show = ref(false);
+    return { show };
+  },
+};
 ```
 
 ## API
 
 ### Methods
 
-| Methods | Attribute | Return value | Description |
-| --- | --- | --- | --- |
-| Toast | `options \| message` | toast instance | Show toast |
-| Toast.loading | `options \| message` | toast instance | Show loading toast |
-| Toast.success | `options \| message` | toast instance | Show success toast |
-| Toast.fail | `options \| message` | toast instance | Show fail toast |
-| Toast.clear | `clearAll: boolean` | `void` | Close toast |
-| Toast.allowMultiple | - | `void` | Allow multiple toast at the same time |
-| Toast.setDefaultOptions | `type \| options` | `void` | Set default options of all toasts |
-| Toast.resetDefaultOptions | `type` | `void` | Reset default options of all toasts |
+Vant exports following Toast utility functions:
 
-### Options
+| Name | Description | Attribute | Return value |
+| --- | --- | --- | --- |
+| showToast | Display a text toast | `ToastOptions \| string` | Toast instance |
+| showLoadingToast | Display a loading toast | `ToastOptions \| string` | Toast instance |
+| showSuccessToast | Display a success toast | `ToastOptions \| string` | Toast instance |
+| showFailToast | Display a fail toast | `ToastOptions \| string` | Toast instance |
+| closeToast | Close the currently displayed toast | `closeAll: boolean` | `void` |
+| allowMultipleToast | Allow multiple toasts to be displayed as the same time | - | `void` |
+| setToastDefaultOptions | Modify the default configuration that affects all `showToast` calls. Specify the `type` parameter to modify the default configuration of a specific type of toast | `type \| ToastOptions` | `void` |
+| resetToastDefaultOptions | Reset the default configuration that affects all `showToast` calls. Specify the `type` parameter to reset the default configuration of a specific type of toast | `type` | `void` |
+
+### ToastOptions
+
+When calling the `showToast` and other related methods, the following options are supported:
 
 | Attribute | Description | Type | Default |
 | --- | --- | --- | --- |
 | type | Can be set to `loading` `success` `fail` `html` | _ToastType_ | `text` |
 | position | Can be set to `top` `middle` `bottom` | _ToastPosition_ | `middle` |
 | message | Message | _string_ | `''` |
+| wordBreak | Can be set to `normal` `break-all` `break-word` | _ToastWordBreak_ | `'break-all'` |
 | icon | Custom icon | _string_ | - |
 | iconSize | Custom icon size | _number \| string_ | `36px` |
 | iconPrefix | Icon className prefix | _string_ | `van-icon` |
@@ -168,19 +246,71 @@ Toast.resetDefaultOptions('loading');
 | loadingType | Loading icon type, can be set to `spinner` | _string_ | `circular` |
 | duration | Toast duration(ms), won't disappear if value is 0 | _number_ | `2000` |
 | className | Custom className | _string \| Array \| object_ | - |
-| overlayClass `v3.0.4` | Custom overlay class | _string \| Array \| object_ | - |
-| overlayStyle `v3.0.4` | Custom overlay style | _object_ | - |
-| onOpened | Callback function after opened | _Function_ | - |
-| onClose | Callback function after close | _Function_ | - |
-| transition | Transition, equivalent to `name` prop of [transition](https://v3.vuejs.org/api/built-in-components.html#transition) | _string_ | `van-fade` |
+| overlayClass | Custom overlay class | _string \| Array \| object_ | - |
+| overlayStyle | Custom overlay style | _object_ | - |
+| transition | Transition, equivalent to `name` prop of [transition](https://vuejs.org/api/built-in-components.html#transition) | _string_ | `van-fade` |
 | teleport | Specifies a target element where Toast will be mounted | _string \| Element_ | `body` |
+| zIndex | Set the z-index to a fixed value | _number \| string_ | `2000+` |
+| onClose | Callback function after close | _Function_ | - |
+| onOpened | Callback function after opened | _Function_ | - |
+
+### Props
+
+When using `Toast` as a component, the following props are supported:
+
+| Attribute | Description | Type | Default |
+| --- | --- | --- | --- |
+| v-model:show | Whether to show toast | _boolean_ | `false` |
+| type | Can be set to `loading` `success` `fail` `html` | _ToastType_ | `text` |
+| position | Can be set to `top` `middle` `bottom` | _ToastPosition_ | `middle` |
+| message | Message | _string_ | `''` |
+| word-break | Can be set to `normal` `break-all` `break-word` | _ToastWordBreak_ | `'break-all'` |
+| icon | Custom icon | _string_ | - |
+| icon-size | Custom icon size | _number \| string_ | `36px` |
+| icon-prefix | Icon className prefix | _string_ | `van-icon` |
+| overlay | Whether to show overlay | _boolean_ | `false` |
+| forbid-click | Whether to forbid click background | _boolean_ | `false` |
+| close-on-click | Whether to close after clicked | _boolean_ | `false` |
+| close-on-click-overlay | Whether to close when overlay is clicked | _boolean_ | `false` |
+| loading-type | Loading icon type, can be set to `spinner` | _string_ | `circular` |
+| duration | Toast duration(ms), won't disappear if value is 0 | _number_ | `2000` |
+| class-name | Custom className | _string \| Array \| object_ | - |
+| overlay-class | Custom overlay class | _string \| Array \| object_ | - |
+| overlay-style | Custom overlay style | _object_ | - |
+| transition | Transition, equivalent to `name` prop of [transition](https://vuejs.org/api/built-in-components.html#transition) | _string_ | `van-fade` |
+| teleport | Specifies a target element where Toast will be mounted | _string \| Element_ | `body` |
+| z-index | Set the z-index to a fixed value | _number \| string_ | `2000+` |
+
+### Events
+
+When using `Toast` as a component, the following events are supported:
+
+| Event  | Description                    | Parameters |
+| ------ | ------------------------------ | ---------- |
+| close  | Callback function after close  | -          |
+| opened | Callback function after opened | -          |
+
+### Slots
+
+You can use following slots when using `Toast` component:
+
+| Name    | Description    |
+| ------- | -------------- |
+| message | Custom message |
 
 ### Types
 
 The component exports the following type definitions:
 
 ```ts
-import type { ToastType, ToastProps, ToastOptions, ToastPosition } from 'vant';
+import type {
+  ToastType,
+  ToastProps,
+  ToastOptions,
+  ToastPosition,
+  ToastWordBreak,
+  ToastWrapperInstance,
+} from 'vant';
 ```
 
 ## Theming
@@ -196,8 +326,8 @@ The component provides the following CSS variables, which can be used to customi
 | --van-toast-text-color | _var(--van-white)_ | - |
 | --van-toast-loading-icon-color | _var(--van-white)_ | - |
 | --van-toast-line-height | _var(--van-line-height-md)_ | - |
-| --van-toast-border-radius | _var(--van-border-radius-lg)_ | - |
-| --van-toast-background-color | _fade(var(--van-black), 70%)_ | - |
+| --van-toast-radius | _var(--van-radius-lg)_ | - |
+| --van-toast-background | _fade(var(--van-black), 70%)_ | - |
 | --van-toast-icon-size | _36px_ | - |
 | --van-toast-text-min-width | _96px_ | - |
 | --van-toast-text-padding | _var(--van-padding-xs) var(--van-padding-sm)_ | - |
@@ -206,3 +336,39 @@ The component provides the following CSS variables, which can be used to customi
 | --van-toast-default-min-height | _88px_ | - |
 | --van-toast-position-top-distance | _20%_ | - |
 | --van-toast-position-bottom-distance | _20%_ | - |
+
+## FAQ
+
+### Compilation error when referencing showToast?
+
+If you encounter the following error when referencing the `showToast` method, it indicates that the project is using the `babel-plugin-import` plugin, which causes incorrect compilation.
+
+```bash
+These dependencies were not found:
+
+* vant/es/show-toast in ./src/xxx.js
+* vant/es/show-toast/style in ./src/xxx.js
+```
+
+Starting from version 4.0, Vant no longer supports the `babel-plugin-import` plugin. Please refer to the [migration guide](#/en-US/migrate-from-v3#remove-babel-plugin-import) to remove this plugin.
+
+### Style Issues When Using showToast with On-Demand Component Import?
+
+When integrating Vant using the [on-demand component import](#/en-US/quickstart#import-on-demand) method, using functions like `showToast` does not require explicit import. Doing so can cause style issues.
+
+```js
+// The following import is not needed
+import { showToast } from 'vant'
+```
+
+This is because when you explicitly import functions like `showToast`, `@vant/auto-import-resolver` will not automatically import the style resources for Toast, leading to missing styles and resulting in style issues.
+
+There are two solutions:
+
+- Do not explicitly import `showToast` when using it.
+- If you must explicitly import `showToast`, you also need to manually import the related styles for the `Toast` component.
+
+```js
+import { showToast } from 'vant'
+import 'vant/lib/toast/style'
+```

@@ -124,6 +124,54 @@ export default {
 };
 ```
 
+### 全部展开与全部切换
+
+通过 `Collapse` 实例上的 `toggleAll` 方法可以实现全部展开与全部切换。
+
+```html
+<van-collapse v-model="activeNames" ref="collapse">
+  <van-collapse-item title="标题1" name="1">
+    代码是写出来给人看的，附带能在机器上运行。
+  </van-collapse-item>
+  <van-collapse-item title="标题2" name="2">
+    技术无非就是那些开发它的人的共同灵魂。
+  </van-collapse-item>
+  <van-collapse-item title="标题3" name="3">
+    在代码阅读过程中人们说脏话的频率是衡量代码质量的唯一标准。
+  </van-collapse-item>
+</van-collapse>
+
+<van-button type="primary" @click="openAll">全部展开</van-button>
+<van-button type="primary" @click="toggleAll">全部切换</van-button>
+```
+
+```js
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const activeNames = ref(['1']);
+    const collapse = ref(null);
+
+    const openAll = () => {
+      collapse.value.toggleAll(true);
+    }
+    const toggleAll = () => {
+      collapse.value.toggleAll();
+    },
+
+    return {
+      activeNames,
+      openAll,
+      toggleAll,
+      collapse,
+    };
+  },
+};
+```
+
+> Tips: 手风琴模式下无法使用 toggleAll 方法。
+
 ## API
 
 ### Collapse Props
@@ -153,10 +201,45 @@ export default {
 | border | 是否显示内边框 | _boolean_ | `true` |
 | is-link | 是否展示标题栏右侧箭头并开启点击反馈 | _boolean_ | `true` |
 | disabled | 是否禁用面板 | _boolean_ | `false` |
-| readonly `v3.0.12` | 是否为只读状态，只读状态下无法操作面板 | _boolean_ | `false` |
+| readonly | 是否为只读状态，只读状态下无法操作面板 | _boolean_ | `false` |
+| lazy-render | 是否在首次展开时才渲染面板内容 | _boolean_ | `true` |
 | title-class | 左侧标题额外类名 | _string_ | - |
 | value-class | 右侧内容额外类名 | _string_ | - |
 | label-class | 描述信息额外类名 | _string_ | - |
+
+### Collapse 方法
+
+通过 ref 可以获取到 CollapseItem 实例并调用实例方法，详见[组件实例方法](#/zh-CN/advanced-usage#zu-jian-shi-li-fang-fa)。
+
+| 方法名 | 说明 | 参数 | 返回值 |
+| --- | --- | --- | --- |
+| toggleAll | 切换所有面板展开状态，传 `true` 为全部展开，`false` 为全部收起，不传参为全部切换 | _options?: boolean \| object_ | - |
+
+### toggleAll 方法示例
+
+```js
+import { ref } from 'vue';
+import type { CollapseInstance } from 'vant';
+
+const collapseRef = ref<CollapseInstance>();
+
+// 全部切换
+collapseRef.value?.toggleAll();
+// 全部展开
+collapseRef.value?.toggleAll(true);
+// 全部收起
+collapseRef.value?.toggleAll(false);
+
+// 全部全部切换，并跳过禁用的复选框
+collapseRef.value?.toggleAll({
+  skipDisabled: true,
+});
+// 全部选中，并跳过禁用的复选框
+collapseRef.value?.toggleAll({
+  expanded: true,
+  skipDisabled: true,
+});
+```
 
 ### CollapseItem 方法
 
@@ -175,6 +258,7 @@ import type {
   CollapseProps,
   CollapseItemProps,
   CollapseItemInstance,
+  CollapseToggleAllOptions,
 } from 'vant';
 ```
 
@@ -191,14 +275,14 @@ collapseItemRef.value?.toggle();
 
 ### CollapseItem Slots
 
-| 名称           | 说明                 |
-| -------------- | -------------------- |
-| default        | 面板内容             |
-| title          | 自定义标题栏左侧内容 |
-| value          | 自定义标题栏右侧内容 |
-| label `v3.1.1` | 自定义标题栏描述信息 |
-| icon           | 自定义标题栏左侧图标 |
-| right-icon     | 自定义标题栏右侧图标 |
+| 名称       | 说明                 |
+| ---------- | -------------------- |
+| default    | 面板内容             |
+| title      | 自定义标题栏左侧内容 |
+| value      | 自定义标题栏右侧内容 |
+| label      | 自定义标题栏描述信息 |
+| icon       | 自定义标题栏左侧图标 |
+| right-icon | 自定义标题栏右侧图标 |
 
 ## 主题定制
 
@@ -208,10 +292,10 @@ collapseItemRef.value?.toggle();
 
 | 名称 | 默认值 | 描述 |
 | --- | --- | --- |
-| --van-collapse-item-transition-duration | _var(--van-animation-duration-base)_ | - |
+| --van-collapse-item-duration | _var(--van-duration-base)_ | - |
 | --van-collapse-item-content-padding | _var(--van-padding-sm) var(--van-padding-md)_ | - |
 | --van-collapse-item-content-font-size | _var(--van-font-size-md)_ | - |
 | --van-collapse-item-content-line-height | _1.5_ | - |
 | --van-collapse-item-content-text-color | _var(--van-text-color-2)_ | - |
-| --van-collapse-item-content-background-color | _var(--van-background-color-light)_ | - |
+| --van-collapse-item-content-background | _var(--van-background-2)_ | - |
 | --van-collapse-item-title-disabled-color | _var(--van-text-color-3)_ | - |

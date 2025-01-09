@@ -2,7 +2,9 @@
   "extends": "../../tsconfig",
   "compilerOptions": {
     "allowJs": true,
-    "noImplicitThis": true
+    "noImplicitThis": true,
+    "types": ["vitest/globals", "vue/jsx", "csstype"]
   },
-  "include": ["src/**/*", "docs/**/*", "test/**/*"]
+  "include": ["src/**/*", "docs/**/*", "test/**/*"],
+  "exclude": ["**/node_modules", "**/.*/"]
 }

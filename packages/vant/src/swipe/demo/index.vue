@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import VanSwipe from '..';
 import VanSwipeItem from '../../swipe-item';
-import { useTranslate } from '../../../docs/site/use-translate';
-import { Toast } from '../../toast';
+import { cdnURL, useTranslate } from '../../../docs/site';
+import { showToast } from '../../toast';
 
 const t = useTranslate({
   'zh-CN': {
@@ -24,13 +24,13 @@ const t = useTranslate({
 });
 
 const images = [
-  'https://img.yzcdn.cn/vant/apple-1.jpg',
-  'https://img.yzcdn.cn/vant/apple-2.jpg',
-  'https://img.yzcdn.cn/vant/apple-3.jpg',
-  'https://img.yzcdn.cn/vant/apple-4.jpg',
+  cdnURL('apple-1.jpeg'),
+  cdnURL('apple-2.jpeg'),
+  cdnURL('apple-3.jpeg'),
+  cdnURL('apple-4.jpeg'),
 ];
 
-const onChange = (index: number) => Toast(t('message') + index);
+const onChange = (index: number) => showToast(t('message') + index);
 </script>
 
 <template>

@@ -2,30 +2,25 @@ export default {
   name: 'Navn',
   tel: 'Telefon',
   save: 'Lagre',
-  confirm: 'Bekreft',
+  clear: 'Klar',
   cancel: 'Avbryt',
+  confirm: 'Bekreft',
   delete: 'Slett',
   loading: 'Laster...',
   noCoupon: 'Ingen kuponger',
   nameEmpty: 'Vennligst fyll inn navn',
+  addContact: 'Legg til ny kontakt',
   telInvalid: 'Ugyldig telefonnummer',
   vanCalendar: {
     end: 'Slutt',
     start: 'Start',
     title: 'Kalendar',
-    startEnd: 'Start/Slutt',
     weekdays: ['Søn', 'Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør'],
     monthTitle: (year: number, month: number) => `${year}/${month}`,
     rangePrompt: (maxRange: number) => `Maks. ${maxRange} dager`,
   },
   vanCascader: {
     select: 'Plukke ut',
-  },
-  vanContactCard: {
-    addText: 'Legg til kontakt info',
-  },
-  vanContactList: {
-    addText: 'Legg til ny kontakt',
   },
   vanPagination: {
     prev: 'Forrige',
@@ -36,7 +31,7 @@ export default {
     loosing: 'Mist for oppdatering...',
   },
   vanSubmitBar: {
-    label: 'Totalt：',
+    label: 'Totalt:',
   },
   vanCoupon: {
     unlimited: 'Uendelig',
@@ -56,15 +51,10 @@ export default {
   },
   vanAddressEdit: {
     area: 'Område',
-    postal: 'Postkode',
     areaEmpty: 'Vennligst fyll inn område',
     addressEmpty: 'Addresse kan ikke være tomt',
-    postalEmpty: 'Feil postkode',
+    addressDetail: 'Adresse',
     defaultAddress: 'Sett som standard adresse',
-  },
-  vanAddressEditDetail: {
-    label: 'Adresse',
-    placeholder: 'Adresse',
   },
   vanAddressList: {
     add: 'Legg til ny adresse',

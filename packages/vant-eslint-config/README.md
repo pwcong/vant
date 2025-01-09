@@ -1,4 +1,4 @@
-# Eslint Config of Vant
+# ESLint Config of Vant
 
 ## Install
 
@@ -11,6 +11,9 @@ yarn add @vant/eslint-config -D
 
 # with pnpm
 pnpm add @vant/eslint-config -D
+
+# with Bun
+bun add @vant/eslint-config -D
 ```
 
 ## Usage

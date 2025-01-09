@@ -5,7 +5,7 @@ import { Form, FormInstance } from '..';
 import { Field } from '../../field';
 
 test('should emit submit event after calling the submit method', async () => {
-  const onSubmit = jest.fn();
+  const onSubmit = vi.fn();
   const form = ref<FormInstance>();
   mount({
     render() {
@@ -81,9 +81,11 @@ test('validate method - validate two fields and failed', async () => {
   }
 });
 
-test('validate method - unexist name', (done) => {
-  const { formRef } = mountSimpleRulesForm();
-  formRef.value?.validate('unexist').catch(done);
+test('validate method - unexist name', () => {
+  return new Promise((resolve) => {
+    const { formRef } = mountSimpleRulesForm();
+    formRef.value?.validate('unexist').catch(resolve);
+  });
 });
 
 test('resetValidation method - reset all fields', async () => {
@@ -136,4 +138,54 @@ test('scrollToField method', () => {
 
   formRef.value?.scrollToField('A');
   expect(fn).toHaveBeenCalledTimes(1);
+});
+
+test('getValues method should return all current values', () => {
+  const formRef = ref<FormInstance>();
+  mount({
+    render() {
+      return (
+        <Form ref={formRef}>
+          <Field name="A" modelValue="123" />
+          <Field name="B" modelValue="456" />
+        </Form>
+      );
+    },
+  });
+
+  expect(formRef.value?.getValues()).toEqual({ A: '123', B: '456' });
+});
+
+test('getValidationStatus method should the status of all fields', async () => {
+  const formRef = ref<FormInstance>();
+  const rules = getSimpleRules();
+  mount({
+    render() {
+      return (
+        <Form ref={formRef}>
+          <Field name="A" rules={rules.rulesA} modelValue="123" />
+          <Field name="B" rules={rules.rulesB} modelValue="456" />
+        </Form>
+      );
+    },
+  });
+
+  expect(formRef.value?.getValidationStatus()).toEqual({
+    A: 'unvalidated',
+    B: 'unvalidated',
+  });
+
+  await formRef.value?.validate();
+
+  expect(formRef.value?.getValidationStatus()).toEqual({
+    A: 'passed',
+    B: 'passed',
+  });
+
+  formRef.value?.resetValidation();
+
+  expect(formRef.value?.getValidationStatus()).toEqual({
+    A: 'unvalidated',
+    B: 'unvalidated',
+  });
 });

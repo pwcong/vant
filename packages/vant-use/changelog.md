@@ -1,5 +1,45 @@
 # Changelog
 
+## v1.6.0
+
+- add new `useRaf` method
+
+## v1.5.1
+
+- add `vue` as peer dependencies
+
+## v1.5.0
+
+- `useEventListener` now returns a cleanup function
+
+## v1.4.4
+
+- Fix `useChildren` not sort children correctly
+
+## v1.4.3
+
+- improve `useEventListener` typing
+
+## v1.4.2
+
+- `useClickAway` support multiple targets
+
+## v1.4.1
+
+- Add `exports` field to package.json, support nuxt 3.
+
+## v1.4.0
+
+- Using `.mjs` extension, `dist/index.esm.js` -> `dist/index.esm.mjs`
+
+## v1.3.6
+
+- Fix missing VisibilityState type
+
+## v1.3.5
+
+- Fix useChildren missing subTree when flattening vnodes
+
 ## v1.3.4
 
 - Fix useClickAway failed in SSR

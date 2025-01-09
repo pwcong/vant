@@ -2,7 +2,7 @@
 import VanCard from '..';
 import VanTag from '../../tag';
 import VanButton from '../../button';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { cdnURL, useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -16,7 +16,7 @@ const t = useTranslate({
   },
 });
 
-const imageURL = 'https://img.yzcdn.cn/vant/ipad.jpeg';
+const imageURL = cdnURL('ipad.jpeg');
 </script>
 
 <template>
@@ -51,10 +51,10 @@ const imageURL = 'https://img.yzcdn.cn/vant/ipad.jpeg';
       :thumb="imageURL"
     >
       <template #tags>
-        <van-tag plain type="danger" style="margin-right: 5px">
+        <van-tag plain type="primary" style="margin-right: 5px">
           {{ t('tag') }}
         </van-tag>
-        <van-tag plain type="danger">{{ t('tag') }}</van-tag>
+        <van-tag plain type="primary">{{ t('tag') }}</van-tag>
       </template>
 
       <template #footer>
@@ -71,6 +71,6 @@ const imageURL = 'https://img.yzcdn.cn/vant/ipad.jpeg';
 
 <style lang="less">
 .demo-card {
-  background-color: var(--van-background-color-light);
+  background-color: var(--van-background-2);
 }
 </style>

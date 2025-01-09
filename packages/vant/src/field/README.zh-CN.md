@@ -125,6 +125,50 @@ export default {
 };
 ```
 
+### 必填星号
+
+设置 `required` 属性来展示必填星号。
+
+```html
+<van-cell-group inset>
+  <van-field
+    v-model="username"
+    required
+    label="用户名"
+    placeholder="请输入用户名"
+  />
+  <van-field
+    v-model="phone"
+    required
+    label="手机号"
+    placeholder="请输入手机号"
+  />
+</van-cell-group>
+```
+
+请注意 `required` 属性只用于控制样式展示，在进行表单校验时，需要使用 `rule.required` 选项来控制校验逻辑。
+
+### 自动展示星号
+
+你可以在 Form 组件上设置 `required="auto"`，此时 Form 里的所有 Field 会自动根据 `rule.required` 来判断是否需要展示星号。
+
+```html
+<van-form required="auto">
+  <van-field
+    v-model="username"
+    :rules="[{ required: true }]"
+    label="用户名"
+    placeholder="请输入用户名"
+  />
+  <van-field
+    v-model="phone"
+    :rules="[{ required: false }]"
+    label="手机号"
+    placeholder="请输入手机号"
+  />
+</van-form>
+```
+
 ### 错误提示
 
 设置 `required` 属性表示这是一个必填项，可以配合 `error` 或 `error-message` 属性显示对应的错误提示。
@@ -134,13 +178,11 @@ export default {
   <van-field
     v-model="username"
     error
-    required
     label="用户名"
     placeholder="请输入用户名"
   />
   <van-field
     v-model="phone"
-    required
     label="手机号"
     placeholder="请输入手机号"
     error-message="手机号格式错误"
@@ -260,6 +302,39 @@ export default {
 </van-cell-group>
 ```
 
+### 输入框文本位置
+
+通过 `label-align` 属性可以设置输入框文本的位置，可选值为 `center`、`right`、`top`。
+
+```html
+<van-cell-group inset>
+  <van-field
+    v-model="value"
+    label="文本"
+    placeholder="顶部对齐"
+    label-align="top"
+  />
+  <van-field
+    v-model="value2"
+    label="文本"
+    placeholder="左对齐"
+    label-align="left"
+  />
+  <van-field
+    v-model="value3"
+    label="文本"
+    placeholder="居中对齐"
+    label-align="center"
+  />
+  <van-field
+    v-model="value4"
+    label="文本"
+    placeholder="右对齐"
+    label-align="right"
+  />
+</van-cell-group>
+```
+
 ## API
 
 ### Props
@@ -269,19 +344,21 @@ export default {
 | v-model | 当前输入的值 | _number \| string_ | - |
 | label | 输入框左侧文本 | _string_ | - |
 | name | 名称，作为提交表单时的标识符 | _string_ | - |
-| id `v3.2.2` | 输入框 id，同时会设置 label 的 for 属性 | _string_ | `van-field-n-input` |
+| id | 输入框 id，同时会设置 label 的 for 属性 | _string_ | `van-field-n-input` |
 | type | 输入框类型, 支持原生 input 标签的所有 [type 属性](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/input#%3Cinput%3E_types)，额外支持了 `digit` 类型 | _FieldType_ | `text` |
-| size | 大小，可选值为 `large` | _string_ | - |
+| size | 大小，可选值为 `large` `normal` | _string_ | - |
 | maxlength | 输入的最大字符数 | _number \| string_ | - |
+| min | 输入框类型为 `number` 或 `digit` 类型时设置可允许的最小值 | _number_ | - |
+| max | 输入框类型为 `number` 或 `digit` 类型时设置可允许的最大值 | _number_ | - |
 | placeholder | 输入框占位提示文字 | _string_ | - |
 | border | 是否显示内边框 | _boolean_ | `true` |
 | disabled | 是否禁用输入框 | _boolean_ | `false` |
 | readonly | 是否为只读状态，只读状态下无法输入内容 | _boolean_ | `false` |
 | colon | 是否在 label 后面添加冒号 | _boolean_ | `false` |
-| required | 是否显示表单必填星号 | _boolean_ | `false` |
+| required | 是否显示表单必填星号 | _boolean \| 'auto'_ | `null` |
 | center | 是否使内容垂直居中 | _boolean_ | `false` |
 | clearable | 是否启用清除图标，点击清除图标后会清空输入框 | _boolean_ | `false` |
-| clear-icon `v3.0.12` | 清除图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ | `clear` |
+| clear-icon | 清除图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ | `clear` |
 | clear-trigger | 显示清除图标的时机，`always` 表示输入框不为空时展示，<br>`focus` 表示输入框聚焦且不为空时展示 | _FieldClearTrigger_ | `focus` |
 | clickable | 是否开启点击反馈 | _boolean_ | `false` |
 | is-link | 是否展示右侧箭头并开启点击反馈 | _boolean_ | `false` |
@@ -295,27 +372,34 @@ export default {
 | arrow-direction | 箭头方向，可选值为 `left` `up` `down` | _string_ | `right` |
 | label-class | 左侧文本额外类名 | _string \| Array \| object_ | - |
 | label-width | 左侧文本宽度，默认单位为 `px` | _number \| string_ | `6.2em` |
-| label-align | 左侧文本对齐方式，可选值为 `center` `right` | _FieldTextAlign_ | `left` |
+| label-align | 左侧文本对齐方式，可选值为 `center` `right` `top` | _FieldTextAlign_ | `left` |
 | input-align | 输入框对齐方式，可选值为 `center` `right` | _FieldTextAlign_ | `left` |
 | autosize | 是否自适应内容高度，只对 textarea 有效，<br>可传入对象,如 { maxHeight: 100, minHeight: 50 }，<br>单位为`px` | _boolean \| FieldAutosizeConfig_ | `false` |
 | left-icon | 左侧图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ | - |
 | right-icon | 右侧图标名称或图片链接，等同于 Icon 组件的 [name 属性](#/zh-CN/icon#props) | _string_ | - |
 | icon-prefix | 图标类名前缀，等同于 Icon 组件的 [class-prefix 属性](#/zh-CN/icon#props) | _string_ | `van-icon` |
 | rules | 表单校验规则，详见 [Form 组件](#/zh-CN/form#rule-shu-ju-jie-gou) | _FieldRule[]_ | - |
-| autocomplete `v3.0.3` | input 标签原生的[自动完成属性](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete) | _string_ | - |
+| autocomplete | HTML 原生属性，用于控制自动完成功能，详见 [MDN - autocomplete](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete) | _string_ | - |
+| autocapitalize `v4.6.2` | HTML 原生属性，用于控制文本输入时是否自动大写，此 API 仅在部分浏览器支持，详见 [MDN - autocapitalize](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize) | _string_ | - |
+| enterkeyhint | HTML 原生属性，用于控制回车键样式，此 API 仅在部分浏览器支持，详见 [MDN - enterkeyhint](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/enterkeyhint)<br> | _string_ | - |
+| spellcheck `v4.6.2` | HTML 原生属性，用于检查元素的拼写错误，此 API 仅在部分浏览器支持，详见 [MDN - spellcheck](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck)<br> | _boolean_ | - |
+| autocorrect `v4.6.2` | HTML 原生属性，仅 Safari 适用，用于自动更正输入的文本，详见 [MDN - autocorrect](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#autocorrect)<br> | _string_ | - |
+| inputmode `v4.9.9` | HTML 原生属性，用于指定输入框的输入模式，详见 [MDN - inputmode](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode) | _string_ | 根据 `type` 属性自动设置 |
 
 ### Events
 
-| 事件               | 说明                 | 回调参数                       |
-| ------------------ | -------------------- | ------------------------------ |
+| 事件名 | 说明 | 回调参数 |
+| --- | --- | --- |
 | update:model-value | 输入框内容变化时触发 | _value: string (当前输入的值)_ |
-| focus              | 输入框获得焦点时触发 | _event: Event_                 |
-| blur               | 输入框失去焦点时触发 | _event: Event_                 |
-| clear              | 点击清除按钮时触发   | _event: MouseEvent_            |
-| click              | 点击组件时触发       | _event: MouseEvent_            |
-| click-input        | 点击输入区域时触发   | _event: MouseEvent_            |
-| click-left-icon    | 点击左侧图标时触发   | _event: MouseEvent_            |
-| click-right-icon   | 点击右侧图标时触发   | _event: MouseEvent_            |
+| focus | 输入框获得焦点时触发 | _event: Event_ |
+| blur | 输入框失去焦点时触发 | _event: Event_ |
+| clear | 点击清除按钮时触发 | _event: MouseEvent_ |
+| click | 点击组件时触发 | _event: MouseEvent_ |
+| click-input | 点击输入区域时触发 | _event: MouseEvent_ |
+| click-left-icon | 点击左侧图标时触发 | _event: MouseEvent_ |
+| click-right-icon | 点击右侧图标时触发 | _event: MouseEvent_ |
+| start-validate | 开始表单校验时触发 | - |
+| end-validate | 结束表单校验时触发 | _{ status: string, message: string }_ |
 
 ### 方法
 
@@ -341,10 +425,11 @@ import type {
   FieldClearTrigger,
   FieldFormatTrigger,
   FieldRuleValidator,
-  FiledRuleFormatter,
+  FieldRuleFormatter,
   FieldValidateError,
   FieldAutosizeConfig,
   FieldValidateTrigger,
+  FieldValidationStatus,
 } from 'vant';
 ```
 
@@ -368,7 +453,7 @@ fieldRef.value?.focus();
 | left-icon | 自定义输入框头部图标 | - |
 | right-icon | 自定义输入框尾部图标 | - |
 | button | 自定义输入框尾部按钮 | - |
-| error-message `v3.2.5` | 自定义底部错误提示文案 | _{ message: string }_ |
+| error-message | 自定义底部错误提示文案 | _{ message: string }_ |
 | extra | 自定义输入框最右侧的额外内容 | - |
 
 ## 主题定制
@@ -380,14 +465,14 @@ fieldRef.value?.focus();
 | 名称                                  | 默认值                    | 描述 |
 | ------------------------------------- | ------------------------- | ---- |
 | --van-field-label-width               | _6.2em_                   | -    |
-| --van-field-label-color               | _var(--van-gray-7)_       | -    |
+| --van-field-label-color               | _var(--van-text-color)_   | -    |
 | --van-field-label-margin-right        | _var(--van-padding-sm)_   | -    |
 | --van-field-input-text-color          | _var(--van-text-color)_   | -    |
 | --van-field-input-error-text-color    | _var(--van-danger-color)_ | -    |
 | --van-field-input-disabled-text-color | _var(--van-text-color-3)_ | -    |
 | --van-field-placeholder-text-color    | _var(--van-text-color-3)_ | -    |
-| --van-field-icon-size                 | _16px_                    | -    |
-| --van-field-clear-icon-size           | _16px_                    | -    |
+| --van-field-icon-size                 | _18px_                    | -    |
+| --van-field-clear-icon-size           | _18px_                    | -    |
 | --van-field-clear-icon-color          | _var(--van-gray-5)_       | -    |
 | --van-field-right-icon-color          | _var(--van-gray-6)_       | -    |
 | --van-field-error-message-color       | _var(--van-danger-color)_ | -    |
@@ -404,6 +489,16 @@ fieldRef.value?.focus();
 ### 设置 type 为 number 后，为什么 input 标签的类型仍为 text?
 
 HTML 原生的 `type="number"` 属性在 iOS 和 Android 系统上都存在一定问题，比如 maxlength 属性不生效、无法获取到完整的输入内容等。因此设置 type 为 `number` 时，Field 不会使用原生的 `type="number"` 属性，而是用现代浏览器支持的 [inputmode 属性](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Global_attributes/inputmode)来控制输入键盘的类型。
+
+### 为什么 v-model 绑定的值被更新为 string 类型？
+
+Field 组件内部会将传入的 v-model 格式化为 string 类型，便于组件内部进行处理。
+
+如果你希望在 v-model 上绑定 number 类型，可以使用 Vue 提供的 [.number 修饰符](https://vuejs.org/guide/essentials/forms.html#lazy)。
+
+```html
+<van-field v-model.number="value" type="tel" />
+```
 
 ### 在桌面端点击清除按钮无效？
 

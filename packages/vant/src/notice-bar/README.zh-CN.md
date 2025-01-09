@@ -88,6 +88,7 @@ app.use(NoticeBar);
     vertical
     class="notice-swipe"
     :autoplay="3000"
+    :touchable="false"
     :show-indicators="false"
   >
     <van-swipe-item>明月直入，无心可猜。</van-swipe-item>
@@ -132,9 +133,9 @@ app.use(NoticeBar);
 
 通过 ref 可以获取到 NoticeBar 实例并调用实例方法，详见[组件实例方法](#/zh-CN/advanced-usage#zu-jian-shi-li-fang-fa)。
 
-| 方法名         | 说明                 | 参数 | 返回值 |
-| -------------- | -------------------- | ---- | ------ |
-| reset `v3.1.1` | 重置通知栏到初始状态 | -    | -      |
+| 方法名 | 说明                 | 参数 | 返回值 |
+| ------ | -------------------- | ---- | ------ |
+| reset  | 重置通知栏到初始状态 | -    | -      |
 
 ### 类型定义
 
@@ -177,6 +178,6 @@ noticeBarRef.value?.reset();
 | --van-notice-bar-text-color | _var(--van-orange-dark)_ | - |
 | --van-notice-bar-font-size | _var(--van-font-size-md)_ | - |
 | --van-notice-bar-line-height | _24px_ | - |
-| --van-notice-bar-background-color | _var(--van-orange-light)_ | - |
+| --van-notice-bar-background | _var(--van-orange-light)_ | - |
 | --van-notice-bar-icon-size | _16px_ | - |
 | --van-notice-bar-icon-min-width | _24px_ | - |

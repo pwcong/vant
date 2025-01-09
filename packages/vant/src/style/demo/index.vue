@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import VanCell from '../../cell';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -77,7 +77,7 @@ const animate = (newName: string) => {
 
   .van-hairline--top {
     height: 30px;
-    background-color: var(--van-background-color-light);
+    background-color: var(--van-background-2);
 
     &::after {
       top: 5px;

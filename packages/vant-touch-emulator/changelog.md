@@ -1,5 +1,11 @@
 # Changelog
 
+### [v1.4.0]
+
+`2022-08-06`
+
+- support `.mjs` extension
+
 ### [v1.3.1]
 
 `2021-07-06`
@@ -10,7 +16,7 @@
 
 `2021-05-26`
 
-- add SSR support [\#8767](https://github.com/youzan/vant/pull/8767)
+- add SSR support [\#8767](https://github.com/vant-ui/vant/pull/8767)
 
 ### [v1.2.0]
 

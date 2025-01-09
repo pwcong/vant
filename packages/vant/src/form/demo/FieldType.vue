@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { cdnURL, useTranslate } from '../../../docs/site';
 import VanForm from '..';
 import VanRate from '../../rate';
 import VanRadio from '../../radio';
@@ -17,7 +17,7 @@ import VanCheckboxGroup from '../../checkbox-group';
 import FieldTypeArea from './FieldTypeArea.vue';
 import FieldTypePicker from './FieldTypePicker.vue';
 import FieldTypeCalendar from './FieldTypeCalendar.vue';
-import FieldTypeDatetimePicker from './FieldTypeDatetimePicker.vue';
+import FieldTypeDatePicker from './FieldTypeDatePicker.vue';
 
 const t = useTranslate({
   'zh-CN': {
@@ -54,7 +54,7 @@ const rate = ref(3);
 const radio = ref('1');
 const slider = ref(50);
 const stepper = ref(1);
-const uploader = ref([{ url: 'https://img.yzcdn.cn/vant/leaf.jpg' }]);
+const uploader = ref([{ url: cdnURL('leaf.jpeg') }]);
 const checkbox = ref(false);
 const checkboxGroup = ref([]);
 const switchChecked = ref(false);
@@ -70,7 +70,7 @@ const onSubmit = (values: Record<string, string>) => {
       <van-cell-group inset>
         <van-field name="switch" :label="t('switch')">
           <template #input>
-            <van-switch v-model="switchChecked" size="20" />
+            <van-switch v-model="switchChecked" />
           </template>
         </van-field>
 
@@ -127,7 +127,7 @@ const onSubmit = (values: Record<string, string>) => {
         </van-field>
 
         <field-type-picker />
-        <field-type-datetime-picker />
+        <field-type-date-picker />
         <field-type-area />
         <field-type-calendar />
       </van-cell-group>

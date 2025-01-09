@@ -1,7 +1,10 @@
 import { later, mount } from '../../../test';
-import { reactive, ref, onMounted } from 'vue';
+import { reactive, ref, onMounted, computed } from 'vue';
 import DropdownItem from '../../dropdown-item';
 import DropdownMenu, { DropdownMenuDirection } from '..';
+import { getContainingBlock } from '../../utils/dom';
+
+vi.mock('../../utils/dom');
 
 function renderWrapper(
   options: {
@@ -10,7 +13,7 @@ function renderWrapper(
     direction?: DropdownMenuDirection | undefined;
     closeOnClickOutside?: boolean;
     icon?: string;
-  } = {}
+  } = {},
 ) {
   return mount({
     setup() {
@@ -198,7 +201,7 @@ test('disable dropdown item', async () => {
 });
 
 test('change event', async () => {
-  const onChange = jest.fn();
+  const onChange = vi.fn();
 
   const wrapper = mount({
     setup() {
@@ -231,36 +234,38 @@ test('change event', async () => {
   expect(onChange).toHaveBeenCalledTimes(1);
 });
 
-test('toggle method', (done) => {
-  const wrapper = mount({
-    setup() {
-      const item = ref();
+test('toggle method', () => {
+  return new Promise<void>((resolve) => {
+    const wrapper = mount({
+      setup() {
+        const item = ref();
 
-      onMounted(async () => {
-        // show
-        item.value.toggle(true, { immediate: true });
-        await later();
+        onMounted(async () => {
+          // show
+          item.value.toggle(true, { immediate: true });
+          await later();
 
-        expect(
-          wrapper.find('.van-dropdown-item__content').style.display
-        ).toEqual('');
+          expect(
+            wrapper.find('.van-dropdown-item__content').style.display,
+          ).toEqual('');
 
-        // hide
-        item.value.toggle(false, { immediate: true });
-        await later();
-        expect(
-          wrapper.find('.van-dropdown-item__content').style.display
-        ).toEqual('none');
+          // hide
+          item.value.toggle(false, { immediate: true });
+          await later();
+          expect(
+            wrapper.find('.van-dropdown-item__content').style.display,
+          ).toEqual('none');
 
-        done();
-      });
+          resolve();
+        });
 
-      return () => (
-        <DropdownMenu>
-          <DropdownItem ref={item} />
-        </DropdownMenu>
-      );
-    },
+        return () => (
+          <DropdownMenu>
+            <DropdownItem ref={item} />
+          </DropdownMenu>
+        );
+      },
+    });
   });
 });
 
@@ -277,4 +282,128 @@ test('title slot', async () => {
 
   await later();
   expect(wrapper.html()).toMatchSnapshot();
+});
+
+test('DropdownItem should inherit attrs when using teleport prop', async () => {
+  const root = document.createElement('div');
+  mount({
+    setup() {
+      return () => (
+        <DropdownMenu>
+          <DropdownItem class="foo" teleport={root} />
+        </DropdownMenu>
+      );
+    },
+  });
+
+  await later();
+  const item = root.querySelector('.van-dropdown-item');
+  expect(item?.classList.contains('foo')).toBeTruthy();
+});
+
+test('scrolling is allowed when the number of items exceeds the threshold', async () => {
+  const itemCounts = ref(4);
+  const wrapper = mount({
+    setup() {
+      const options = [
+        { text: 'A', value: 0 },
+        { text: 'B', value: 1 },
+      ];
+
+      const dropdownItems = computed(() =>
+        new Array(itemCounts.value)
+          .fill(0)
+          .map(() => <DropdownItem modelValue={0} options={options} />),
+      );
+
+      return () => (
+        <DropdownMenu swipeThreshold={4}>{dropdownItems.value}</DropdownMenu>
+      );
+    },
+  });
+
+  const bar = wrapper.find('.van-dropdown-menu__bar');
+  expect(bar.classes()).not.toContain('van-dropdown-menu__bar--scrollable');
+  itemCounts.value = 5;
+  await later();
+  expect(bar.classes()).toContain('van-dropdown-menu__bar--scrollable');
+});
+
+test('auto-locate prop', async () => {
+  const mockedFn = vi.mocked(getContainingBlock);
+  const autoLocate = ref(false);
+  const wrapper = mount({
+    setup() {
+      const options = [
+        { text: 'A', value: 0 },
+        { text: 'B', value: 1 },
+      ];
+
+      return () => (
+        <DropdownMenu autoLocate={autoLocate.value}>
+          <DropdownItem modelValue={0} options={options} />
+        </DropdownMenu>
+      );
+    },
+  });
+
+  const item = wrapper.find('.van-dropdown-item');
+  const offsetParent = {
+    getBoundingClientRect() {
+      return {
+        top: 10,
+      };
+    },
+  } as HTMLElement;
+  expect(mockedFn).not.toHaveBeenCalled();
+  expect(item.style.top).toEqual('0px');
+
+  mockedFn.mockReturnValue(offsetParent);
+  autoLocate.value = true;
+  await later();
+  expect(mockedFn).toHaveBeenCalled();
+  expect(mockedFn.mock.calls[0]).toEqual([item.element]);
+  expect(item.style.top).toEqual('-10px');
+
+  vi.doUnmock('../../utils/dom');
+});
+
+test('disable dropdown option', async () => {
+  const onChange = vi.fn();
+  const optionsRef = ref([
+    { text: 'A', value: 0 },
+    { text: 'B', value: 1, disabled: true },
+    { text: 'C', value: 2 },
+  ]);
+  const wrapper = mount({
+    setup() {
+      return () => (
+        <DropdownMenu>
+          <DropdownItem
+            modelValue={0}
+            options={optionsRef.value}
+            onChange={onChange}
+          />
+        </DropdownMenu>
+      );
+    },
+  });
+
+  await later();
+  const title = wrapper.find('.van-dropdown-menu__title');
+  await title.trigger('click');
+
+  const options = wrapper.findAll('.van-dropdown-item .van-cell');
+
+  await options[1].trigger('click');
+  expect(onChange).not.toHaveBeenCalled();
+
+  await options[2].trigger('click');
+  expect(onChange).toHaveBeenCalledTimes(1);
+
+  optionsRef.value[1].disabled = false;
+
+  await later();
+  await options[1].trigger('click');
+  expect(onChange).toHaveBeenCalledTimes(2);
 });

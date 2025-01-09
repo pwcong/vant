@@ -1,4 +1,4 @@
-import { createNamespace, isFunction } from '../utils';
+import { toArray, createNamespace, isFunction } from '../utils';
 import type {
   UploaderMaxSize,
   UploaderResultType,
@@ -8,9 +8,6 @@ import type {
 const [name, bem, t] = createNamespace('uploader');
 
 export { name, bem, t };
-
-export const toArray = <T>(item: T | T[]): T[] =>
-  Array.isArray(item) ? item : [item];
 
 export function readFileContent(file: File, resultType: UploaderResultType) {
   return new Promise<string | void>((resolve) => {
@@ -35,14 +32,14 @@ export function readFileContent(file: File, resultType: UploaderResultType) {
 
 export function isOversize(
   items: UploaderFileListItem | UploaderFileListItem[],
-  maxSize: UploaderMaxSize
+  maxSize: UploaderMaxSize,
 ): boolean {
   return toArray(items).some((item) => {
     if (item.file) {
       if (isFunction(maxSize)) {
         return maxSize(item.file);
       }
-      return item.file.size > maxSize;
+      return item.file.size > +maxSize;
     }
     return false;
   });
@@ -50,7 +47,7 @@ export function isOversize(
 
 export function filterFiles(
   items: UploaderFileListItem[],
-  maxSize: UploaderMaxSize
+  maxSize: UploaderMaxSize,
 ) {
   const valid: UploaderFileListItem[] = [];
   const invalid: UploaderFileListItem[] = [];
@@ -66,7 +63,7 @@ export function filterFiles(
   return { valid, invalid };
 }
 
-const IMAGE_REGEXP = /\.(jpeg|jpg|gif|png|svg|webp|jfif|bmp|dpg)/i;
+const IMAGE_REGEXP = /\.(jpeg|jpg|gif|png|svg|webp|jfif|bmp|dpg|avif)/i;
 
 export const isImageUrl = (url: string): boolean => IMAGE_REGEXP.test(url);
 

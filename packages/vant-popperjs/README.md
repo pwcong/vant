@@ -13,6 +13,9 @@ yarn add @vant/popperjs
 
 # with pnpm
 pnpm add @vant/popperjs
+
+# with Bun
+bun add @vant/popperjs
 ```
 
 ## Usage
@@ -21,4 +24,4 @@ see: https://popper.js.org/
 
 ## Refer
 
-issue: https://github.com/youzan/vant/issues/7626
+issue: https://github.com/vant-ui/vant/issues/7626

@@ -1,5 +1,4 @@
-import { get } from 'lodash-es';
-import { join } from 'path';
+import { join } from 'node:path';
 import {
   pascalize,
   getComponents,
@@ -21,7 +20,7 @@ function getPathByName(name: string, pathResolver?: PathResolver) {
 function genImports(
   names: string[],
   pathResolver?: PathResolver,
-  namedExport?: boolean
+  namedExport?: boolean,
 ): string {
   return names
     .map((name) => {
@@ -37,7 +36,7 @@ function genImports(
 function genExports(
   names: string[],
   pathResolver?: PathResolver,
-  namedExport?: boolean
+  namedExport?: boolean,
 ): string {
   if (namedExport) {
     const exports = names
@@ -72,8 +71,8 @@ export function genPackageEntry({
   const names = getComponents();
   const vantConfig = getVantConfig();
 
-  const namedExport = get(vantConfig, 'build.namedExport', false);
-  const skipInstall = get(vantConfig, 'build.skipInstall', []).map(pascalize);
+  const namedExport = vantConfig.build?.namedExport || false;
+  const skipInstall = (vantConfig.build?.skipInstall || []).map(pascalize);
 
   const version = process.env.PACKAGE_VERSION || getPackageJson().version;
 

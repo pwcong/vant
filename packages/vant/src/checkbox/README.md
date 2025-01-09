@@ -47,7 +47,21 @@ export default {
 ### Custom Shape
 
 ```html
-<van-checkbox v-model="checked" shape="square">Checkbox</van-checkbox>
+<van-checkbox-group v-model="checked" shape="square">
+  <van-checkbox name="a">复选框 a</van-checkbox>
+  <van-checkbox name="b">复选框 b</van-checkbox>
+</van-checkbox-group>
+```
+
+```js
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const checked = ref(['a', 'b']);
+    return { checked };
+  },
+};
 ```
 
 ### Custom Color
@@ -89,11 +103,21 @@ export default {
     const checked = ref(true);
     return {
       checked,
-      activeIcon: 'https://img.yzcdn.cn/vant/user-active.png',
-      inactiveIcon: 'https://img.yzcdn.cn/vant/user-inactive.png',
+      activeIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-active.png',
+      inactiveIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-inactive.png',
     };
   },
 };
+```
+
+### Left Label
+
+Set `label-position` prop to `'left'` to adjust the label position to the left of the Checkbox.
+
+```html
+<van-checkbox v-model="checked" label-position="left">Checkbox</van-checkbox>
 ```
 
 ### Disable Label Click
@@ -241,6 +265,58 @@ export default {
 };
 ```
 
+### indeterminate
+
+```html
+<van-checkbox
+  v-model="isCheckAll"
+  :indeterminate="isIndeterminate"
+  @change="checkAllChange"
+>
+  Check All
+</van-checkbox>
+
+<van-checkbox-group v-model="checkedResult" @change="checkedResultChange">
+  <van-checkbox v-for="item in list" :key="item" :name="item">
+    Checkbox {{ item }}
+  </van-checkbox>
+</van-checkbox-group>
+```
+
+```js
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const list = ['a', 'b', 'c', 'd']
+
+    const isCheckAll = ref(false);
+    const checkedResult = ref(['a', 'b', 'd']);
+    const isIndeterminate = ref(true);
+
+    const checkAllChange = (val: boolean) => {
+      checkedResult.value = val ? list : []
+      isIndeterminate.value = false
+    }
+
+    const checkedResultChange = (value: string[]) => {
+      const checkedCount = value.length
+      isCheckAll.value = checkedCount === list.length
+      isIndeterminate.value = checkedCount > 0 && checkedCount < list.length
+    }
+
+    return {
+      list,
+      isCheckAll,
+      checkedResult,
+      checkAllChange,
+      isIndeterminate,
+      checkedResultChange
+    };
+  },
+};
+```
+
 ## API
 
 ### Checkbox Props
@@ -248,7 +324,7 @@ export default {
 | Attribute | Description | Type | Default |
 | --- | --- | --- | --- |
 | v-model | Check status | _boolean_ | `false` |
-| name | Checkbox name | _any_ | - |
+| name | Checkbox name, usually a unique string or number | _any_ | - |
 | shape | Can be set to `square` | _string_ | `round` |
 | disabled | Disable checkbox | _boolean_ | `false` |
 | label-disabled | Whether to disable label click | _boolean_ | `false` |
@@ -256,6 +332,7 @@ export default {
 | icon-size | Icon size | _number \| string_ | `20px` |
 | checked-color | Checked color | _string_ | `#1989fa` |
 | bind-group | Whether to bind with CheckboxGroup | _boolean_ | `true` |
+| indeterminate | Whether indeterminate status | _boolean_ | `false` |
 
 ### CheckboxGroup Props
 
@@ -267,6 +344,7 @@ export default {
 | direction | Direction, can be set to `horizontal` | _string_ | `vertical` |
 | icon-size | Icon size of all checkboxes | _number \| string_ | `20px` |
 | checked-color | Checked color of all checkboxes | _string_ | `#1989fa` |
+| shape `v4.6.3` | Can be set to `square` | _string_ | `round` |
 
 ### Checkbox Events
 
@@ -285,12 +363,12 @@ export default {
 
 | Name    | Description  | SlotProps                                 |
 | ------- | ------------ | ----------------------------------------- |
-| default | Custom label | -                                         |
+| default | Custom label | _{ checked: boolean, disabled: boolean }_ |
 | icon    | Custom icon  | _{ checked: boolean, disabled: boolean }_ |
 
 ### CheckboxGroup Methods
 
-Use [ref](https://v3.vuejs.org/guide/component-template-refs.html) to get CheckboxGroup instance and call instance methods.
+Use [ref](https://vuejs.org/guide/essentials/template-refs.html) to get CheckboxGroup instance and call instance methods.
 
 | Name | Description | Attribute | Return value |
 | --- | --- | --- | --- |
@@ -299,21 +377,24 @@ Use [ref](https://v3.vuejs.org/guide/component-template-refs.html) to get Checkb
 ### toggleAll Usage
 
 ```js
-const { checkboxGroup } = this.$refs;
+import { ref } from 'vue';
+import type { CheckboxGroupInstance } from 'vant';
+
+const checkboxGroupRef = ref<CheckboxGroupInstance>();
 
 // Toggle all
-checkboxGroup.toggleAll();
+checkboxGroup.value?.toggleAll();
 // Select all
-checkboxGroup.toggleAll(true);
+checkboxGroup.value?.toggleAll(true);
 // Unselect all
-checkboxGroup.toggleAll(false);
+checkboxGroup.value?.toggleAll(false);
 
 // Toggle all, skip disabled
-checkboxGroup.toggleAll({
+checkboxGroup.value?.toggleAll({
   skipDisabled: true,
 });
 // Select all, skip disabled
-checkboxGroup.toggleAll({
+checkboxGroup.value?.toggleAll({
   checked: true,
   skipDisabled: true,
 });
@@ -321,7 +402,7 @@ checkboxGroup.toggleAll({
 
 ### Checkbox Methods
 
-Use [ref](https://v3.vuejs.org/guide/component-template-refs.html) to get Checkbox instance and call instance methods.
+Use [ref](https://vuejs.org/guide/essentials/template-refs.html) to get Checkbox instance and call instance methods.
 
 | Name   | Description         | Attribute           | Return value |
 | ------ | ------------------- | ------------------- | ------------ |
@@ -367,10 +448,10 @@ The component provides the following CSS variables, which can be used to customi
 | --- | --- | --- |
 | --van-checkbox-size | _20px_ | - |
 | --van-checkbox-border-color | _var(--van-gray-5)_ | - |
-| --van-checkbox-transition-duration | _var(--van-animation-duration-fast)_ | - |
+| --van-checkbox-duration | _var(--van-duration-fast)_ | - |
 | --van-checkbox-label-margin | _var(--van-padding-xs)_ | - |
 | --van-checkbox-label-color | _var(--van-text-color)_ | - |
 | --van-checkbox-checked-icon-color | _var(--van-primary-color)_ | - |
 | --van-checkbox-disabled-icon-color | _var(--van-gray-5)_ | - |
 | --van-checkbox-disabled-label-color | _var(--van-text-color-3)_ | - |
-| --van-checkbox-disabled-background-color | _var(--van-border-color)_ | - |
+| --van-checkbox-disabled-background | _var(--van-border-color)_ | - |

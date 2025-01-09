@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import VanBadge from '..';
 import VanIcon from '../../icon';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -102,7 +102,7 @@ const t = useTranslate({
 
 <style lang="less">
 .demo-badge {
-  background-color: var(--van-background-color-light);
+  background-color: var(--van-background-2);
 
   .van-badge__wrapper {
     margin-left: var(--van-padding-md);

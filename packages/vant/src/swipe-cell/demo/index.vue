@@ -3,8 +3,8 @@ import VanSwipeCell from '..';
 import VanButton from '../../button';
 import VanCell from '../../cell';
 import VanCard from '../../card';
-import { useTranslate } from '../../../docs/site/use-translate';
-import { Dialog } from '../../dialog';
+import { cdnURL, useTranslate } from '../../../docs/site';
+import { showConfirmDialog } from '../../dialog';
 
 const t = useTranslate({
   'zh-CN': {
@@ -29,7 +29,7 @@ const t = useTranslate({
   },
 });
 
-const imageURL = 'https://img.yzcdn.cn/vant/ipad.jpeg';
+const imageURL = cdnURL('ipad.jpeg');
 
 const beforeClose = ({ position }: { position: string }) => {
   switch (position) {
@@ -38,10 +38,12 @@ const beforeClose = ({ position }: { position: string }) => {
     case 'outside':
       return true;
     case 'right':
-      return new Promise((resolve) => {
-        Dialog.confirm({
+      return new Promise<boolean>((resolve) => {
+        showConfirmDialog({
           title: t('confirm'),
-        }).then(resolve);
+        })
+          .then(() => resolve(true))
+          .catch(() => resolve(false));
       });
   }
 };
@@ -100,7 +102,7 @@ const beforeClose = ({ position }: { position: string }) => {
 
   .van-card {
     margin: 0;
-    background-color: var(--van-background-color-light);
+    background-color: var(--van-background-2);
   }
 
   .delete-button {

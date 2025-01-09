@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import VanRow from '../../row';
 import VanCol from '..';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
     title2: '在列元素之间增加间距',
     justify: '对齐方式',
+    vertical: '垂直间距',
   },
   'en-US': {
     title2: 'Column Spacing',
     justify: 'Justify Content',
+    vertical: 'Vertical Spacing',
   },
 });
 </script>
@@ -39,6 +41,17 @@ const t = useTranslate({
       <van-col span="8">span: 8</van-col>
       <van-col span="8">span: 8</van-col>
     </van-row>
+  </demo-block>
+
+  <demo-block :title="t('vertical')">
+    <div class="demo-vertical-space">
+      <van-row :gutter="[20, 20]">
+        <van-col span="12">span: 12</van-col>
+        <van-col span="12">span: 12</van-col>
+        <van-col span="12">span: 12</van-col>
+        <van-col span="12">span: 12</van-col>
+      </van-row>
+    </div>
   </demo-block>
 
   <demo-block :title="t('justify')">
@@ -70,8 +83,6 @@ const t = useTranslate({
 
 <style lang="less">
 .demo-col {
-  background: var(--van-background-color-light);
-
   .van-doc-demo-block {
     padding: 0 var(--van-padding-md);
   }
@@ -95,6 +106,12 @@ const t = useTranslate({
     &:nth-child(even) {
       background-color: #66c6f2;
     }
+  }
+}
+
+.demo-vertical-space {
+  .van-col {
+    margin-bottom: 0;
   }
 }
 </style>

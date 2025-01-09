@@ -20,11 +20,11 @@ export default {
   setup() {
     const root = ref();
 
-    onMounted(()=>{
+    onMounted(() => {
       const rect = useRect(root);
       console.log(rect); // -> 元素的大小及其相对于视口的位置
-    })
-    
+    });
+
     return { root };
   },
 };
@@ -36,7 +36,7 @@ export default {
 
 ```ts
 function useRect(
-  element: Element | Window | Ref<Element | Window | undefined>
+  element: Element | Window | Ref<Element | Window | undefined>,
 ): DOMRect;
 ```
 

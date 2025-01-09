@@ -1,3 +1,8 @@
+/**
+ * This is a fork of [vue-lazyload](https://github.com/hilongjw/vue-lazyload) with Vue 3 support.
+ * license at https://github.com/hilongjw/vue-lazyload/blob/master/LICENSE
+ */
+
 import { inBrowser } from '@vant/use';
 
 export const hasIntersectionObserver =
@@ -40,7 +45,7 @@ export function getBestSelectionFromSrcset(el, scale) {
       tmpSrc = item.substr(0, spaceIndex);
       tmpWidth = parseInt(
         item.substr(spaceIndex + 1, item.length - spaceIndex - 2),
-        10
+        10,
       );
     }
     return [tmpWidth, tmpSrc];

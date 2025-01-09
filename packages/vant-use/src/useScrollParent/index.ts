@@ -3,7 +3,7 @@ import { inBrowser } from '../utils';
 
 type ScrollElement = HTMLElement | Window;
 
-const overflowScrollReg = /scroll|auto/i;
+const overflowScrollReg = /scroll|auto|overlay/i;
 const defaultRoot = inBrowser ? window : undefined;
 
 function isElement(node: Element) {
@@ -15,10 +15,10 @@ function isElement(node: Element) {
   );
 }
 
-// https://github.com/youzan/vant/issues/3823
+// https://github.com/vant-ui/vant/issues/3823
 export function getScrollParent(
   el: Element,
-  root: ScrollElement | undefined = defaultRoot
+  root: ScrollElement | undefined = defaultRoot,
 ) {
   let node = el;
 
@@ -35,7 +35,7 @@ export function getScrollParent(
 
 export function useScrollParent(
   el: Ref<Element | undefined>,
-  root: ScrollElement | undefined = defaultRoot
+  root: ScrollElement | undefined = defaultRoot,
 ) {
   const scrollParent = ref<Element | Window>();
 

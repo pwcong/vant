@@ -23,16 +23,19 @@ import { Icon } from '../icon';
 
 const [name, bem] = createNamespace('nav-bar');
 
-const navBarProps = {
+export const navBarProps = {
   title: String,
   fixed: Boolean,
   zIndex: numericProp,
   border: truthProp,
   leftText: String,
   rightText: String,
+  leftDisabled: Boolean,
+  rightDisabled: Boolean,
   leftArrow: Boolean,
   placeholder: Boolean,
   safeAreaInsetTop: Boolean,
+  clickable: truthProp,
 };
 
 export type NavBarProps = ExtractPropTypes<typeof navBarProps>;
@@ -42,14 +45,22 @@ export default defineComponent({
 
   props: navBarProps,
 
-  emits: ['click-left', 'click-right'],
+  emits: ['clickLeft', 'clickRight'],
 
   setup(props, { emit, slots }) {
     const navBarRef = ref<HTMLElement>();
     const renderPlaceholder = usePlaceholder(navBarRef, bem);
 
-    const onClickLeft = (event: MouseEvent) => emit('click-left', event);
-    const onClickRight = (event: MouseEvent) => emit('click-right', event);
+    const onClickLeft = (event: MouseEvent) => {
+      if (!props.leftDisabled) {
+        emit('clickLeft', event);
+      }
+    };
+    const onClickRight = (event: MouseEvent) => {
+      if (!props.rightDisabled) {
+        emit('clickRight', event);
+      }
+    };
 
     const renderLeft = () => {
       if (slots.left) {
@@ -82,14 +93,22 @@ export default defineComponent({
           ref={navBarRef}
           style={style}
           class={[
-            bem({ fixed, 'safe-area-inset-top': props.safeAreaInsetTop }),
-            { [BORDER_BOTTOM]: border },
+            bem({ fixed }),
+            {
+              [BORDER_BOTTOM]: border,
+              'van-safe-area-top': props.safeAreaInsetTop,
+            },
           ]}
         >
           <div class={bem('content')}>
             {hasLeft && (
               <div
-                class={[bem('left'), HAPTICS_FEEDBACK]}
+                class={[
+                  bem('left', { disabled: props.leftDisabled }),
+                  props.clickable && !props.leftDisabled
+                    ? HAPTICS_FEEDBACK
+                    : '',
+                ]}
                 onClick={onClickLeft}
               >
                 {renderLeft()}
@@ -100,7 +119,12 @@ export default defineComponent({
             </div>
             {hasRight && (
               <div
-                class={[bem('right'), HAPTICS_FEEDBACK]}
+                class={[
+                  bem('right', { disabled: props.rightDisabled }),
+                  props.clickable && !props.rightDisabled
+                    ? HAPTICS_FEEDBACK
+                    : '',
+                ]}
                 onClick={onClickRight}
               >
                 {renderRight()}

@@ -2,8 +2,8 @@
 import VanTabbar from '..';
 import VanTabbarItem from '../../tabbar-item';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
-import { Toast } from '../../toast';
+import { cdnURL, useTranslate } from '../../../docs/site';
+import { showToast } from '../../toast';
 
 const t = useTranslate({
   'zh-CN': {
@@ -30,12 +30,12 @@ const active5 = ref(0);
 const activeName = ref('home');
 
 const icon = {
-  active: 'https://img.yzcdn.cn/vant/user-active.png',
-  inactive: 'https://img.yzcdn.cn/vant/user-inactive.png',
+  active: cdnURL('user-active.png'),
+  inactive: cdnURL('user-inactive.png'),
 };
 
 const onChange = (index: number) => {
-  Toast(`${t('tab')} ${index + 1}`);
+  showToast(`${t('tab')} ${index + 1}`);
 };
 </script>
 
@@ -93,7 +93,7 @@ const onChange = (index: number) => {
   </demo-block>
 
   <demo-block :title="t('customColor')">
-    <van-tabbar v-model="active4" active-color="#ee0a24" inactive-color="#000">
+    <van-tabbar v-model="active4" active-color="#ee0a24">
       <van-tabbar-item icon="home-o">{{ t('tab') }}</van-tabbar-item>
       <van-tabbar-item icon="search">{{ t('tab') }}</van-tabbar-item>
       <van-tabbar-item icon="friends-o">{{ t('tab') }}</van-tabbar-item>

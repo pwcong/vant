@@ -65,12 +65,17 @@ export default {
 
 ### 自定义形状
 
-将 `shape` 属性设置为 `square`，单选框的形状会变成方形。
+`shape` 属性可选值为 `square` 和 `dot`，单选框形状分别对应方形和圆点形。
 
 ```html
-<van-radio-group v-model="checked">
-  <van-radio name="1" shape="square">单选框 1</van-radio>
-  <van-radio name="2" shape="square">单选框 2</van-radio>
+<van-radio-group v-model="checked" shape="square">
+  <van-radio name="1">单选框 1</van-radio>
+  <van-radio name="2">单选框 2</van-radio>
+</van-radio-group>
+
+<van-radio-group v-model="checked" shape="dot">
+  <van-radio name="1">Radio 1</van-radio>
+  <van-radio name="2">Radio 2</van-radio>
 </van-radio-group>
 ```
 
@@ -131,11 +136,24 @@ export default {
     const checked = ref('1');
     return {
       checked,
-      activeIcon: 'https://img.yzcdn.cn/vant/user-active.png',
-      inactiveIcon: 'https://img.yzcdn.cn/vant/user-inactive.png',
+      activeIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-active.png',
+      inactiveIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-inactive.png',
     };
   },
 };
+```
+
+### 左侧文本
+
+将 `label-position` 属性设置为 `'left'`，可以将文本位置调整到单选框左侧。
+
+```html
+<van-radio-group v-model="checked">
+  <van-radio name="1" label-position="left">单选框 1</van-radio>
+  <van-radio name="2" label-position="left">单选框 2</van-radio>
+</van-radio-group>
 ```
 
 ### 禁用文本点击
@@ -174,15 +192,15 @@ export default {
 
 ### Radio Props
 
-| 参数           | 说明                      | 类型               | 默认值    |
-| -------------- | ------------------------- | ------------------ | --------- |
-| name           | 标识符                    | _any_              | -         |
-| shape          | 形状，可选值为 `square`   | _string_           | `round`   |
-| disabled       | 是否为禁用状态            | _boolean_          | `false`   |
-| label-disabled | 是否禁用文本内容点击      | _boolean_          | `false`   |
-| label-position | 文本位置，可选值为 `left` | _string_           | `right`   |
-| icon-size      | 图标大小，默认单位为 `px` | _number \| string_ | `20px`    |
-| checked-color  | 选中状态颜色              | _string_           | `#1989fa` |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| name | 标识符，通常为一个唯一的字符串或数字 | _any_ | - |
+| shape | 形状，可选值为 `square` `dot` | _string_ | `round` |
+| disabled | 是否为禁用状态 | _boolean_ | `false` |
+| label-disabled | 是否禁用文本内容点击 | _boolean_ | `false` |
+| label-position | 文本位置，可选值为 `left` | _string_ | `right` |
+| icon-size | 图标大小，默认单位为 `px` | _number \| string_ | `20px` |
+| checked-color | 选中状态颜色 | _string_ | `#1989fa` |
 
 ### RadioGroup Props
 
@@ -193,6 +211,7 @@ export default {
 | direction | 排列方向，可选值为 `horizontal` | _string_ | `vertical` |
 | icon-size | 所有单选框的图标大小，默认单位为 `px` | _number \| string_ | `20px` |
 | checked-color | 所有单选框的选中状态颜色 | _string_ | `#1989fa` |
+| shape `v4.6.3` | 形状，可选值为 `square` `dot` | _string_ | `round` |
 
 ### Radio Events
 
@@ -210,7 +229,7 @@ export default {
 
 | 名称    | 说明       | 参数                                      |
 | ------- | ---------- | ----------------------------------------- |
-| default | 自定义文本 | -                                         |
+| default | 自定义文本 | _{ checked: boolean, disabled: boolean }_ |
 | icon    | 自定义图标 | _{ checked: boolean, disabled: boolean }_ |
 
 ### 类型定义
@@ -236,11 +255,12 @@ import type {
 | 名称 | 默认值 | 描述 |
 | --- | --- | --- |
 | --van-radio-size | _20px_ | - |
+| --van-radio-dot-size | _8px_ | 圆点到边界的距离 |
 | --van-radio-border-color | _var(--van-gray-5)_ | - |
-| --van-radio-transition-duration | _var(--van-animation-duration-fast)_ | - |
+| --van-radio-duration | _var(--van-duration-fast)_ | - |
 | --van-radio-label-margin | _var(--van-padding-xs)_ | - |
 | --van-radio-label-color | _var(--van-text-color)_ | - |
 | --van-radio-checked-icon-color | _var(--van-primary-color)_ | - |
 | --van-radio-disabled-icon-color | _var(--van-gray-5)_ | - |
 | --van-radio-disabled-label-color | _var(--van-text-color-3)_ | - |
-| --van-radio-disabled-background-color | _var(--van-border-color)_ | - |
+| --van-radio-disabled-background | _var(--van-border-color)_ | - |

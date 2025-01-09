@@ -31,7 +31,7 @@ Use `name` prop to set icon name or icon URL.
 You can directly passing an image URL to the `name` props.
 
 ```html
-<van-icon name="https://b.yzcdn.cn/vant/icon-demo-1126.png" />
+<van-icon name="https://fastly.jsdelivr.net/npm/@vant/assets/icon-demo.png" />
 ```
 
 ### Show Badge
@@ -96,7 +96,7 @@ Use `size` prop to set icon size.
 | name | Icon name or URL | _string_ | `''` |
 | dot | Whether to show red dot | _boolean_ | `false` |
 | badge | Content of the badge | _number \| string_ | `''` |
-| badge-props `v3.2.8` | Props of Badge，see [Badge - props](#/en-US/badge#props) | _BadgeProps_ | - |
+| badge-props | Props of Badge, see [Badge - props](#/en-US/badge#props) | _BadgeProps_ | - |
 | color | Icon color | _string_ | `inherit` |
 | size | Icon size | _number \| string_ | `inherit` |
 | class-prefix | ClassName prefix | _string_ | `van-icon` |
@@ -115,3 +115,11 @@ The component exports the following type definitions:
 ```ts
 import type { IconProps } from 'vant';
 ```
+
+### CSS Variables
+
+The component provides the following CSS variables, which can be used to customize styles. Please refer to [ConfigProvider component](#/en-US/config-provider).
+
+| Name                   | Default Value | Description |
+| ---------------------- | ------------- | ----------- |
+| --van-icon-font-family | _'van-icon'_  | -           |

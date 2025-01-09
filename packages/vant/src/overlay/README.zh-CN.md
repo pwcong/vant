@@ -63,6 +63,14 @@ export default {
 </style>
 ```
 
+### 设置 z-index
+
+Overlay 组件默认的 z-index 层级为 `1`，你可以通过 `z-index` 属性设置它的 z-index 层级。
+
+```html
+<van-overlay z-index="100" />
+```
+
 ## API
 
 ### Props
@@ -75,6 +83,8 @@ export default {
 | class-name | 自定义类名 | _string_ | - |
 | custom-style | 自定义样式 | _object_ | - |
 | lock-scroll | 是否锁定背景滚动，锁定时蒙层里的内容也将无法滚动 | _boolean_ | `true` |
+| lazy-render | 是否在显示时才渲染节点 | _boolean_ | `true` |
+| teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | - |
 
 ### Events
 
@@ -102,7 +112,7 @@ import type { OverlayProps } from 'vant';
 
 组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
 
-| 名称                           | 默认值               | 描述 |
-| ------------------------------ | -------------------- | ---- |
-| --van-overlay-z-index          | _1_                  | -    |
-| --van-overlay-background-color | _rgba(0, 0, 0, 0.7)_ | -    |
+| 名称                     | 默认值               | 描述 |
+| ------------------------ | -------------------- | ---- |
+| --van-overlay-z-index    | _1_                  | -    |
+| --van-overlay-background | _rgba(0, 0, 0, 0.7)_ | -    |

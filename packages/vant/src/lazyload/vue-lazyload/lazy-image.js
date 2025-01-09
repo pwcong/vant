@@ -1,6 +1,12 @@
+/**
+ * This is a fork of [vue-lazyload](https://github.com/hilongjw/vue-lazyload) with Vue 3 support.
+ * license at https://github.com/hilongjw/vue-lazyload/blob/master/LICENSE
+ */
+
 import { useRect } from '@vant/use';
 import { loadImageAsync } from './util';
 import { noop } from '../../utils';
+import { h } from 'vue';
 
 export default (lazyManager) => ({
   props: {
@@ -10,15 +16,13 @@ export default (lazyManager) => ({
       default: 'img',
     },
   },
-  render(h) {
+  render() {
     return h(
       this.tag,
       {
-        attrs: {
-          src: this.renderSrc,
-        },
+        src: this.renderSrc,
       },
-      this.$slots.default
+      this.$slots.default?.(),
     );
   },
   data() {
@@ -47,7 +51,6 @@ export default (lazyManager) => ({
   },
   created() {
     this.init();
-    this.renderSrc = this.options.loading;
   },
   mounted() {
     this.el = this.$el;
@@ -82,7 +85,7 @@ export default (lazyManager) => ({
           !lazyManager.options.silent
         ) {
           console.log(
-            `[@vant/lazyload] ${this.options.src} tried too more than ${this.options.attempt} times`
+            `[@vant/lazyload] ${this.options.src} tried too more than ${this.options.attempt} times`,
           );
         }
 
@@ -100,7 +103,7 @@ export default (lazyManager) => ({
           this.state.attempt++;
           this.renderSrc = this.options.error;
           this.state.error = true;
-        }
+        },
       );
     },
   },

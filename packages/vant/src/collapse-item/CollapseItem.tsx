@@ -30,11 +30,12 @@ const [name, bem] = createNamespace('collapse-item');
 
 const CELL_SLOTS = ['icon', 'title', 'value', 'label', 'right-icon'] as const;
 
-const collapseItemProps = extend({}, cellSharedProps, {
+export const collapseItemProps = extend({}, cellSharedProps, {
   name: numericProp,
   isLink: truthProp,
   disabled: Boolean,
   readonly: Boolean,
+  lazyRender: truthProp,
 });
 
 export type CollapseItemProps = ExtractPropTypes<typeof collapseItemProps>;
@@ -52,7 +53,7 @@ export default defineComponent({
     if (!parent) {
       if (process.env.NODE_ENV !== 'production') {
         console.error(
-          '[Vant] <CollapseItem> must be a child component of <Collapse>.'
+          '[Vant] <CollapseItem> must be a child component of <Collapse>.',
         );
       }
       return;
@@ -62,7 +63,7 @@ export default defineComponent({
     const expanded = computed(() => parent.isExpanded(name.value));
 
     const show = ref(expanded.value);
-    const lazyRender = useLazyRender(show);
+    const lazyRender = useLazyRender(() => show.value || !props.lazyRender);
 
     const onTransitionEnd = () => {
       if (!expanded.value) {
@@ -121,7 +122,7 @@ export default defineComponent({
       const { border, disabled, readonly } = props;
       const attrs = pick(
         props,
-        Object.keys(cellSharedProps) as Array<keyof typeof cellSharedProps>
+        Object.keys(cellSharedProps) as Array<keyof typeof cellSharedProps>,
       );
 
       if (readonly) {
@@ -160,7 +161,7 @@ export default defineComponent({
       </div>
     ));
 
-    useExpose({ toggle });
+    useExpose({ toggle, expanded, itemName: name });
 
     return () => (
       <div class={[bem({ border: index.value && props.border })]}>

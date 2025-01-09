@@ -5,15 +5,18 @@ import {
   type CSSProperties,
   type ExtractPropTypes,
 } from 'vue';
-import { truthProp, makeStringProp, createNamespace } from '../utils';
+import {
+  truthProp,
+  makeStringProp,
+  createNamespace,
+  HAPTICS_FEEDBACK,
+} from '../utils';
 import { Icon } from '../icon';
+import type { TagType, TagSize } from './types';
 
 const [name, bem] = createNamespace('tag');
 
-export type TagSize = 'large' | 'medium';
-export type TagType = 'default' | 'primary' | 'success' | 'warning' | 'danger';
-
-const tagProps = {
+export const tagProps = {
   size: String as PropType<TagSize>,
   mark: Boolean,
   show: truthProp,
@@ -66,7 +69,11 @@ export default defineComponent({
       }
 
       const CloseIcon = closeable && (
-        <Icon name="cross" class={bem('close')} onClick={onClose} />
+        <Icon
+          name="cross"
+          class={[bem('close'), HAPTICS_FEEDBACK]}
+          onClick={onClose}
+        />
       );
 
       return (

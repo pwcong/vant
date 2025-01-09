@@ -1,10 +1,13 @@
-<script setup lang="ts">
+<script lang="ts">
 import Lazyload from '..';
-import { useTranslate } from '../../../docs/site/use-translate';
 
 if (window.app) {
   window.app.use(Lazyload, { lazyComponent: true });
 }
+</script>
+
+<script setup lang="ts">
+import { cdnURL, useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -18,19 +21,13 @@ const t = useTranslate({
 });
 
 const imageList = [
-  'https://img.yzcdn.cn/vant/apple-1.jpg',
-  'https://img.yzcdn.cn/vant/apple-2.jpg',
-  'https://img.yzcdn.cn/vant/apple-3.jpg',
-  'https://img.yzcdn.cn/vant/apple-4.jpg',
+  cdnURL('apple-1.jpeg'),
+  cdnURL('apple-2.jpeg'),
+  cdnURL('apple-3.jpeg'),
+  cdnURL('apple-4.jpeg'),
 ];
-const backgroundImageList = [
-  'https://img.yzcdn.cn/vant/apple-5.jpg',
-  'https://img.yzcdn.cn/vant/apple-6.jpg',
-];
-const componentImageList = [
-  'https://img.yzcdn.cn/vant/apple-8.jpg',
-  'https://img.yzcdn.cn/vant/apple-7.jpg',
-];
+const backgroundImageList = [cdnURL('apple-5.jpeg'), cdnURL('apple-6.jpeg')];
+const componentImageList = [cdnURL('apple-8.jpeg'), cdnURL('apple-7.jpeg')];
 </script>
 
 <template>

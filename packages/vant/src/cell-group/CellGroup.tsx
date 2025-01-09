@@ -1,9 +1,10 @@
 import { defineComponent, type ExtractPropTypes } from 'vue';
 import { truthProp, createNamespace, BORDER_TOP_BOTTOM } from '../utils';
+import { useScopeId } from '../composables/use-scope-id';
 
 const [name, bem] = createNamespace('cell-group');
 
-const cellGroupProps = {
+export const cellGroupProps = {
   title: String,
   inset: Boolean,
   border: truthProp,
@@ -26,6 +27,7 @@ export default defineComponent({
           { [BORDER_TOP_BOTTOM]: props.border && !props.inset },
         ]}
         {...attrs}
+        {...useScopeId()}
       >
         {slots.default?.()}
       </div>

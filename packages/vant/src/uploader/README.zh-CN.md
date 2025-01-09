@@ -55,7 +55,7 @@ import { ref } from 'vue';
 export default {
   setup() {
     const fileList = ref([
-      { url: 'https://img.yzcdn.cn/vant/leaf.jpg' },
+      { url: 'https://fastly.jsdelivr.net/npm/@vant/assets/leaf.jpeg' },
       // Uploader 根据文件后缀来判断是否为图片文件
       // 如果图片 URL 中不包含类型信息，可以添加 isImage 标记来声明
       { url: 'https://cloud-image', isImage: true },
@@ -83,12 +83,12 @@ export default {
   setup() {
     const fileList = ref([
       {
-        url: 'https://img.yzcdn.cn/vant/leaf.jpg',
+        url: 'https://fastly.jsdelivr.net/npm/@vant/assets/leaf.jpeg',
         status: 'uploading',
         message: '上传中...',
       },
       {
-        url: 'https://img.yzcdn.cn/vant/tree.jpg',
+        url: 'https://fastly.jsdelivr.net/npm/@vant/assets/tree.jpeg',
         status: 'failed',
         message: '上传失败',
       },
@@ -143,13 +143,13 @@ export default {
 ```
 
 ```js
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
     const onOversize = (file) => {
       console.log(file);
-      Toast('文件大小不能超过 500kb');
+      showToast('文件大小不能超过 500kb');
     };
 
     return {
@@ -166,8 +166,6 @@ export default {
 ```
 
 ```js
-import { Toast } from 'vant';
-
 export default {
   setup() {
     const isOverSize = (file) => {
@@ -217,6 +215,23 @@ export default {
 </style>
 ```
 
+### 自定义预览大小
+
+通过 `preview-size` 属性定义预览图和上传区域的大小。
+
+```html
+<!-- 不指定单位，默认为 px -->
+<van-uploader v-model="fileList" preview-size="60" />
+<!-- 指定单位，支持 rem, vh, vw -->
+<van-uploader v-model="fileList" preview-size="5rem" />
+```
+
+将 `preview-size` 设置为数组格式，可以分别设置宽高。数组第一项对应宽度，数组第二项对应高度。
+
+```html
+<van-uploader v-model="fileList" :preview-size="[60, 40]" />
+```
+
 ### 上传前置处理
 
 通过传入 `beforeRead` 函数可以在上传前进行校验和处理，返回 `true` 表示校验通过，返回 `false` 表示校验失败。支持返回 `Promise` 对 file 对象进行自定义处理，例如压缩图片。
@@ -226,14 +241,14 @@ export default {
 ```
 
 ```js
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
     // 返回布尔值
     const beforeRead = (file) => {
       if (file.type !== 'image/jpeg') {
-        Toast('请上传 jpg 格式图片');
+        showToast('请上传 jpg 格式图片');
         return false;
       }
       return true;
@@ -243,7 +258,7 @@ export default {
     const asyncBeforeRead = (file) =>
       new Promise((resolve, reject) => {
         if (file.type !== 'image/jpeg') {
-          Toast('请上传 jpg 格式图片');
+          showToast('请上传 jpg 格式图片');
           reject();
         } else {
           const img = new File(['foo'], 'bar.jpg', {
@@ -279,25 +294,42 @@ export default {
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
     const fileList = ref([
-      { url: 'https://img.yzcdn.cn/vant/leaf.jpg' },
       {
-        url: 'https://img.yzcdn.cn/vant/sand.jpg',
+        url: 'https://fastly.jsdelivr.net/npm/@vant/assets/sand.jpeg',
         deletable: true,
         beforeDelete: () => {
-          Toast('自定义单个预览图片的事件和样式');
+          showToast('删除前置处理');
         },
       },
       {
-        url: 'https://img.yzcdn.cn/vant/tree.jpg',
-        deletable: true,
+        url: 'https://fastly.jsdelivr.net/npm/@vant/assets/tree.jpeg',
         imageFit: 'contain',
-        previewSize: 120,
       },
+    ]);
+
+    return { fileList };
+  },
+};
+```
+
+### 开启覆盖上传
+
+```html
+<van-uploader v-model="fileList" reupload max-count="2" />
+```
+
+```ts
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const fileList = ref([
+      { url: 'https://fastly.jsdelivr.net/npm/@vant/assets/leaf.jpeg' },
     ]);
 
     return { fileList };
@@ -313,22 +345,23 @@ export default {
 | --- | --- | --- | --- |
 | v-model | 已上传的文件列表 | _FileListItem[]_ | - |
 | accept | 允许上传的文件类型，[详细说明](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/Input/file#%E9%99%90%E5%88%B6%E5%85%81%E8%AE%B8%E7%9A%84%E6%96%87%E4%BB%B6%E7%B1%BB%E5%9E%8B) | _string_ | `image/*` |
-| name | 标识符，可以在回调函数的第二项参数中获取 | _number \| string_ | - |
-| preview-size | 预览图和上传区域的尺寸，默认单位为 `px` | _number \| string_ | `80px` |
+| name | 标识符，通常为一个唯一的字符串或数字，可以在回调函数的第二项参数中获取 | _number \| string_ | - |
+| preview-size | 预览图和上传区域的尺寸，默认单位为 `px` | _number \| string \| Array_ | `80px` |
 | preview-image | 是否在上传完成后展示预览图 | _boolean_ | `true` |
 | preview-full-image | 是否在点击预览图后展示全屏图片预览 | _boolean_ | `true` |
 | preview-options | 全屏图片预览的配置项，可选值见 [ImagePreview](#/zh-CN/image-preview) | _object_ | - |
 | multiple | 是否开启图片多选，部分安卓机型不支持 | _boolean_ | `false` |
 | disabled | 是否禁用文件上传 | _boolean_ | `false` |
-| readonly `v3.1.5` | 是否将上传区域设置为只读状态 | _boolean_ | `false` |
+| readonly | 是否将上传区域设置为只读状态 | _boolean_ | `false` |
 | deletable | 是否展示删除按钮 | _boolean_ | `true` |
+| reupload `v4.4.0` | 是否开启覆盖上传，开启后会关闭图片预览 | _boolean_ | `false` |
 | show-upload | 是否展示上传区域 | _boolean_ | `true` |
 | lazy-load | 是否开启图片懒加载，须配合 [Lazyload](#/zh-CN/lazyload) 组件使用 | _boolean_ | `false` |
 | capture | 图片选取模式，可选值为 `camera` (直接调起摄像头) | _string_ | - |
 | after-read | 文件读取完成后的回调函数 | _Function_ | - |
 | before-read | 文件读取前的回调函数，返回 `false` 可终止文件读取，<br>支持返回 `Promise` | _Function_ | - |
 | before-delete | 文件删除前的回调函数，返回 `false` 可终止文件读取，<br>支持返回 `Promise` | _Function_ | - |
-| max-size `v3.0.17` | 文件大小限制，单位为 `byte` | _number \| string \| (file: File) => boolean_ | `Infinity` |
+| max-size | 文件大小限制，单位为 `byte` | _number \| string \| (file: File) => boolean_ | `Infinity` |
 | max-count | 文件上传数量限制 | _number \| string_ | `Infinity` |
 | result-type | 文件读取结果类型，可选值为 `file` `text` | _string_ | `dataUrl` |
 | upload-text | 上传区域文字提示 | _string_ | - |
@@ -339,20 +372,22 @@ export default {
 
 ### Events
 
-| 事件名                | 说明                   | 回调参数            |
-| --------------------- | ---------------------- | ------------------- |
-| oversize              | 文件大小超过限制时触发 | 同 `after-read`     |
-| click-upload `v3.1.5` | 点击上传区域时触发     | _event: MouseEvent_ |
-| click-preview         | 点击预览图时触发       | 同 `after-read`     |
-| close-preview         | 关闭全屏图片预览时触发 | -                   |
-| delete                | 删除文件预览时触发     | 同 `after-read`     |
+| 事件名         | 说明                   | 回调参数            |
+| -------------- | ---------------------- | ------------------- |
+| oversize       | 文件大小超过限制时触发 | 同 `after-read`     |
+| click-upload   | 点击上传区域时触发     | _event: MouseEvent_ |
+| click-preview  | 点击预览图时触发       | 同 `after-read`     |
+| click-reupload | 点击覆盖上传时触发     | 同 `after-read`     |
+| close-preview  | 关闭全屏图片预览时触发 | -                   |
+| delete         | 删除文件预览时触发     | 同 `after-read`     |
 
 ### Slots
 
-| 名称          | 说明                           | 参数                 |
-| ------------- | ------------------------------ | -------------------- |
-| default       | 自定义上传区域                 | -                    |
-| preview-cover | 自定义覆盖在预览区域上方的内容 | _item: FileListItem_ |
+| 名称           | 说明                           | 参数                 |
+| -------------- | ------------------------------ | -------------------- |
+| default        | 自定义上传区域                 | -                    |
+| preview-delete | 自定义删除按钮                 | -                    |
+| preview-cover  | 自定义覆盖在预览区域上方的内容 | _item: FileListItem_ |
 
 ### 回调参数
 
@@ -381,6 +416,7 @@ before-read、after-read、before-delete 执行时会传递以下回调参数：
 | --- | --- | --- | --- |
 | closeImagePreview | 关闭全屏的图片预览 | - | - |
 | chooseFile | 主动调起文件选择，由于浏览器安全限制，只有在用户触发操作的上下文中调用才有效 | - | - |
+| reuploadFile `4.9.3` | 主动调起文件选择，选择新文件后将覆盖原先上传的文件，由于浏览器安全限制，只有在用户触发操作的上下文中调用才有效 | _index: number_ | - |
 
 ### 类型定义
 
@@ -392,6 +428,8 @@ import type {
   UploaderInstance,
   UploaderResultType,
   UploaderFileListItem,
+  UploaderBeforeRead,
+  UploaderAfterRead,
 } from 'vant';
 ```
 
@@ -419,12 +457,12 @@ uploaderRef.value?.chooseFile();
 | --van-uploader-icon-color | _var(--van-gray-4)_ | - |
 | --van-uploader-text-color | _var(--van-text-color-2)_ | - |
 | --van-uploader-text-font-size | _var(--van-font-size-sm)_ | - |
-| --van-uploader-upload-background-color | _var(--van-gray-1)_ | - |
+| --van-uploader-upload-background | _var(--van-gray-1)_ | - |
 | --van-uploader-upload-active-color | _var(--van-active-color)_ | - |
 | --van-uploader-delete-color | _var(--van-white)_ | - |
 | --van-uploader-delete-icon-size | _14px_ | - |
-| --van-uploader-delete-background-color | _rgba(0, 0, 0, 0.7)_ | - |
-| --van-uploader-file-background-color | _var(--van-background-color)_ | - |
+| --van-uploader-delete-background | _rgba(0, 0, 0, 0.7)_ | - |
+| --van-uploader-file-background | _var(--van-background)_ | - |
 | --van-uploader-file-icon-size | _20px_ | - |
 | --van-uploader-file-icon-color | _var(--van-gray-7)_ | - |
 | --van-uploader-file-name-padding | _0 var(--van-padding-base)_ | - |
@@ -432,19 +470,20 @@ uploaderRef.value?.chooseFile();
 | --van-uploader-file-name-font-size | _var(--van-font-size-sm)_ | - |
 | --van-uploader-file-name-text-color | _var(--van-gray-7)_ | - |
 | --van-uploader-mask-text-color | _var(--van-white)_ | - |
-| --van-uploader-mask-background-color | _fade(var(--van-gray-8), 88%)_ | - |
+| --van-uploader-mask-background | _fade(var(--van-gray-8), 88%)_ | - |
 | --van-uploader-mask-icon-size | _22px_ | - |
 | --van-uploader-mask-message-font-size | _var(--van-font-size-sm)_ | - |
 | --van-uploader-mask-message-line-height | _var(--van-line-height-xs)_ | - |
 | --van-uploader-loading-icon-size | _22px_ | - |
 | --van-uploader-loading-icon-color | _var(--van-white)_ | - |
 | --van-uploader-disabled-opacity | _var(--van-disabled-opacity)_ | - |
+| --van-uploader-border-radius | _0px_ | - |
 
 ## 常见问题
 
 ### Uploader 在部分安卓机型上无法上传图片？
 
-Uploader 采用了 HTML 原生的 `<input type="file />` 标签进行上传，能否上传取决于当前系统和浏览器的兼容性。当遇到无法上传的问题时，一般有以下几种情况：
+Uploader 采用了 HTML 原生的 `<input type="file" />` 标签进行上传，能否上传取决于当前系统和浏览器的兼容性。当遇到无法上传的问题时，一般有以下几种情况：
 
 1. 遇到了安卓 App WebView 的兼容性问题，需要在安卓原生代码中进行兼容，可以参考此[文章](https://blog.csdn.net/qq_32756581/article/details/112861088)。
 2. 图片格式不正确，在当前系统/浏览器中无法识别，比如 `webp` 或 `heic` 格式。
@@ -499,3 +538,22 @@ export default {
 目前 Chrome、Safari 等浏览器不支持展示 HEIC/HEIF 格式的图片，因此上传后无法在 Uploader 组件中进行预览。
 
 [HEIF] 格式的兼容性请参考 [caniuse](https://caniuse.com/?search=heic)。
+
+### 如何判断用户授予了摄像头权限？
+
+在上传图片时，如果用户没有授予当前 App 摄像头权限，会导致 Uploader 组件无法使用。
+
+你可以通过浏览器提供的 [getUserMedia](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaDevices/getUserMedia) 方法来判断是否被授予了摄像头权限（请留意 `getUserMedia` 方法无法在 iOS 10 中使用）。
+
+以下是一个简化的示例：
+
+```ts
+navigator.mediaDevices
+  .getUserMedia({ video: true })
+  .then((stream) => {
+    console.log(stream);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+```

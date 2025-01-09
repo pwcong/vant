@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import VanContactCard from '..';
 import { computed } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
-import { Toast } from '../../toast';
+import { useTranslate } from '../../../docs/site';
+import { showToast } from '../../toast';
 
 const t = useTranslate({
   'zh-CN': {
@@ -26,8 +26,8 @@ const currentContact = computed(() => ({
   tel: '13000000000',
 }));
 
-const onAdd = () => Toast(t('add'));
-const onEdit = () => Toast(t('edit'));
+const onAdd = () => showToast(t('add'));
+const onEdit = () => showToast(t('edit'));
 </script>
 
 <template>

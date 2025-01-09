@@ -1,6 +1,9 @@
 import type { ComponentPublicInstance, ComputedRef, Ref } from 'vue';
+import type { Numeric } from '../utils';
 import type { CalendarProps } from './Calendar';
 import type { CalendarMonthProps } from './CalendarMonth';
+
+export type CalendarSwitchMode = 'none' | 'month' | 'year-month';
 
 export type CalendarType = 'single' | 'range' | 'multiple';
 
@@ -18,7 +21,7 @@ export type CalendarDayType =
 
 export type CalendarDayItem = {
   date?: Date;
-  text?: string | number;
+  text?: Numeric;
   type?: CalendarDayType;
   topInfo?: string;
   className?: unknown;
@@ -28,6 +31,7 @@ export type CalendarDayItem = {
 export type CalendarExpose = {
   reset: (date?: Date | Date[]) => void;
   scrollToDate: (targetDate: Date) => void;
+  getSelectedDate: () => Date | Date[] | null;
 };
 
 export type CalendarInstance = ComponentPublicInstance<
@@ -46,3 +50,35 @@ export type CalendarMonthInstance = ComponentPublicInstance<
     disabledDays: Ref<ComputedRef<CalendarDayItem[]>>;
   }
 >;
+
+export type CalendarThemeVars = {
+  calendarBackground?: string;
+  calendarPopupHeight?: string;
+  calendarHeaderShadow?: string;
+  calendarHeaderTitleHeight?: string;
+  calendarHeaderTitleFontSize?: string;
+  calendarHeaderSubtitleFontSize?: string;
+  calendarHeaderActionWidth?: string;
+  calendarHeaderActionColor?: string;
+  calendarHeaderActionDisabledColor?: string;
+  calendarWeekdaysHeight?: string;
+  calendarWeekdaysFontSize?: string;
+  calendarMonthTitleFontSize?: string;
+  calendarMonthMarkColor?: string;
+  calendarMonthMarkFontSize?: string;
+  calendarDayHeight?: string;
+  calendarDayFontSize?: string;
+  calendarDayMarginBottom?: string;
+  calendarDayDisabledColor?: string;
+  calendarRangeEdgeColor?: string;
+  calendarRangeEdgeBackground?: string;
+  calendarRangeMiddleColor?: string;
+  calendarRangeMiddleBackgroundOpacity?: number | string;
+  calendarSelectedDaySize?: string;
+  calendarSelectedDayColor?: string;
+  calendarSelectedDayBackground?: string;
+  calendarInfoFontSize?: string;
+  calendarInfoLineHeight?: number | string;
+  calendarConfirmButtonHeight?: string;
+  calendarConfirmButtonMargin?: string;
+};

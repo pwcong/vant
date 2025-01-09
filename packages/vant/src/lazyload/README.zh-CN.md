@@ -38,8 +38,8 @@ export default {
   setup() {
     return {
       imageList: [
-        'https://img.yzcdn.cn/vant/apple-1.jpg',
-        'https://img.yzcdn.cn/vant/apple-2.jpg',
+        'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
+        'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
       ],
     };
   },
@@ -79,7 +79,7 @@ app.use(Lazyload, {
 | ------------- | ---------------- | ---------- | ---------- |
 | loading       | 加载时的图片     | _string_   | -          |
 | error         | 错误时的图片     | _string_   | -          |
-| preload       | 预加载高度的比例 | _string_   | -          |
+| preLoad       | 预加载高度的比例 | _number_   | -          |
 | attempt       | 尝试次数         | _number_   | `3`        |
 | listenEvents  | 监听的事件       | _string[]_ | `scroll`等 |
 | adapter       | 适配器           | _object_   | -          |

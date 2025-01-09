@@ -1,6 +1,7 @@
-import { Notify } from './function-call';
+import type { TeleportProps } from 'vue';
+import type { Numeric } from '../utils';
 
-export type NotifyMessage = string | number;
+export type NotifyMessage = Numeric;
 
 export type NotifyType = 'primary' | 'success' | 'danger' | 'warning';
 
@@ -11,17 +12,24 @@ export type NotifyOptions = {
   color?: string;
   message?: NotifyMessage;
   duration?: number;
+  zIndex?: number;
   position?: NotifyPosition;
   className?: unknown;
   background?: string;
   lockScroll?: boolean;
+  teleport?: TeleportProps['to'];
   onClick?: (event: MouseEvent) => void;
   onClose?: () => void;
   onOpened?: () => void;
 };
 
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $notify: typeof Notify;
-  }
-}
+export type NotifyThemeVars = {
+  notifyTextColor?: string;
+  notifyPadding?: string;
+  notifyFontSize?: string;
+  notifyLineHeight?: number | string;
+  notifyPrimaryBackground?: string;
+  notifySuccessBackground?: string;
+  notifyDangerBackground?: string;
+  notifyWarningBackground?: string;
+};

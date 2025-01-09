@@ -94,7 +94,7 @@ test('should render message as html when using allow-html prop', async () => {
 });
 
 test('should emit open event when show prop is set to true', async () => {
-  const onOpen = jest.fn();
+  const onOpen = vi.fn();
   const wrapper = mount(Dialog, {
     props: {
       onOpen,
@@ -106,7 +106,7 @@ test('should emit open event when show prop is set to true', async () => {
 });
 
 test('should emit close event when show prop is set to false', async () => {
-  const onClose = jest.fn();
+  const onClose = vi.fn();
   const wrapper = mount(Dialog, {
     props: {
       show: true,
@@ -141,4 +141,31 @@ test('should render footer slot correctly', () => {
     },
   });
   expect(wrapper.find('.van-dialog').html()).toMatchSnapshot();
+});
+
+test('should allow to disable confirm button', () => {
+  const wrapper = mount(Dialog, {
+    props: {
+      show: true,
+      message: 'message',
+      confirmButtonDisabled: true,
+    },
+  });
+  expect(wrapper.find('.van-dialog__confirm').classes()).toContain(
+    'van-button--disabled',
+  );
+});
+
+test('should allow to disable cancel button', () => {
+  const wrapper = mount(Dialog, {
+    props: {
+      show: true,
+      showCancelButton: true,
+      message: 'message',
+      cancelButtonDisabled: true,
+    },
+  });
+  expect(wrapper.find('.van-dialog__cancel').classes()).toContain(
+    'van-button--disabled',
+  );
 });

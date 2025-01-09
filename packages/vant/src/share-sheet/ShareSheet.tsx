@@ -12,6 +12,7 @@ import {
 import { popupSharedProps, popupSharedPropKeys } from '../popup/shared';
 
 // Components
+import { Icon } from '../icon';
 import { Popup } from '../popup';
 
 export type ShareSheetOption = {
@@ -23,16 +24,7 @@ export type ShareSheetOption = {
 
 export type ShareSheetOptions = ShareSheetOption[] | ShareSheetOption[][];
 
-const PRESET_ICONS = [
-  'qq',
-  'link',
-  'weibo',
-  'wechat',
-  'poster',
-  'qrcode',
-  'weapp-qrcode',
-  'wechat-moments',
-];
+const isImage = (name?: string) => name?.includes('/');
 
 const popupInheritKeys = [
   ...popupSharedPropKeys,
@@ -41,16 +33,20 @@ const popupInheritKeys = [
   'safeAreaInsetBottom',
 ] as const;
 
-function getIconURL(icon: string) {
-  if (PRESET_ICONS.includes(icon)) {
-    return `https://img.yzcdn.cn/vant/share-sheet-${icon}.png`;
-  }
-  return icon;
-}
+const iconMap: Record<string, string> = {
+  qq: 'qq',
+  link: 'link-o',
+  weibo: 'weibo',
+  qrcode: 'qr',
+  poster: 'photo-o',
+  wechat: 'wechat',
+  'weapp-qrcode': 'miniprogram-o',
+  'wechat-moments': 'wechat-moments',
+};
 
 const [name, bem, t] = createNamespace('share-sheet');
 
-const shareSheetProps = extend({}, popupSharedProps, {
+export const shareSheetProps = extend({}, popupSharedProps, {
   title: String,
   round: truthProp,
   options: makeArrayProp<ShareSheetOption | ShareSheetOption[]>(),
@@ -98,6 +94,17 @@ export default defineComponent({
       }
     };
 
+    const renderIcon = (icon: string) => {
+      if (isImage(icon)) {
+        return <img src={icon} class={bem('image-icon')} />;
+      }
+      return (
+        <div class={bem('icon', [icon])}>
+          <Icon name={iconMap[icon] || icon} />
+        </div>
+      );
+    };
+
     const renderOption = (option: ShareSheetOption, index: number) => {
       const { name, icon, className, description } = option;
       return (
@@ -107,7 +114,7 @@ export default defineComponent({
           class={[bem('option'), className, HAPTICS_FEEDBACK]}
           onClick={() => onSelect(option, index)}
         >
-          <img src={getIconURL(icon)} class={bem('icon')} />
+          {renderIcon(icon)}
           {name && <span class={bem('name')}>{name}</span>}
           {description && (
             <span class={bem('option-description')}>{description}</span>
@@ -124,7 +131,7 @@ export default defineComponent({
       const { options } = props;
       if (Array.isArray(options[0])) {
         return (options as ShareSheetOption[][]).map((item, index) =>
-          renderOptions(item, index !== 0)
+          renderOptions(item, index !== 0),
         );
       }
       return renderOptions(options as ShareSheetOption[]);

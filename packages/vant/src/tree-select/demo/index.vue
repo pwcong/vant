@@ -2,7 +2,7 @@
 import VanTreeSelect from '..';
 import VanImage from '../../image';
 import { ref, computed } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { cdnURL, useTranslate } from '../../../docs/site';
 import { zhCNData } from './data-zh';
 import { enUSData } from './data-en';
 import { deepClone } from '../../utils/deep-clone';
@@ -73,12 +73,12 @@ const badgeItems = computed(() => {
         <van-image
           v-if="activeIndex3 === 0"
           :show-loading="false"
-          src="https://img.yzcdn.cn/vant/apple-1.jpg"
+          :src="cdnURL('apple-1.jpeg')"
         />
         <van-image
           v-if="activeIndex3 === 1"
           :show-loading="false"
-          src="https://img.yzcdn.cn/vant/apple-2.jpg"
+          :src="cdnURL('apple-2.jpeg')"
         />
       </template>
     </van-tree-select>

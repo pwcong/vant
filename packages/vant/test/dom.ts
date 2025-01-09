@@ -1,7 +1,13 @@
 import { nextTick } from 'vue';
 import { trigger } from './event';
+import { inBrowser } from '@vant/use';
+import { vi } from 'vitest';
 
 function mockHTMLElementOffset() {
+  if (!inBrowser) {
+    return;
+  }
+
   Object.defineProperties(HTMLElement.prototype, {
     offsetParent: {
       get() {
@@ -31,16 +37,29 @@ function mockHTMLElementOffset() {
   });
 }
 
+export function mockScrollTo() {
+  const fn = vi.fn();
+  if (inBrowser) {
+    window.scrollTo = fn;
+  }
+  return fn;
+}
+
 export function mockScrollIntoView() {
-  const fn = jest.fn();
-  Element.prototype.scrollIntoView = fn;
+  const fn = vi.fn();
+  if (inBrowser) {
+    Element.prototype.scrollIntoView = fn;
+  }
   return fn;
 }
 
 export function mockGetBoundingClientRect(rect: Partial<DOMRect>): () => void {
-  const spy = jest.spyOn(Element.prototype, 'getBoundingClientRect');
-  spy.mockReturnValue(rect as DOMRect);
-  return () => spy.mockRestore();
+  if (inBrowser) {
+    const spy = vi.spyOn(Element.prototype, 'getBoundingClientRect');
+    spy.mockReturnValue(rect as DOMRect);
+    return () => spy.mockRestore();
+  }
+  return () => {};
 }
 
 export async function mockScrollTop(value: number) {
@@ -48,6 +67,9 @@ export async function mockScrollTop(value: number) {
   trigger(window, 'scroll');
   return nextTick();
 }
+
+// js-dom do not implement `URL.createObjectURL`
+global.URL.createObjectURL = vi.fn();
 
 mockScrollIntoView();
 mockHTMLElementOffset();

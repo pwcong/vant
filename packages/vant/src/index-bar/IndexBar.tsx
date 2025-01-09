@@ -25,6 +25,7 @@ import {
   createNamespace,
   getRootScrollTop,
   setRootScrollTop,
+  type Numeric,
 } from '../utils';
 
 // Composables
@@ -51,14 +52,14 @@ function genAlphabet() {
 
 const [name, bem] = createNamespace('index-bar');
 
-const indexBarProps = {
+export const indexBarProps = {
   sticky: truthProp,
   zIndex: numericProp,
   teleport: [String, Object] as PropType<TeleportProps['to']>,
   highlightColor: String,
   stickyOffsetTop: makeNumberProp(0),
   indexList: {
-    type: Array as PropType<string[]>,
+    type: Array as PropType<Numeric[]>,
     default: genAlphabet,
   },
 };
@@ -76,11 +77,13 @@ export default defineComponent({
 
   setup(props, { emit, slots }) {
     const root = ref<HTMLElement>();
-    const activeAnchor = ref('');
+    const sidebar = ref<HTMLElement>();
+    const activeAnchor = ref<Numeric>('');
 
     const touch = useTouch();
     const scrollParent = useScrollParent(root);
     const { children, linkChildren } = useChildren(INDEX_BAR_KEY);
+    let selectActiveIndex: string;
 
     linkChildren({ props });
 
@@ -102,7 +105,7 @@ export default defineComponent({
 
     const getActiveAnchor = (
       scrollTop: number,
-      rects: Array<{ top: number; height: number }>
+      rects: Array<{ top: number; height: number }>,
     ) => {
       for (let i = children.length - 1; i >= 0; i--) {
         const prevHeight = i > 0 ? rects[i - 1].height : 0;
@@ -116,6 +119,9 @@ export default defineComponent({
       return -1;
     };
 
+    const getMatchAnchor = (index: string) =>
+      children.find((item) => String(item.index) === index);
+
     const onScroll = () => {
       if (isHidden(root)) {
         return;
@@ -126,10 +132,23 @@ export default defineComponent({
       const scrollParentRect = useRect(scrollParent);
 
       const rects = children.map((item) =>
-        item.getRect(scrollParent.value, scrollParentRect)
+        item.getRect(scrollParent.value, scrollParentRect),
       );
 
-      const active = getActiveAnchor(scrollTop, rects);
+      let active = -1;
+      if (selectActiveIndex) {
+        const match = getMatchAnchor(selectActiveIndex);
+        if (match) {
+          const rect = match.getRect(scrollParent.value, scrollParentRect);
+          if (props.sticky && props.stickyOffsetTop) {
+            active = getActiveAnchor(rect.top - props.stickyOffsetTop, rects);
+          } else {
+            active = getActiveAnchor(rect.top, rects);
+          }
+        }
+      } else {
+        active = getActiveAnchor(scrollTop, rects);
+      }
 
       activeAnchor.value = indexList[active];
 
@@ -150,7 +169,7 @@ export default defineComponent({
             state.top =
               Math.max(props.stickyOffsetTop, rects[index].top - scrollTop) +
               scrollParentRect.top;
-          } else if (index === active - 1) {
+          } else if (index === active - 1 && selectActiveIndex === '') {
             const activeItemTop = rects[active].top - scrollTop;
             state.active = activeItemTop > 0;
             state.top =
@@ -160,11 +179,18 @@ export default defineComponent({
           }
         });
       }
+
+      selectActiveIndex = '';
     };
 
-    const init = () => nextTick(onScroll);
+    const init = () => {
+      nextTick(onScroll);
+    };
 
-    useEventListener('scroll', onScroll, { target: scrollParent });
+    useEventListener('scroll', onScroll, {
+      target: scrollParent,
+      passive: true,
+    });
 
     onMounted(init);
 
@@ -190,15 +216,28 @@ export default defineComponent({
         );
       });
 
-    const scrollTo = (index: string | number) => {
-      index = String(index);
-      const match = children.find((item) => String(item.index) === index);
+    const scrollTo = (index: Numeric) => {
+      selectActiveIndex = String(index);
+      const match = getMatchAnchor(selectActiveIndex);
 
       if (match) {
+        const scrollTop = getScrollTop(scrollParent.value!);
+        const scrollParentRect = useRect(scrollParent);
+        const { offsetHeight } = document.documentElement;
+
         match.$el.scrollIntoView();
 
+        if (scrollTop === offsetHeight - scrollParentRect.height) {
+          onScroll();
+          return;
+        }
+
         if (props.sticky && props.stickyOffsetTop) {
-          setRootScrollTop(getRootScrollTop() - props.stickyOffsetTop);
+          if (getRootScrollTop() === offsetHeight - scrollParentRect.height) {
+            setRootScrollTop(getRootScrollTop());
+          } else {
+            setRootScrollTop(getRootScrollTop() - props.stickyOffsetTop);
+          }
         }
 
         emit('select', match.index);
@@ -227,7 +266,7 @@ export default defineComponent({
         const { clientX, clientY } = event.touches[0];
         const target = document.elementFromPoint(
           clientX,
-          clientY
+          clientY,
         ) as HTMLElement;
         if (target) {
           const { index } = target.dataset;
@@ -242,17 +281,22 @@ export default defineComponent({
 
     const renderSidebar = () => (
       <div
+        ref={sidebar}
         class={bem('sidebar')}
         style={sidebarStyle.value}
         onClick={onClickSidebar}
-        onTouchstart={touch.start}
-        onTouchmove={onTouchMove}
+        onTouchstartPassive={touch.start}
       >
         {renderIndexes()}
       </div>
     );
 
     useExpose({ scrollTo });
+
+    // useEventListener will set passive to `false` to eliminate the warning of Chrome
+    useEventListener('touchmove', onTouchMove, {
+      target: sidebar,
+    });
 
     return () => (
       <div ref={root} class={bem()}>

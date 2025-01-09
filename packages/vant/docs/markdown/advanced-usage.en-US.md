@@ -25,6 +25,24 @@ app.use(Button);
 app.component(Button.name, Button);
 ```
 
+#### Full Registration
+
+You can also globally register all Vant components at once:
+
+```js
+import Vant from 'vant';
+import { createApp } from 'vue';
+
+const app = createApp();
+
+app.use(Vant);
+
+// The Lazyload directive needs to be registered separately
+app.use(vant.Lazyload);
+```
+
+> Note: Registering all components will introduce the code of all components, leading to larger bundle size.
+
 #### Local Registration
 
 ```js
@@ -37,7 +55,7 @@ export default {
 };
 ```
 
-> For more information, please refer to [Vue.js - Component Registration](https://v3.vuejs.org/guide/component-registration.html#component-registration)。
+> For more information, please refer to [Vue.js - Component Registration](https://vuejs.org/guide/components/registration.html)。
 
 #### \<script setup\>
 
@@ -132,7 +150,7 @@ module.exports = {
 
 ### Adapt to PC Browsers
 
-Vant is a mobile-first component library, if you want to use Vant in PC browsers, you can use the [@vant/touch-emulator](https://github.com/youzan/vant/tree/dev/packages/vant-touch-emulator) module. This module will automatically convert the mouse events of the PC browser into the touch events of the mobile browser.
+Vant is a mobile-first component library, if you want to use Vant in PC browsers, you can use the [@vant/touch-emulator](https://github.com/vant-ui/vant/tree/main/packages/vant-touch-emulator) module. This module will automatically convert the mouse events of the PC browser into the touch events of the mobile browser.
 
 ```bash
 # Install

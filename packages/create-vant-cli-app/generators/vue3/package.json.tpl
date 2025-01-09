@@ -3,46 +3,38 @@
   "version": "1.0.0",
   "description": "",
   "main": "lib/<%= name %>.js",
+  "module": "es/index.js",
   "style": "lib/index.css",
+  "typings": "lib/index.d.ts",
   "files": [
     "lib",
     "es"
   ],
   "scripts": {
     "dev": "vant-cli dev",
-    "test": "vant-cli test",
     "lint": "vant-cli lint",
     "build": "vant-cli build",
-    "prepare": "husky install",
-    "release": "vant-cli release",
-    "test:coverage": "open test/coverage/index.html",
-    "build-site": "vant-cli build-site && gh-pages -d site-dist"
+    "build:site": "vant-cli build-site",
+    "release:site": "pnpm build:site && npx gh-pages -d site-dist"
   },
   "author": "",
-  "license": "MIT",
-  "lint-staged": {
+  "nano-staged": {
     "*.md": "prettier --write",
     "*.{ts,tsx,js,vue,less,scss}": "prettier --write",
-    "*.{ts,tsx,js,vue}": "eslint --fix",
-    "*.{vue,css,less,scss}": "stylelint --fix"
+    "*.{ts,tsx,js,vue}": "eslint --fix"
   },
   "peerDependencies": {
-    "vue": "^3.0.0"
+    "vue": "^3.5.0"
   },
   "devDependencies": {
-    "@vant/cli": "^3.9.0",
-    "@vue/compiler-sfc": "^3.0.0",
-    "vue": "^3.0.0"
+    "@vant/cli": "^7.0.0",
+    "vue": "^3.5.0",
+    "sass": "^1.49.7"
   },
   "eslintConfig": {
     "root": true,
     "extends": [
       "@vant"
-    ]
-  },
-  "stylelint": {
-    "extends": [
-      "@vant/stylelint-config"
     ]
   },
   "prettier": {

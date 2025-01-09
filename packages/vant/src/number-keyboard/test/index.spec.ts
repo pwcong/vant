@@ -105,6 +105,39 @@ test('should render extra-key slot correctly', () => {
   expect(wrapper.findAll('.van-key')[9].html()).toMatchSnapshot();
 });
 
+test('should render zero key correctly when extra-key prop is an empty array', () => {
+  const wrapper = mount(NumberKeyboard, {
+    props: {
+      theme: 'custom',
+      extraKey: [],
+    },
+  });
+  expect(wrapper.findAll('.van-key')[9].html()).toMatchSnapshot();
+});
+
+test('should render delete slot correctly', () => {
+  const wrapper = mount(NumberKeyboard, {
+    slots: {
+      delete: () => 'Custom Delete Key',
+    },
+  });
+
+  expect(wrapper.find('.van-key--delete').html()).toMatchSnapshot();
+});
+
+test('should render delete slot correctly when theme is custom', () => {
+  const wrapper = mount(NumberKeyboard, {
+    props: {
+      theme: 'custom',
+    },
+    slots: {
+      delete: () => 'Custom Delete Key',
+    },
+  });
+
+  expect(wrapper.find('.van-key--delete').html()).toMatchSnapshot();
+});
+
 test('should emit blur event after clicking outside', () => {
   const wrapper = mount(NumberKeyboard, {
     props: {
@@ -170,7 +203,7 @@ test('should emit "update:modelValue" event after clicking key', () => {
 });
 
 test('should limit max length of modelValue when using maxlength prop', async () => {
-  const onInput = jest.fn();
+  const onInput = vi.fn();
   const wrapper = mount(NumberKeyboard, {
     props: {
       onInput,
@@ -245,4 +278,19 @@ test('should not emit close event after clicking close button when blur-on-close
 
   clickKey(wrapper.findAll('.van-key')[12]);
   expect(wrapper.emitted('blur')).toBeFalsy();
+});
+
+test('should inherit attrs when using teleport prop', () => {
+  const root = document.createElement('div');
+  mount(NumberKeyboard, {
+    props: {
+      teleport: root,
+    },
+    attrs: {
+      class: 'foo',
+    },
+  });
+
+  const el = root.querySelector('.van-number-keyboard');
+  expect(el?.classList.contains('foo')).toBeTruthy();
 });

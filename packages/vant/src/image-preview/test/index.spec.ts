@@ -3,12 +3,15 @@ import {
   later,
   triggerDrag,
   mockGetBoundingClientRect,
+  trigger,
 } from '../../../test';
-import ImagePreviewComponent from '../ImagePreview';
-import { images, triggerZoom } from './shared';
+import { LONG_PRESS_START_TIME } from '../../utils';
+import ImagePreview from '../ImagePreview';
+import { images, triggerDoubleTap, triggerZoom } from './shared';
+import type { ImagePreviewInstance } from '../types';
 
 test('should swipe to current index after calling the swipeTo method', async () => {
-  const wrapper = mount(ImagePreviewComponent, {
+  const wrapper = mount(ImagePreview, {
     props: {
       show: true,
       images,
@@ -24,7 +27,7 @@ test('should swipe to current index after calling the swipeTo method', async () 
 
 test('should allow to use the teleport prop', () => {
   const root = document.createElement('div');
-  mount(ImagePreviewComponent, {
+  mount(ImagePreview, {
     props: {
       show: true,
       teleport: root,
@@ -35,7 +38,7 @@ test('should allow to use the teleport prop', () => {
 });
 
 test('should render cover slot correctly', () => {
-  const wrapper = mount(ImagePreviewComponent, {
+  const wrapper = mount(ImagePreview, {
     props: {
       show: true,
     },
@@ -48,7 +51,7 @@ test('should render cover slot correctly', () => {
 });
 
 test('should render index slot correctly', () => {
-  const wrapper = mount(ImagePreviewComponent, {
+  const wrapper = mount(ImagePreview, {
     props: {
       show: true,
     },
@@ -61,7 +64,7 @@ test('should render index slot correctly', () => {
 });
 
 test('should render close icon when using closeable prop', () => {
-  const wrapper = mount(ImagePreviewComponent, {
+  const wrapper = mount(ImagePreview, {
     props: {
       show: true,
       images,
@@ -74,7 +77,7 @@ test('should render close icon when using closeable prop', () => {
 });
 
 test('should change close icon when using close-icon prop', () => {
-  const wrapper = mount(ImagePreviewComponent, {
+  const wrapper = mount(ImagePreview, {
     props: {
       show: true,
       closeable: true,
@@ -83,12 +86,12 @@ test('should change close icon when using close-icon prop', () => {
   });
 
   expect(
-    wrapper.find('.van-image-preview__close-icon').html()
+    wrapper.find('.van-image-preview__close-icon').html(),
   ).toMatchSnapshot();
 });
 
 test('should change close icon position when using close-icon-position prop', () => {
-  const wrapper = mount(ImagePreviewComponent, {
+  const wrapper = mount(ImagePreview, {
     props: {
       show: true,
       closeable: true,
@@ -97,12 +100,12 @@ test('should change close icon position when using close-icon-position prop', ()
   });
 
   expect(
-    wrapper.find('.van-image-preview__close-icon').html()
+    wrapper.find('.van-image-preview__close-icon').html(),
   ).toMatchSnapshot();
 });
 
 test('should hide index when show-index prop is false', async () => {
-  const wrapper = mount(ImagePreviewComponent, {
+  const wrapper = mount(ImagePreview, {
     props: {
       show: true,
     },
@@ -114,7 +117,7 @@ test('should hide index when show-index prop is false', async () => {
 });
 
 test('should hide ImagePreview after popstate', async () => {
-  const wrapper = mount(ImagePreviewComponent, {
+  const wrapper = mount(ImagePreview, {
     props: {
       images,
       show: true,
@@ -126,7 +129,7 @@ test('should hide ImagePreview after popstate', async () => {
 });
 
 test('should not hide ImagePreview after popstate when close-on-popstate is false', async () => {
-  const wrapper = mount(ImagePreviewComponent, {
+  const wrapper = mount(ImagePreview, {
     props: {
       images,
       show: true,
@@ -139,7 +142,7 @@ test('should not hide ImagePreview after popstate when close-on-popstate is fals
 });
 
 test('render image', async () => {
-  const wrapper = mount(ImagePreviewComponent, {
+  const wrapper = mount(ImagePreview, {
     props: { images, show: true },
   });
 
@@ -158,7 +161,7 @@ test('render image', async () => {
 });
 
 test('before close prop', async () => {
-  const wrapper = mount(ImagePreviewComponent, {
+  const wrapper = mount(ImagePreview, {
     props: {
       images,
       show: true,
@@ -178,9 +181,85 @@ test('before close prop', async () => {
   expect(wrapper.emitted('close')![0]).toBeTruthy();
 });
 
-test('double click', async () => {
-  const onScale = jest.fn();
-  const wrapper = mount(ImagePreviewComponent, {
+test('should close when image is clicked', async () => {
+  const wrapper = mount(ImagePreview, {
+    props: {
+      images,
+      show: true,
+      'onUpdate:show': (show) => {
+        wrapper.setProps({ show });
+      },
+    },
+  });
+
+  await later();
+  const image = wrapper.find('.van-image');
+
+  await triggerDrag(image, 0, 0);
+  await later(300);
+  expect(wrapper.emitted('close')).toBeTruthy();
+});
+
+test('should close when overlay is clicked', async () => {
+  const wrapper = mount(ImagePreview, {
+    props: {
+      images,
+      show: true,
+      'onUpdate:show': (show) => {
+        wrapper.setProps({ show });
+      },
+    },
+  });
+
+  const swipe = wrapper.find('.van-swipe-item');
+
+  await triggerDrag(swipe, 0, 0);
+  await later(300);
+  expect(wrapper.emitted('close')).toBeTruthy();
+});
+
+test('should not close when image is clicked and closeOnClickImage is false', async () => {
+  const wrapper = mount(ImagePreview, {
+    props: {
+      images,
+      show: true,
+      closeOnClickImage: false,
+      'onUpdate:show': (show) => {
+        wrapper.setProps({ show });
+      },
+    },
+  });
+
+  await later();
+  const image = wrapper.find('.van-image');
+
+  triggerDrag(image, 0, 0);
+  await later(300);
+  expect(wrapper.emitted('close')).toBeFalsy();
+});
+
+test('should not close when overlay is clicked and closeOnClickOverlay is false', async () => {
+  const wrapper = mount(ImagePreview, {
+    props: {
+      images,
+      show: true,
+      closeOnClickOverlay: false,
+      'onUpdate:show': (show) => {
+        wrapper.setProps({ show });
+      },
+    },
+  });
+
+  const swipe = wrapper.find('.van-swipe-item');
+
+  triggerDrag(swipe, 0, 0);
+  await later(300);
+  expect(wrapper.emitted('close')).toBeFalsy();
+});
+
+test('should trigger scale after double clicking', async () => {
+  const onScale = vi.fn();
+  const wrapper = mount(ImagePreview, {
     props: {
       images,
       show: true,
@@ -190,26 +269,62 @@ test('double click', async () => {
 
   await later();
   const swipe = wrapper.find('.van-swipe-item');
-  triggerDrag(swipe, 0, 0);
-  triggerDrag(swipe, 0, 0);
+
+  triggerDoubleTap(swipe);
   expect(onScale).toHaveBeenCalledWith({
     index: 0,
     scale: 2,
   });
 
-  await later();
-  triggerDrag(swipe, 0, 0);
-  triggerDrag(swipe, 0, 0);
+  triggerDoubleTap(swipe);
   expect(onScale).toHaveBeenLastCalledWith({
     index: 0,
     scale: 1,
   });
+
+  // when closeOnClickOverlay is set to false, it will not affect the zooming.
+  onScale.mockClear();
+  await wrapper.setProps({ closeOnClickOverlay: false });
+  triggerDoubleTap(swipe);
+  expect(onScale).toHaveBeenCalled();
+});
+
+test('should allow to disable double click gesture', async () => {
+  const onScale = vi.fn();
+  const onClose = vi.fn();
+  const wrapper = mount(ImagePreview, {
+    props: {
+      images,
+      show: true,
+      doubleScale: false,
+      onClose,
+      onScale,
+      'onUpdate:show': (show) => {
+        wrapper.setProps({ show });
+      },
+    },
+  });
+
+  // The ImagePreview will close because double-click is disabled.
+  await later();
+  const swipe = wrapper.find('.van-swipe-item');
+  await triggerDoubleTap(swipe);
+  expect(onClose).toHaveBeenCalled();
+  expect(onScale).not.toHaveBeenCalled();
+
+  // The ImagePreview will not close when closeOnClickOverlay is set to false.
+  onClose.mockClear();
+  await wrapper.setProps({ closeOnClickOverlay: false, show: true });
+  await triggerDrag(swipe, 0, 0);
+  expect(onClose).not.toHaveBeenCalled();
+  await triggerDoubleTap(swipe, 0, 0);
+  expect(onClose).not.toHaveBeenCalled();
 });
 
 test('zoom in and drag image to move', async () => {
   const restore = mockGetBoundingClientRect({ width: 100, height: 100 });
 
-  const wrapper = mount(ImagePreviewComponent, {
+  const wrapper = mount(ImagePreview, {
     props: { images, show: true },
   });
 
@@ -237,8 +352,8 @@ test('zoom in and drag image to move', async () => {
 test('zoom out', async () => {
   const restore = mockGetBoundingClientRect({ width: 100, height: 100 });
 
-  const onScale = jest.fn();
-  const wrapper = mount(ImagePreviewComponent, {
+  const onScale = vi.fn();
+  const wrapper = mount(ImagePreview, {
     props: {
       images,
       show: true,
@@ -253,4 +368,95 @@ test('zoom out', async () => {
   expect(onScale).toHaveBeenLastCalledWith({ index: 0, scale: 1 });
 
   restore();
+});
+
+test('should render image slot correctly', async () => {
+  const wrapper = mount(ImagePreview, {
+    props: {
+      show: true,
+      images,
+    },
+    slots: {
+      image: ({ src }) => `<img class="test-img" src="${src}" />`,
+    },
+  });
+
+  await later();
+
+  expect(wrapper.html().includes('test-img')).toBeTruthy();
+});
+
+test('should render image slot correctly 2', async () => {
+  const wrapper = mount(ImagePreview, {
+    props: {
+      show: true,
+      images,
+    },
+    slots: {
+      image: ({ src }) =>
+        `<video style="width: 100%;" controls><source src="${src}" /></video>`,
+    },
+  });
+
+  await later();
+
+  expect(wrapper.html().includes('video')).toBeTruthy();
+});
+
+test('should render image slot correctly 3', async () => {
+  const wrapper = mount(ImagePreview, {
+    props: {
+      show: true,
+      images,
+    },
+    slots: {
+      image: ({ src, style }) =>
+        `<img class="test-img" src="${src}" style="${Object.assign({ width: '100px' }, style)}" />`,
+    },
+  });
+
+  await later();
+
+  expect(wrapper.html().includes('width: 100px')).toBeTruthy();
+});
+
+test('should emit long-press event after long press', async () => {
+  const onLongPress = vi.fn();
+  const wrapper = mount(ImagePreview, {
+    props: {
+      images,
+      show: true,
+      onLongPress,
+    },
+  });
+
+  await later();
+  const swipe = wrapper.find('.van-swipe-item');
+  trigger(swipe, 'touchstart', 0, 0, { x: 0, y: 0 });
+  await later(LONG_PRESS_START_TIME + 100);
+  trigger(swipe, 'touchend', 0, 0, { touchList: [] });
+
+  expect(onLongPress).toHaveBeenLastCalledWith({
+    index: 0,
+  });
+});
+
+test('should reset scale after calling the resetScale method', async () => {
+  const wrapper = mount(ImagePreview, {
+    props: {
+      show: true,
+      images,
+    },
+  });
+
+  await later();
+  const image = wrapper.find('.van-image');
+
+  triggerZoom(image, 300, 300);
+  await later();
+  expect(image.style.transform).toBeTruthy();
+
+  (wrapper.vm as ImagePreviewInstance).resetScale();
+  await later();
+  expect(image.style.transform).toBeFalsy();
 });

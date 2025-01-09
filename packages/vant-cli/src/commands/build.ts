@@ -1,9 +1,9 @@
-import execa from 'execa';
-import { join, relative } from 'path';
 import fse from 'fs-extra';
+import { logger } from 'rslog';
+import { execSync } from 'child_process';
+import { join, relative } from 'node:path';
 import { clean } from './clean.js';
 import { CSS_LANG } from '../common/css.js';
-import { ora, consola } from '../common/logger.js';
 import { installDependencies } from '../common/manager.js';
 import { compileSfc } from '../compiler/compile-sfc.js';
 import { compileStyle } from '../compiler/compile-style.js';
@@ -12,9 +12,9 @@ import { compileBundles } from '../compiler/compile-bundles.js';
 import { genPackageEntry } from '../compiler/gen-package-entry.js';
 import { genStyleDepsMap } from '../compiler/gen-style-deps-map.js';
 import { genComponentStyle } from '../compiler/gen-component-style.js';
-import { SRC_DIR, LIB_DIR, ES_DIR } from '../common/constant.js';
+import { SRC_DIR, LIB_DIR, ES_DIR, getVantConfig } from '../common/constant.js';
 import { genPackageStyle } from '../compiler/gen-package-style.js';
-import { genVeturConfig } from '../compiler/gen-vetur-config.js';
+import { genWebStormTypes } from '../compiler/web-types/index.js';
 import {
   isDir,
   isSfc,
@@ -27,12 +27,13 @@ import {
   setModuleEnv,
   setBuildTarget,
 } from '../common/index.js';
+import type { Format } from 'esbuild';
 
 const { remove, copy, readdir, existsSync } = fse;
 
-async function compileFile(filePath: string) {
+async function compileFile(filePath: string, format: Format) {
   if (isScript(filePath)) {
-    return compileScript(filePath);
+    return compileScript(filePath, format);
   }
   if (isStyle(filePath)) {
     return compileStyle(filePath);
@@ -65,17 +66,19 @@ async function preCompileDir(dir: string) {
         return compileSfc(filePath);
       }
       return Promise.resolve();
-    })
+    }),
   );
 }
 
-async function compileDir(dir: string) {
+async function compileDir(dir: string, format: Format) {
   const files = await readdir(dir);
   await Promise.all(
     files.map((filename) => {
       const filePath = join(dir, filename);
-      return isDir(filePath) ? compileDir(filePath) : compileFile(filePath);
-    })
+      return isDir(filePath)
+        ? compileDir(filePath, format)
+        : compileFile(filePath, format);
+    }),
   );
 }
 
@@ -86,13 +89,13 @@ async function copySourceCode() {
 async function buildESMOutputs() {
   setModuleEnv('esmodule');
   setBuildTarget('package');
-  await compileDir(ES_DIR);
+  await compileDir(ES_DIR, 'esm');
 }
 
 async function buildCJSOutputs() {
   setModuleEnv('commonjs');
   setBuildTarget('package');
-  await compileDir(LIB_DIR);
+  await compileDir(LIB_DIR, 'cjs');
 }
 
 async function buildTypeDeclarations() {
@@ -101,7 +104,9 @@ async function buildTypeDeclarations() {
   const tsConfig = join(process.cwd(), 'tsconfig.declaration.json');
 
   if (existsSync(tsConfig)) {
-    await execa('tsc', ['-p', tsConfig]);
+    execSync(`tsc -p ${tsConfig}`, {
+      stdio: 'inherit',
+    });
   }
 }
 
@@ -132,9 +137,10 @@ async function buildPackageStyleEntry() {
 }
 
 async function buildBundledOutputs() {
+  const config = getVantConfig();
   setModuleEnv('esmodule');
   await compileBundles();
-  genVeturConfig();
+  genWebStormTypes(config.build?.tagPrefix);
 }
 
 const tasks = [
@@ -175,20 +181,19 @@ const tasks = [
 async function runBuildTasks() {
   for (let i = 0; i < tasks.length; i++) {
     const { task, text } = tasks[i];
-    const spinner = ora(text).start();
 
     try {
       /* eslint-disable no-await-in-loop */
       await task();
-      spinner.succeed(text);
+      logger.ready(text);
     } catch (err) {
-      spinner.fail(text);
-      console.log(err);
+      logger.error(text);
+      logger.error(err);
       throw err;
     }
   }
 
-  consola.success('Compile successfully');
+  logger.success('Build all files');
 }
 
 export async function build() {
@@ -199,7 +204,7 @@ export async function build() {
     await installDependencies();
     await runBuildTasks();
   } catch (err) {
-    consola.error('Build failed');
+    logger.error('Build failed');
     process.exit(1);
   }
 }

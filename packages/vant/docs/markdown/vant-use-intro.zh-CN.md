@@ -17,6 +17,9 @@ yarn add @vant/use
 
 # with pnpm
 pnpm add @vant/use
+
+# with Bun
+bun add @vant/use
 ```
 
 ### 示例
@@ -40,6 +43,7 @@ console.log(height.value); // -> 窗口高度
 | --- | --- |
 | [useClickAway](#/zh-CN/use-click-away) | 监听点击元素外部的事件 |
 | [useCountDown](#/zh-CN/use-count-down) | 提供倒计时管理能力 |
+| [useCustomFieldValue](#/zh-CN/use-custom-field-value) | 自定义表单组件中的表单项 |
 | [useEventListener](#/zh-CN/use-event-listener) | 方便地进行事件绑定 |
 | [usePageVisibility](#/zh-CN/use-page-visibility) | 获取页面的可见状态 |
 | [useRect](#/zh-CN/use-rect) | 获取元素的大小及其相对于视口的位置 |
@@ -47,3 +51,4 @@ console.log(height.value); // -> 窗口高度
 | [useScrollParent](#/zh-CN/use-scroll-parent) | 获取元素最近的可滚动父元素 |
 | [useToggle](#/zh-CN/use-toggle) | 用于在布尔值之间进行切换 |
 | [useWindowSize](#/zh-CN/use-window-size) | 获取浏览器窗口的视口宽度和高度 |
+| [useRaf](#/zh-CN/use-raf) | 提供requestAnimationFrame管理能力 |

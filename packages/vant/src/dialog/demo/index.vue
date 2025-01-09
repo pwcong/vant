@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import VanCell from '../../cell';
-import { Dialog } from '..';
+import { showDialog, showConfirmDialog, Dialog as VanDialog } from '..';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { cdnURL, useTranslate } from '../../../docs/site';
 import type { DialogAction } from '../types';
-
-const VanDialog = Dialog.Component;
 
 const t = useTranslate({
   'zh-CN': {
@@ -19,40 +17,43 @@ const t = useTranslate({
       '如果解决方法是丑陋的，那就肯定还有更好的解决方法，只是还没有发现而已。',
     beforeClose: '异步关闭',
     roundButton: '圆角按钮样式',
-    componentCall: '组件调用',
+    useComponent: '使用 Dialog 组件',
   },
   'en-US': {
     title: 'Title',
     alert1: 'Alert',
     alert2: 'Alert without title',
     confirm: 'Confirm dialog',
-    content1: 'Content',
-    content2: 'Content',
-    content3: 'Content',
+    content1:
+      'The frequency of people swearing during code reading is the only measure of code quality.',
+    content2:
+      'Life is far more than just spinning and busy to the limit, and human experiences are much broader and richer than this.',
+    content3:
+      'If the solution is ugly, then there must be a better solution, but it has not been discovered yet.',
     beforeClose: 'Before Close',
     roundButton: 'Round Button Style',
-    componentCall: 'Component Call',
+    useComponent: 'Use Dialog Component',
   },
 });
 
 const show = ref(false);
-const image = 'https://img.yzcdn.cn/vant/apple-3.jpg';
+const image = cdnURL('apple-3.jpeg');
 
 const onClickAlert = () => {
-  Dialog.alert({
+  showDialog({
     title: t('title'),
     message: t('content1'),
   });
 };
 
 const onClickAlert2 = () => {
-  Dialog.alert({
+  showDialog({
     message: t('content2'),
   });
 };
 
 const onClickRound = () => {
-  Dialog.alert({
+  showDialog({
     theme: 'round-button',
     title: t('title'),
     message: t('content1'),
@@ -60,14 +61,14 @@ const onClickRound = () => {
 };
 
 const onClickRound2 = () => {
-  Dialog.alert({
+  showDialog({
     theme: 'round-button',
     message: t('content2'),
   });
 };
 
 const onClickConfirm = () => {
-  Dialog.confirm({
+  showConfirmDialog({
     title: t('title'),
     message: t('content3'),
   });
@@ -79,7 +80,7 @@ const onClickBeforeClose = () => {
       setTimeout(() => resolve(action === 'confirm'), 1000);
     });
 
-  Dialog.confirm({
+  showConfirmDialog({
     title: t('title'),
     message: t('content3'),
     beforeClose,
@@ -103,8 +104,8 @@ const onClickBeforeClose = () => {
     <van-cell is-link :title="t('beforeClose')" @click="onClickBeforeClose" />
   </demo-block>
 
-  <demo-block card :title="t('componentCall')">
-    <van-cell is-link :title="t('componentCall')" @click="show = true" />
+  <demo-block card :title="t('useComponent')">
+    <van-cell is-link :title="t('useComponent')" @click="show = true" />
     <van-dialog
       v-model:show="show"
       :title="t('title')"

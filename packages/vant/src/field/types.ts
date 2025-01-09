@@ -28,7 +28,7 @@ export type FieldType =
   | 'textarea'
   | 'datetime-local';
 
-export type FieldTextAlign = 'left' | 'center' | 'right';
+export type FieldTextAlign = 'left' | 'center' | 'right' | 'top';
 
 export type FieldClearTrigger = 'always' | 'focus';
 
@@ -52,23 +52,27 @@ export type FieldRuleMessage =
 
 export type FieldRuleValidator = (
   value: any,
-  rule: FieldRule
+  rule: FieldRule,
 ) => boolean | string | Promise<boolean | string>;
 
-export type FiledRuleFormatter = (value: any, rule: FieldRule) => string;
+export type FieldRuleFormatter = (value: any, rule: FieldRule) => string;
 
 export type FieldRule = {
   pattern?: RegExp;
-  trigger?: FieldValidateTrigger;
+  trigger?: FieldValidateTrigger | FieldValidateTrigger[];
   message?: FieldRuleMessage;
   required?: boolean;
   validator?: FieldRuleValidator;
-  formatter?: FiledRuleFormatter;
+  formatter?: FieldRuleFormatter;
+  validateEmpty?: boolean;
 };
+
+export type FieldValidationStatus = 'passed' | 'failed' | 'unvalidated';
 
 // Shared props of Field and Form
 export type FieldFormSharedProps =
   | 'colon'
+  | 'required'
   | 'disabled'
   | 'readonly'
   | 'labelWidth'
@@ -80,9 +84,10 @@ export type FieldExpose = {
   blur: () => void | undefined;
   focus: () => void | undefined;
   validate: (
-    rules?: FieldRule[] | undefined
+    rules?: FieldRule[] | undefined,
   ) => Promise<void | FieldValidateError>;
   resetValidation: () => void;
+  getValidationStatus: () => FieldValidationStatus;
   /** @private */
   formValue: ComputedRef<unknown>;
 };
@@ -94,3 +99,25 @@ declare global {
     composing?: boolean;
   }
 }
+
+export type FieldThemeVars = {
+  fieldLabelWidth?: string;
+  fieldLabelColor?: string;
+  fieldLabelMarginRight?: string;
+  fieldInputTextColor?: string;
+  fieldInputErrorTextColor?: string;
+  fieldInputDisabledTextColor?: string;
+  fieldPlaceholderTextColor?: string;
+  fieldIconSize?: string;
+  fieldClearIconSize?: string;
+  fieldClearIconColor?: string;
+  fieldRightIconColor?: string;
+  fieldErrorMessageColor?: string;
+  fieldErrorMessageFontSize?: string;
+  fieldTextAreaMinHeight?: string;
+  fieldWordLimitColor?: string;
+  fieldWordLimitFontSize?: string;
+  fieldWordLimitLineHeight?: number | string;
+  fieldDisabledTextColor?: string;
+  fieldRequiredMarkColor?: string;
+};

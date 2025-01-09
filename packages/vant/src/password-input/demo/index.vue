@@ -3,7 +3,7 @@ import VanPasswordInput from '..';
 import VanNumberKeyboard from '../../number-keyboard';
 import { ref, watch } from 'vue';
 import { ComponentInstance } from '../../utils';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -77,7 +77,7 @@ const onDelete = () => {
 
   values.value[current.value] = values.value[current.value].slice(
     0,
-    values.value[current.value].length - 1
+    values.value[current.value].length - 1,
   );
 
   if (current.value === 'showInfo') {

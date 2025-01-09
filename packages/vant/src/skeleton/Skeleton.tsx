@@ -1,34 +1,39 @@
 import { defineComponent, type PropType, type ExtractPropTypes } from 'vue';
+
+// Utils
 import {
   addUnit,
   truthProp,
   numericProp,
-  getSizeStyle,
   makeStringProp,
   makeNumericProp,
   createNamespace,
+  type Numeric,
 } from '../utils';
 
+// Components
+import SkeletonTitle from '../skeleton-title';
+import SkeletonAvatar from '../skeleton-avatar';
+import SkeletonParagraph, { DEFAULT_ROW_WIDTH } from '../skeleton-paragraph';
+
+// Types
+import type { SkeletonAvatarShape } from '../skeleton-avatar';
+
 const [name, bem] = createNamespace('skeleton');
-const DEFAULT_ROW_WIDTH = '100%';
 const DEFAULT_LAST_ROW_WIDTH = '60%';
 
-export type SkeletonAvatarShape = 'square' | 'round';
-
-const skeletonProps = {
+export const skeletonProps = {
   row: makeNumericProp(0),
-  title: Boolean,
   round: Boolean,
+  title: Boolean,
+  titleWidth: numericProp,
   avatar: Boolean,
+  avatarSize: numericProp,
+  avatarShape: makeStringProp<SkeletonAvatarShape>('round'),
   loading: truthProp,
   animate: truthProp,
-  avatarSize: numericProp,
-  titleWidth: numericProp,
-  avatarShape: makeStringProp<SkeletonAvatarShape>('round'),
   rowWidth: {
-    type: [Number, String, Array] as PropType<
-      number | string | (number | string)[]
-    >,
+    type: [Number, String, Array] as PropType<Numeric | Numeric[]>,
     default: DEFAULT_ROW_WIDTH,
   },
 };
@@ -38,15 +43,17 @@ export type SkeletonProps = ExtractPropTypes<typeof skeletonProps>;
 export default defineComponent({
   name,
 
+  inheritAttrs: false,
+
   props: skeletonProps,
 
-  setup(props, { slots }) {
+  setup(props, { slots, attrs }) {
     const renderAvatar = () => {
       if (props.avatar) {
         return (
-          <div
-            class={bem('avatar', props.avatarShape)}
-            style={getSizeStyle(props.avatarSize)}
+          <SkeletonAvatar
+            avatarShape={props.avatarShape}
+            avatarSize={props.avatarSize}
           />
         );
       }
@@ -55,10 +62,7 @@ export default defineComponent({
     const renderTitle = () => {
       if (props.title) {
         return (
-          <h3
-            class={bem('title')}
-            style={{ width: addUnit(props.titleWidth) }}
-          />
+          <SkeletonTitle round={props.round} titleWidth={props.titleWidth} />
         );
       }
     };
@@ -78,11 +82,31 @@ export default defineComponent({
     };
 
     const renderRows = () =>
-      Array(props.row)
+      Array(+props.row)
         .fill('')
         .map((_, i) => (
-          <div class={bem('row')} style={{ width: addUnit(getRowWidth(i)) }} />
+          <SkeletonParagraph
+            key={i}
+            round={props.round}
+            rowWidth={addUnit(getRowWidth(i))}
+          />
         ));
+
+    const renderContents = () => {
+      if (slots.template) {
+        return slots.template();
+      }
+
+      return (
+        <>
+          {renderAvatar()}
+          <div class={bem('content')}>
+            {renderTitle()}
+            {renderRows()}
+          </div>
+        </>
+      );
+    };
 
     return () => {
       if (!props.loading) {
@@ -90,12 +114,11 @@ export default defineComponent({
       }
 
       return (
-        <div class={bem({ animate: props.animate, round: props.round })}>
-          {renderAvatar()}
-          <div class={bem('content')}>
-            {renderTitle()}
-            {renderRows()}
-          </div>
+        <div
+          class={bem({ animate: props.animate, round: props.round })}
+          {...attrs}
+        >
+          {renderContents()}
         </div>
       );
     };

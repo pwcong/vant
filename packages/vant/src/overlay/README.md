@@ -61,6 +61,14 @@ export default {
 </style>
 ```
 
+### Setting z-index
+
+The default z-index level of the Overlay component is `1`. You can set its z-index level using the `z-index` prop.
+
+```html
+<van-overlay z-index="100" />
+```
+
 ## API
 
 ### Props
@@ -73,6 +81,8 @@ export default {
 | class-name | ClassName | _string_ | - |
 | custom-class | Custom style | _object_ | - |
 | lock-scroll | Whether to lock background scroll | _boolean_ | `true` |
+| lazy-render | Whether to lazy render util appeared | _boolean_ | `true` |
+| teleport | Specifies a target element where Overlay will be mounted | _string \| Element_ | - |
 
 ### Events
 
@@ -100,7 +110,7 @@ import type { OverlayProps } from 'vant';
 
 The component provides the following CSS variables, which can be used to customize styles. Please refer to [ConfigProvider component](#/en-US/config-provider).
 
-| Name                           | Default Value        | Description |
-| ------------------------------ | -------------------- | ----------- |
-| --van-overlay-z-index          | _1_                  | -           |
-| --van-overlay-background-color | _rgba(0, 0, 0, 0.7)_ | -           |
+| Name                     | Default Value        | Description |
+| ------------------------ | -------------------- | ----------- |
+| --van-overlay-z-index    | _1_                  | -           |
+| --van-overlay-background | _rgba(0, 0, 0, 0.7)_ | -           |

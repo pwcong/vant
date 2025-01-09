@@ -34,8 +34,8 @@ export default {
   setup() {
     return {
       imageList: [
-        'https://img.yzcdn.cn/vant/apple-1.jpg',
-        'https://img.yzcdn.cn/vant/apple-2.jpg',
+        'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
+        'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
       ],
     };
   },
@@ -73,11 +73,11 @@ app.use(Lazyload, {
 | --- | --- | --- | --- |
 | loading | Src of the image while loading | _string_ | - |
 | error | Src of the image upon load fail | _string_ | - |
-| preload | Proportion of pre-loading height | _string_ | - |
+| preLoad | Proportion of pre-loading height | _number_ | - |
 | attempt | Attempts count | _number_ | `3` |
 | listenEvents | Events that you want vue listen for | _string[]_ | `scroll`... |
 | adapter | Dynamically modify the attribute of element | _object_ | - |
 | filter | The image's listener filter | _object_ | - |
 | lazyComponent | Lazyload component | _boolean_ | `false` |
 
-> See more：[ vue-lazyload ](https://github.com/hilongjw/vue-lazyload)
+> See more: [ vue-lazyload ](https://github.com/hilongjw/vue-lazyload)

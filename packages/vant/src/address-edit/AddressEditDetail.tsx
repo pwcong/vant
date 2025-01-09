@@ -11,7 +11,8 @@ import { Field } from '../field';
 import type { AddressEditSearchItem } from './types';
 import type { FieldRule, FieldInstance } from '../field/types';
 
-const [name, bem, t] = createNamespace('address-edit-detail');
+const [name, bem] = createNamespace('address-edit-detail');
+const t = createNamespace('address-edit')[2];
 
 export default defineComponent({
   name,
@@ -27,7 +28,7 @@ export default defineComponent({
     showSearchResult: Boolean,
   },
 
-  emits: ['blur', 'focus', 'input', 'select-search'],
+  emits: ['blur', 'focus', 'input', 'selectSearch'],
 
   setup(props, { emit }) {
     const field = ref<FieldInstance>();
@@ -36,19 +37,8 @@ export default defineComponent({
       props.focused && props.searchResult && props.showSearchResult;
 
     const onSelect = (express: AddressEditSearchItem) => {
-      emit('select-search', express);
+      emit('selectSearch', express);
       emit('input', `${express.address || ''} ${express.name || ''}`.trim());
-    };
-
-    const renderSearchTitle = (express: AddressEditSearchItem) => {
-      if (express.name) {
-        const text = express.name.replace(
-          props.value!,
-          `<span class=${bem('keyword')}>${props.value}</span>`
-        );
-
-        return <div innerHTML={text} />;
-      }
     };
 
     const renderSearchResult = () => {
@@ -59,12 +49,10 @@ export default defineComponent({
       const { searchResult } = props;
       return searchResult!.map((express) => (
         <Cell
-          v-slots={{
-            title: () => renderSearchTitle(express),
-          }}
           clickable
-          key={express.name + express.address}
+          key={(express.name || '') + (express.address || '')}
           icon="location-o"
+          title={express.name}
           label={express.address}
           class={bem('search-item')}
           border={false}
@@ -89,11 +77,11 @@ export default defineComponent({
               rows={props.rows}
               type="textarea"
               rules={props.rules}
-              label={t('label')}
+              label={t('addressDetail')}
               border={!showSearchResult()}
               maxlength={props.maxlength}
               modelValue={props.value}
-              placeholder={t('placeholder')}
+              placeholder={t('addressDetail')}
               onBlur={onBlur}
               onFocus={onFocus}
               onUpdate:modelValue={onInput}

@@ -5,7 +5,7 @@ import {
   type CSSProperties,
 } from 'vue';
 import { makeNumberProp, createNamespace, makeRequiredProp } from '../utils';
-import { bem } from './utils';
+import { bem, isLastRowInMonth } from './utils';
 import type { CalendarDayItem } from './types';
 
 const [name] = createNamespace('calendar-day');
@@ -21,7 +21,7 @@ export default defineComponent({
     rowHeight: String,
   },
 
-  emits: ['click'],
+  emits: ['click', 'clickDisabledDate'],
 
   setup(props, { emit, slots }) {
     const style = computed(() => {
@@ -54,12 +54,18 @@ export default defineComponent({
         }
       }
 
+      if (item.date && isLastRowInMonth(item.date, offset)) {
+        style.marginBottom = 0;
+      }
+
       return style;
     });
 
     const onClick = () => {
       if (props.item.type !== 'disabled') {
         emit('click', props.item);
+      } else {
+        emit('clickDisabledDate', props.item);
       }
     };
 
@@ -89,11 +95,15 @@ export default defineComponent({
       }
     };
 
+    const renderText = () => {
+      return slots.text ? slots.text(props.item) : props.item.text;
+    };
+
     const renderContent = () => {
       const { item, color, rowHeight } = props;
-      const { type, text } = item;
+      const { type } = item;
 
-      const Nodes = [renderTopInfo(), text, renderBottomInfo()];
+      const Nodes = [renderTopInfo(), renderText(), renderBottomInfo()];
 
       if (type === 'selected') {
         return (

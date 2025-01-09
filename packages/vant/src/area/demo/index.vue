@@ -3,21 +3,21 @@ import VanArea from '..';
 import { ref } from 'vue';
 import { areaList } from '@vant/area-data';
 import { areaListEn } from './area-en';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
-    title2: '选中省市区',
+    title2: '控制选中项',
     title3: '配置显示列',
     title4: '配置列占位提示文字',
-    columnsPlaceholder: ['请选择', '请选择', '请选择'],
+    columnsPlaceholder: ['省份', '城市', '区县'],
     areaList,
   },
   'en-US': {
-    title2: 'Initial Value',
+    title2: 'Model Value',
     title3: 'Columns Number',
     title4: 'Columns Placeholder',
-    columnsPlaceholder: ['Choose', 'Choose', 'Choose'],
+    columnsPlaceholder: ['Province', 'City', 'County'],
     areaList: areaListEn,
   },
 });
@@ -31,7 +31,7 @@ const value = ref('330302');
   </demo-block>
 
   <demo-block card :title="t('title2')">
-    <van-area :title="t('title')" :area-list="t('areaList')" :value="value" />
+    <van-area v-model="value" :title="t('title')" :area-list="t('areaList')" />
   </demo-block>
 
   <demo-block card :title="t('title3')">

@@ -26,7 +26,23 @@ test('should render empty TreeSelect correctly', () => {
   expect(mount(TreeSelect).html()).toMatchSnapshot();
 });
 
-test('should emit click-nav event when nav item is clicked', () => {
+test('should emit update:mainActiveIndex event when mainActiveIndex is changed', async () => {
+  const wrapper = mount(TreeSelect, {
+    props: {
+      items: mockItems,
+      mainActiveIndex: 0,
+    },
+  });
+
+  const navItems = wrapper.findAll('.van-tree-select__nav-item');
+  await navItems[0].trigger('click');
+  expect(wrapper.emitted('update:mainActiveIndex')).toBeFalsy();
+
+  await navItems[1].trigger('click');
+  expect(wrapper.emitted('update:mainActiveIndex')?.[0]).toEqual([1]);
+});
+
+test('should emit clickNav event when nav item is clicked', async () => {
   const wrapper = mount(TreeSelect, {
     props: {
       items: mockItems,
@@ -34,12 +50,13 @@ test('should emit click-nav event when nav item is clicked', () => {
   });
 
   const navItems = wrapper.findAll('.van-tree-select__nav-item');
-  navItems[1].trigger('click');
-  expect(wrapper.emitted('update:mainActiveIndex')?.[0]).toEqual([1]);
-  expect(wrapper.emitted('click-nav')?.[0]).toEqual([1]);
+  await navItems[0].trigger('click');
+  expect(wrapper.emitted('clickNav')?.[0]).toEqual([0]);
+  await navItems[0].trigger('click');
+  expect(wrapper.emitted('clickNav')?.[1]).toEqual([0]);
 });
 
-test('should emit click-item event when item is clicked', () => {
+test('should emit clickItem event when item is clicked', () => {
   const wrapper = mount(TreeSelect, {
     props: {
       items: mockItems,
@@ -49,10 +66,10 @@ test('should emit click-item event when item is clicked', () => {
   const items = wrapper.findAll('.van-tree-select__item');
   items[0].trigger('click');
   expect(wrapper.emitted('update:activeId')?.[0]).toEqual([mockItem.id]);
-  expect(wrapper.emitted('click-item')?.[0]).toEqual([mockItem]);
+  expect(wrapper.emitted('clickItem')?.[0]).toEqual([mockItem]);
 });
 
-test('should not emit click-nav event when disabled nav item is clicked', () => {
+test('should not emit clickNav event when disabled nav item is clicked', () => {
   const wrapper = mount(TreeSelect, {
     props: {
       items: [
@@ -67,10 +84,10 @@ test('should not emit click-nav event when disabled nav item is clicked', () => 
 
   const items = wrapper.findAll('.van-tree-select__nav-item');
   items[0].trigger('click');
-  expect(wrapper.emitted('click-nav')).toBeFalsy();
+  expect(wrapper.emitted('clickNav')).toBeFalsy();
 });
 
-test('should not emit click-item event when disabled item is clicked', () => {
+test('should not emit clickItem event when disabled item is clicked', () => {
   const wrapper = mount(TreeSelect, {
     props: {
       items: [
@@ -89,7 +106,7 @@ test('should not emit click-item event when disabled item is clicked', () => {
 
   const items = wrapper.findAll('.van-tree-select__item');
   items[0].trigger('click');
-  expect(wrapper.emitted('click-item')).toBeFalsy();
+  expect(wrapper.emitted('clickItem')).toBeFalsy();
 });
 
 test('should render content slot correctly', () => {
@@ -229,4 +246,17 @@ test('should change selected icon when using selected-icon prop', () => {
   });
 
   expect(wrapper.find('.van-tree-select__item').html()).toMatchSnapshot();
+});
+
+test('should render nav-text slot correctly', async () => {
+  const wrapper = mount(TreeSelect, {
+    props: {
+      items: mockItems,
+    },
+    slots: {
+      'nav-text': (item) => `Custom nav text, ${item.text}`,
+    },
+  });
+
+  expect(wrapper.html()).toMatchSnapshot();
 });

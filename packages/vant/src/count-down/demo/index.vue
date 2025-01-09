@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import VanCountDown from '..';
 import VanGrid from '../../grid';
 import VanGridItem from '../../grid-item';
+import VanCountDown, { type CountDownInstance } from '..';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
-import { Toast } from '../../toast';
-import type { CountDownInstance } from '../CountDown';
+import { useTranslate } from '../../../docs/site';
+import { showToast } from '../../toast';
 
 const t = useTranslate({
   'zh-CN': {
@@ -44,7 +43,7 @@ const pause = () => {
 const reset = () => {
   countDown.value?.reset();
 };
-const onFinish = () => Toast(t('finished'));
+const onFinish = () => showToast(t('finished'));
 </script>
 
 <template>
@@ -91,7 +90,7 @@ const onFinish = () => Toast(t('finished'));
 
 <style lang="less">
 .demo-count-down {
-  background-color: var(--van-background-color-light);
+  background-color: var(--van-background-2);
 
   .van-count-down {
     margin-left: var(--van-padding-md);
@@ -100,7 +99,7 @@ const onFinish = () => Toast(t('finished'));
   .colon {
     display: inline-block;
     margin: 0 4px;
-    color: var(--van-red);
+    color: var(--van-primary-color);
   }
 
   .block {
@@ -109,7 +108,7 @@ const onFinish = () => Toast(t('finished'));
     color: #fff;
     font-size: 12px;
     text-align: center;
-    background-color: var(--van-red);
+    background-color: var(--van-primary-color);
     border-radius: 4px;
   }
 

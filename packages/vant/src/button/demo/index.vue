@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import VanButton from '..';
-import { useTranslate } from '../../../docs/site/use-translate';
+import VanSwipe from '../../swipe';
+import VanSwipeItem from '../../swipe-item';
+import { cdnURL, useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
@@ -31,6 +33,9 @@ const t = useTranslate({
     pure: '单色按钮',
     gradient: '渐变色按钮',
     blockElement: '块级元素',
+    animatedButton: '动画按钮',
+    doTask: '做任务',
+    lottery: '抽大奖',
   },
   'en-US': {
     type: 'Type',
@@ -60,6 +65,9 @@ const t = useTranslate({
     pure: 'Pure',
     gradient: 'Gradient',
     blockElement: 'Block Element',
+    animatedButton: 'Animated Button',
+    doTask: 'Do Task',
+    lottery: 'Lottery',
   },
 });
 </script>
@@ -107,7 +115,7 @@ const t = useTranslate({
     <van-button
       plain
       type="primary"
-      icon="https://img.yzcdn.cn/vant/user-active.png"
+      :icon="cdnURL('user-active.png')"
       :text="t('button')"
     />
   </demo-block>
@@ -127,7 +135,7 @@ const t = useTranslate({
     <van-button
       :text="t('urlRoute')"
       type="primary"
-      url="https://github.com/youzan/vant"
+      url="https://github.com/vant-ui/vant"
     />
     <van-button :text="t('vueRoute')" type="primary" to="index" />
   </demo-block>
@@ -140,12 +148,25 @@ const t = useTranslate({
       :text="t('gradient')"
     />
   </demo-block>
+
+  <demo-block :title="t('animatedButton')">
+    <van-button type="danger" round>
+      <van-swipe
+        vertical
+        class="notice-swipe"
+        :autoplay="2000"
+        :touchable="false"
+        :show-indicators="false"
+      >
+        <van-swipe-item>{{ t('doTask') }}</van-swipe-item>
+        <van-swipe-item>{{ t('lottery') }}</van-swipe-item>
+      </van-swipe>
+    </van-button>
+  </demo-block>
 </template>
 
 <style lang="less">
 .demo-button {
-  background: var(--van-background-color-light);
-
   .van-button {
     &--large {
       margin-bottom: var(--van-padding-md);
@@ -167,6 +188,11 @@ const t = useTranslate({
 
   &-row {
     margin-bottom: var(--van-padding-sm);
+  }
+
+  .notice-swipe {
+    height: 40px;
+    line-height: 40px;
   }
 }
 </style>

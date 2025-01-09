@@ -6,7 +6,6 @@ import {
   truthProp,
   numericProp,
   preventDefault,
-  makeStringProp,
   createNamespace,
 } from '../utils';
 
@@ -19,25 +18,33 @@ import type {
   FieldTextAlign,
   FieldValidateError,
   FieldValidateTrigger,
+  FieldValidationStatus,
 } from '../field/types';
 import type { FormExpose } from './types';
 
 const [name, bem] = createNamespace('form');
 
-const formProps = {
+export const formProps = {
   colon: Boolean,
   disabled: Boolean,
   readonly: Boolean,
+  required: [Boolean, String] as PropType<boolean | 'auto'>,
   showError: Boolean,
   labelWidth: numericProp,
   labelAlign: String as PropType<FieldTextAlign>,
   inputAlign: String as PropType<FieldTextAlign>,
   scrollToError: Boolean,
+  scrollToErrorPosition: String as PropType<ScrollLogicalPosition>,
   validateFirst: Boolean,
   submitOnEnter: truthProp,
-  validateTrigger: makeStringProp<FieldValidateTrigger>('onBlur'),
   showErrorMessage: truthProp,
   errorMessageAlign: String as PropType<FieldTextAlign>,
+  validateTrigger: {
+    type: [String, Array] as PropType<
+      FieldValidateTrigger | FieldValidateTrigger[]
+    >,
+    default: 'onBlur',
+  },
 };
 
 export type FormProps = ExtractPropTypes<typeof formProps>;
@@ -76,7 +83,7 @@ export default defineComponent({
                   });
                 }
               }),
-            Promise.resolve()
+            Promise.resolve(),
           )
           .then(() => {
             if (errors.length) {
@@ -137,9 +144,15 @@ export default defineComponent({
       });
     };
 
+    const getValidationStatus = () =>
+      children.reduce<Record<string, FieldValidationStatus>>((form, field) => {
+        form[field.name] = field.getValidationStatus();
+        return form;
+      }, {});
+
     const scrollToField = (
       name: string,
-      options?: boolean | ScrollIntoViewOptions
+      options?: boolean | ScrollIntoViewOptions,
     ) => {
       children.some((item) => {
         if (item.name === name) {
@@ -151,10 +164,12 @@ export default defineComponent({
     };
 
     const getValues = () =>
-      children.reduce((form, field) => {
-        form[field.name] = field.formValue.value;
+      children.reduce<Record<string, unknown>>((form, field) => {
+        if (field.name !== undefined) {
+          form[field.name] = field.formValue.value;
+        }
         return form;
-      }, {} as Record<string, unknown>);
+      }, {});
 
     const submit = () => {
       const values = getValues();
@@ -163,9 +178,17 @@ export default defineComponent({
         .then(() => emit('submit', values))
         .catch((errors: FieldValidateError[]) => {
           emit('failed', { values, errors });
+          const { scrollToError, scrollToErrorPosition } = props;
 
-          if (props.scrollToError && errors[0].name) {
-            scrollToField(errors[0].name);
+          if (scrollToError && errors[0].name) {
+            scrollToField(
+              errors[0].name,
+              scrollToErrorPosition
+                ? {
+                    block: scrollToErrorPosition,
+                  }
+                : undefined,
+            );
           }
         });
     };
@@ -179,8 +202,10 @@ export default defineComponent({
     useExpose<FormExpose>({
       submit,
       validate,
+      getValues,
       scrollToField,
       resetValidation,
+      getValidationStatus,
     });
 
     return () => (

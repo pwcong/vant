@@ -1,28 +1,35 @@
 <script setup lang="ts">
 import VanField from '../../field';
 import VanPopup from '../../popup';
-import VanPicker from '../../picker';
+import VanPicker, { PickerConfirmEventParams } from '../../picker';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
+import { basicColumns } from '../../picker/demo/data';
+import type { Numeric } from '../../utils';
 
 const t = useTranslate({
   'zh-CN': {
     picker: '选择器',
     placeholder: '点击选择城市',
-    textColumns: ['杭州', '宁波', '温州', '嘉兴', '湖州'],
+    textColumns: basicColumns['zh-CN'],
   },
   'en-US': {
     picker: 'Picker',
     placeholder: 'Select city',
-    textColumns: ['Delaware', 'Florida', 'Georqia', 'Indiana', 'Maine'],
+    textColumns: basicColumns['en-US'],
   },
 });
 
-const result = ref('');
+const result = ref<Numeric>('');
+const pickerValue = ref<Numeric[]>([]);
 const showPicker = ref(false);
 
-const onConfirm = (value: string) => {
-  result.value = value;
+const onConfirm = ({
+  selectedValues,
+  selectedOptions,
+}: PickerConfirmEventParams) => {
+  result.value = selectedOptions[0]?.text || '';
+  pickerValue.value = selectedValues;
   showPicker.value = false;
 };
 
@@ -41,8 +48,15 @@ const onCancel = () => {
     :placeholder="t('placeholder')"
     @click="showPicker = true"
   />
-  <van-popup v-model:show="showPicker" round position="bottom" teleport="body">
+  <van-popup
+    v-model:show="showPicker"
+    destroy-on-close
+    round
+    position="bottom"
+    teleport="body"
+  >
     <van-picker
+      :model-value="pickerValue"
       :columns="t('textColumns')"
       @confirm="onConfirm"
       @cancel="onCancel"

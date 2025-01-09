@@ -30,7 +30,7 @@ app.use(PullRefresh);
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
@@ -38,7 +38,7 @@ export default {
     const loading = ref(false);
     const onRefresh = () => {
       setTimeout(() => {
-        Toast('刷新成功');
+        showToast('刷新成功');
         loading.value = false;
         count.value++;
       }, 1000);
@@ -77,19 +77,25 @@ export default {
   <template #pulling="props">
     <img
       class="doge"
-      src="https://img.yzcdn.cn/vant/doge.png"
+      src="https://fastly.jsdelivr.net/npm/@vant/assets/doge.png"
       :style="{ transform: `scale(${props.distance / 80})` }"
     />
   </template>
 
   <!-- 释放提示 -->
   <template #loosing>
-    <img class="doge" src="https://img.yzcdn.cn/vant/doge.png" />
+    <img
+      class="doge"
+      src="https://fastly.jsdelivr.net/npm/@vant/assets/doge.png"
+    />
   </template>
 
   <!-- 加载提示 -->
   <template #loading>
-    <img class="doge" src="https://img.yzcdn.cn/vant/doge-fire.jpg" />
+    <img
+      class="doge"
+      src="https://fastly.jsdelivr.net/npm/@vant/assets/doge-fire.jpeg"
+    />
   </template>
   <p>刷新次数: {{ count }}</p>
 </van-pull-refresh>
@@ -118,14 +124,15 @@ export default {
 | success-duration | 刷新成功提示展示时长(ms) | _number \| string_ | `500` |
 | animation-duration | 动画时长 | _number \| string_ | `300` |
 | head-height | 顶部内容高度 | _number \| string_ | `50` |
-| pull-distance `v3.0.8` | 触发下拉刷新的距离 | _number \| string_ | 与 `head-height` 一致 |
+| pull-distance | 触发下拉刷新的距离 | _number \| string_ | 与 `head-height` 一致 |
 | disabled | 是否禁用下拉刷新 | _boolean_ | `false` |
 
 ### Events
 
-| 事件名  | 说明           | 回调参数 |
-| ------- | -------------- | -------- |
-| refresh | 下拉刷新时触发 | -        |
+| 事件名  | 说明                   | 回调参数                               |
+| ------- | ---------------------- | -------------------------------------- |
+| refresh | 下拉刷新时触发         | -                                      |
+| change  | 拖动时或状态改变时触发 | _{ status: string, distance: number }_ |
 
 ### Slots
 

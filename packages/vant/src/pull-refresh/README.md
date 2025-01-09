@@ -30,7 +30,7 @@ The `refresh` event will be Emitted when pull refresh, you should set `v-model` 
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
@@ -38,7 +38,7 @@ export default {
     const loading = ref(false);
     const onRefresh = () => {
       setTimeout(() => {
-        Toast('Refresh Success');
+        showToast('Refresh Success');
         loading.value = false;
         count.value++;
       }, 1000);
@@ -76,17 +76,23 @@ Use slots to custom tips.
   <template #pulling="props">
     <img
       class="doge"
-      src="https://img.yzcdn.cn/vant/doge.png"
+      src="https://fastly.jsdelivr.net/npm/@vant/assets/doge.png"
       :style="{ transform: `scale(${props.distance / 80})` }"
     />
   </template>
 
   <template #loosing>
-    <img class="doge" src="https://img.yzcdn.cn/vant/doge.png" />
+    <img
+      class="doge"
+      src="https://fastly.jsdelivr.net/npm/@vant/assets/doge.png"
+    />
   </template>
 
   <template #loading>
-    <img class="doge" src="https://img.yzcdn.cn/vant/doge-fire.jpg" />
+    <img
+      class="doge"
+      src="https://fastly.jsdelivr.net/npm/@vant/assets/doge-fire.jpeg"
+    />
   </template>
   <p>Refresh Count: {{ count }}</p>
 </van-pull-refresh>
@@ -115,14 +121,15 @@ Use slots to custom tips.
 | success-duration | Success text display duration(ms) | _number \| string_ | `500` |
 | animation-duration | Animation duration | _number \| string_ | `300` |
 | head-height | Height of head | _number \| string_ | `50` |
-| pull-distance `v3.0.8` | The distance to trigger the pull refresh | _number \| string_ | same as `head-height` |
+| pull-distance | The distance to trigger the pull refresh | _number \| string_ | same as `head-height` |
 | disabled | Whether to disable pull refresh | _boolean_ | `false` |
 
 ### Events
 
-| Event   | Description                   | Parameters |
-| ------- | ----------------------------- | ---------- |
-| refresh | Emitted after pulling refresh | -          |
+| Event | Description | Parameters |
+| --- | --- | --- |
+| refresh | Emitted after pulling refresh | - |
+| change | Emitted when draging or status changed | _{ status: string, distance: number }_ |
 
 ### Slots
 

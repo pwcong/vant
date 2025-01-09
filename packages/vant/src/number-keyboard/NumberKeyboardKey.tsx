@@ -59,7 +59,7 @@ export default defineComponent({
     const onTouchEnd = (event: TouchEvent) => {
       if (active.value) {
         // eliminate tap delay on safari
-        // see: https://github.com/youzan/vant/issues/6836
+        // see: https://github.com/vant-ui/vant/issues/6836
         if (!slots.default) {
           preventDefault(event);
         }
@@ -88,8 +88,8 @@ export default defineComponent({
     return () => (
       <div
         class={bem('wrapper', { wider: props.wider })}
-        onTouchstart={onTouchStart}
-        onTouchmove={onTouchMove}
+        onTouchstartPassive={onTouchStart}
+        onTouchmovePassive={onTouchMove}
         onTouchend={onTouchEnd}
         onTouchcancel={onTouchEnd}
       >

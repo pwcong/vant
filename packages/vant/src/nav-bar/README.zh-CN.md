@@ -66,12 +66,12 @@ export default {
 ```
 
 ```js
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
     const onClickLeft = () => history.back();
-    const onClickRight = () => Toast('按钮');
+    const onClickRight = () => showToast('按钮');
     return {
       onClickLeft,
       onClickRight,
@@ -92,6 +92,21 @@ export default {
 </van-nav-bar>
 ```
 
+### 禁用按钮
+
+通过 `left-disabled` 或 `right-disabled` 属性来禁用两侧的按钮。按钮被禁用时透明度降低，且无法点击。
+
+```html
+<van-nav-bar
+  title="标题"
+  left-text="返回"
+  right-text="按钮"
+  left-arrow
+  left-disabled
+  right-disabled
+/>
+```
+
 ## API
 
 ### Props
@@ -101,12 +116,15 @@ export default {
 | title | 标题 | _string_ | `''` |
 | left-text | 左侧文案 | _string_ | `''` |
 | right-text | 右侧文案 | _string_ | `''` |
+| left-disabled `v4.6.8` | 是否禁用左侧按钮，禁用时透明度降低，且无法点击 | _boolean_ | `false` |
+| right-disabled `v4.6.8` | 是否禁用右侧按钮，禁用时透明度降低，且无法点击 | _boolean_ | `false` |
 | left-arrow | 是否显示左侧箭头 | _boolean_ | `false` |
 | border | 是否显示下边框 | _boolean_ | `true` |
 | fixed | 是否固定在顶部 | _boolean_ | `false` |
 | placeholder | 固定在顶部时，是否在标签位置生成一个等高的占位元素 | _boolean_ | `false` |
 | z-index | 导航栏 z-index | _number \| string_ | `1` |
 | safe-area-inset-top | 是否开启[顶部安全区适配](#/zh-CN/advanced-usage#di-bu-an-quan-qu-gua-pei) | _boolean_ | `false` |
+| clickable | 是否开启两侧按钮的点击反馈 | _boolean_ | `true` |
 
 ### Slots
 
@@ -137,13 +155,13 @@ import type { NavBarProps } from 'vant';
 
 组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
 
-| 名称                           | 默认值                              | 描述 |
-| ------------------------------ | ----------------------------------- | ---- |
-| --van-nav-bar-height           | _46px_                              | -    |
-| --van-nav-bar-background-color | _var(--van-background-color-light)_ | -    |
-| --van-nav-bar-arrow-size       | _16px_                              | -    |
-| --van-nav-bar-icon-color       | _var(--van-primary-color)_          | -    |
-| --van-nav-bar-text-color       | _var(--van-primary-color)_          | -    |
-| --van-nav-bar-title-font-size  | _var(--van-font-size-lg)_           | -    |
-| --van-nav-bar-title-text-color | _var(--van-text-color)_             | -    |
-| --van-nav-bar-z-index          | _1_                                 | -    |
+| 名称                           | 默认值                     | 描述 |
+| ------------------------------ | -------------------------- | ---- |
+| --van-nav-bar-height           | _46px_                     | -    |
+| --van-nav-bar-background       | _var(--van-background-2)_  | -    |
+| --van-nav-bar-arrow-size       | _16px_                     | -    |
+| --van-nav-bar-icon-color       | _var(--van-primary-color)_ | -    |
+| --van-nav-bar-text-color       | _var(--van-primary-color)_ | -    |
+| --van-nav-bar-title-font-size  | _var(--van-font-size-lg)_  | -    |
+| --van-nav-bar-title-text-color | _var(--van-text-color)_    | -    |
+| --van-nav-bar-z-index          | _1_                        | -    |

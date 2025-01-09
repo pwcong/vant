@@ -5,7 +5,7 @@ import VanButton from '../../button';
 import VanCellGroup from '../../cell-group';
 import VanCell from '../../cell';
 import { ref, reactive } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { cdnURL, useTranslate } from '../../../docs/site';
 import { useRefs } from '../../composables/use-refs';
 import type { CheckboxInstance } from '../types';
 import type { CheckboxGroupInstance } from '../../checkbox-group';
@@ -17,6 +17,7 @@ const t = useTranslate({
     customIconSize: '自定义大小',
     customColor: '自定义颜色',
     customShape: '自定义形状',
+    leftLabel: '左侧文本',
     title3: '复选框组',
     title4: '限制最大可选数',
     title5: '搭配单元格组件使用',
@@ -25,6 +26,7 @@ const t = useTranslate({
     inverse: '反选',
     horizontal: '水平排列',
     disableLabel: '禁用文本点击',
+    indeterminate: '不确定状态',
   },
   'en-US': {
     checkbox: 'Checkbox',
@@ -32,6 +34,7 @@ const t = useTranslate({
     customIconSize: 'Custom Icon Size',
     customColor: 'Custom Color',
     customShape: 'Custom Shape',
+    leftLabel: 'Left Label',
     title3: 'Checkbox Group',
     title4: 'Maximum amount of checked options',
     title5: 'Inside a Cell',
@@ -40,6 +43,7 @@ const t = useTranslate({
     inverse: 'Inverse',
     horizontal: 'Horizontal',
     disableLabel: 'Disable label click',
+    indeterminate: 'indeterminate',
   },
 });
 
@@ -47,19 +51,25 @@ const state = reactive({
   checkbox1: true,
   checkbox2: true,
   checkbox3: true,
-  checkboxShape: true,
+  isCheckAll: false,
+  isIndeterminate: true,
   checkboxLabel: true,
-  checboxIcon: true,
+  checkboxIcon: true,
+  leftLabel: false,
   list: ['a', 'b'],
   result: ['a', 'b'],
+  checkboxShape: ['a', 'b'],
   result2: [],
   result3: [],
+  result4: ['a', 'b', 'd'],
   checkAllResult: [],
   horizontalResult: [],
 });
 
-const activeIcon = 'https://img.yzcdn.cn/vant/user-active.png';
-const inactiveIcon = 'https://img.yzcdn.cn/vant/user-inactive.png';
+const list = ['a', 'b', 'c', 'd'];
+
+const activeIcon = cdnURL('user-active.png');
+const inactiveIcon = cdnURL('user-inactive.png');
 
 const group = ref<CheckboxGroupInstance>();
 const [refs, setRefs] = useRefs<CheckboxInstance>();
@@ -74,6 +84,17 @@ const checkAll = () => {
 
 const toggleAll = () => {
   group.value?.toggleAll();
+};
+
+const checkAllChange = (val: boolean) => {
+  state.result4 = val ? list : [];
+  state.isIndeterminate = false;
+};
+
+const checkedResultChange = (value: string[]) => {
+  const checkedCount = value.length;
+  state.isCheckAll = checkedCount === list.length;
+  state.isIndeterminate = checkedCount > 0 && checkedCount < list.length;
 };
 </script>
 
@@ -92,9 +113,10 @@ const toggleAll = () => {
   </demo-block>
 
   <demo-block :title="t('customShape')">
-    <van-checkbox v-model="state.checkboxShape" shape="square">
-      {{ t('customShape') }}
-    </van-checkbox>
+    <van-checkbox-group v-model="state.checkboxShape" shape="square">
+      <van-checkbox name="a">{{ t('customShape') }} a</van-checkbox>
+      <van-checkbox name="b">{{ t('customShape') }} b</van-checkbox>
+    </van-checkbox-group>
   </demo-block>
 
   <demo-block :title="t('customColor')">
@@ -104,7 +126,7 @@ const toggleAll = () => {
   </demo-block>
 
   <demo-block :title="t('customIconSize')">
-    <van-checkbox v-model="state.checboxIcon" icon-size="24px">
+    <van-checkbox v-model="state.checkboxIcon" icon-size="24px">
       {{ t('customIconSize') }}
     </van-checkbox>
   </demo-block>
@@ -115,6 +137,12 @@ const toggleAll = () => {
       <template #icon="{ checked }">
         <img :src="checked ? activeIcon : inactiveIcon" />
       </template>
+    </van-checkbox>
+  </demo-block>
+
+  <demo-block :title="t('leftLabel')">
+    <van-checkbox v-model="state.leftLabel" label-position="left">
+      {{ t('leftLabel') }}
     </van-checkbox>
   </demo-block>
 
@@ -180,6 +208,22 @@ const toggleAll = () => {
       </van-cell-group>
     </van-checkbox-group>
   </demo-block>
+
+  <demo-block :title="t('indeterminate')">
+    <van-checkbox
+      v-model="state.isCheckAll"
+      :indeterminate="state.isIndeterminate"
+      @change="checkAllChange"
+    >
+      {{ t('checkAll') }}
+    </van-checkbox>
+    <div class="divider" />
+    <van-checkbox-group v-model="state.result4" @change="checkedResultChange">
+      <van-checkbox v-for="item in list" :key="item" :name="item">
+        {{ t('checkbox') }} {{ item }}
+      </van-checkbox>
+    </van-checkbox-group>
+  </demo-block>
 </template>
 
 <style lang="less">
@@ -209,5 +253,11 @@ const toggleAll = () => {
   .van-doc-demo-block__title {
     margin-top: -8px;
   }
+}
+
+.divider {
+  margin: 20px;
+  height: 1px;
+  background: #ccc;
 }
 </style>

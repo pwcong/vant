@@ -29,6 +29,24 @@ app.use(Button);
 app.component(Button.name, Button);
 ```
 
+#### 全量注册
+
+你也可以在全局一次性注册所有 Vant 组件：
+
+```js
+import Vant from 'vant';
+import { createApp } from 'vue';
+
+const app = createApp();
+
+app.use(Vant);
+
+// Lazyload 指令需要单独进行注册
+app.use(vant.Lazyload);
+```
+
+> 注意：注册所有组件会引入所有组件的代码，导致包体积增大。
+
 #### 局部注册
 
 局部注册后，你可以在当前组件中使用注册的 Vant 组件。
@@ -43,7 +61,7 @@ export default {
 };
 ```
 
-> 对于组件注册更详细的介绍，请参考 [Vue 官方文档 - 组件注册](https://v3.cn.vuejs.org/guide/component-registration.html#%E7%BB%84%E4%BB%B6%E6%B3%A8%E5%86%8C)。
+> 对于组件注册更详细的介绍，请参考 [Vue 官方文档 - 组件注册](https://cn.vuejs.org/guide/components/registration.html)。
 
 #### \<script setup\>
 
@@ -75,7 +93,7 @@ export default {
 
 ### 组件插槽
 
-Vant 提供了丰富的组件插槽，通过插槽可以对组件的某一部分进行个性化定制。如果你对 Vue 的插槽不太熟悉，可以阅读 Vue 官方文档中的[插槽章节](https://v3.cn.vuejs.org/guide/component-slots.html)。下面是通过插槽来定制 Checkbox 图标的示例：
+Vant 提供了丰富的组件插槽，通过插槽可以对组件的某一部分进行个性化定制。如果你对 Vue 的插槽不太熟悉，可以阅读 Vue 官方文档中的[插槽章节](https://cn.vuejs.org/guide/components/slots.html)。下面是通过插槽来定制 Checkbox 图标的示例：
 
 ```html
 <van-checkbox v-model="checked">
@@ -92,8 +110,10 @@ export default {
   data() {
     return {
       checked: true,
-      activeIcon: 'https://img.yzcdn.cn/vant/user-active.png',
-      inactiveIcon: 'https://img.yzcdn.cn/vant/user-inactive.png',
+      activeIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-active.png',
+      inactiveIcon:
+        'https://fastly.jsdelivr.net/npm/@vant/assets/user-inactive.png',
     };
   },
 };
@@ -101,7 +121,7 @@ export default {
 
 ### 组件实例方法
 
-Vant 中的许多组件提供了实例方法，调用实例方法时，我们需要通过 [ref](https://v3.cn.vuejs.org/guide/component-template-refs.html) 来注册组件引用信息，引用信息将会注册在父组件的`$refs`对象上。注册完成后，我们可以通过`this.$refs.xxx`访问到对应的组件实例，并调用上面的实例方法。
+Vant 中的许多组件提供了实例方法，调用实例方法时，我们需要通过 [ref](https://cn.vuejs.org/guide/essentials/template-refs.html) 来注册组件引用信息，引用信息将会注册在父组件的`$refs`对象上。注册完成后，我们可以通过`this.$refs.xxx`访问到对应的组件实例，并调用上面的实例方法。
 
 ```html
 <!-- 通过 ref 属性将组件绑定到 this.$refs.checkbox 上 -->
@@ -170,6 +190,8 @@ module.exports = {
 };
 ```
 
+> Tips: 在配置 postcss-pxtorem 时，同样应避免 ignore node_modules 目录，否则会导致 Vant 样式无法被编译。
+
 #### 其他设计稿尺寸
 
 如果设计稿的尺寸不是 375，而是 750 或其他大小，可以将 `rootValue` 配置调整为:
@@ -193,7 +215,7 @@ module.exports = {
 
 Vant 是一个面向移动端的组件库，因此默认只适配了移动端设备，这意味着组件只监听了移动端的 `touch` 事件，没有监听桌面端的 `mouse` 事件。
 
-如果你需要在桌面端使用 Vant，可以引入我们提供的 [@vant/touch-emulator](https://github.com/youzan/vant/tree/dev/packages/vant-touch-emulator)，这个库会在桌面端自动将 `mouse` 事件转换成对应的 `touch` 事件，使得组件能够在桌面端使用。
+如果你需要在桌面端使用 Vant，可以引入我们提供的 [@vant/touch-emulator](https://github.com/vant-ui/vant/tree/main/packages/vant-touch-emulator)，这个库会在桌面端自动将 `mouse` 事件转换成对应的 `touch` 事件，使得组件能够在桌面端使用。
 
 ```bash
 # 安装模块
@@ -223,4 +245,4 @@ iPhone X 等机型底部存在底部指示条，指示条的操作区域与页�
 <van-number-keyboard safe-area-inset-bottom />
 ```
 
-<img src="https://img.yzcdn.cn/vant/safearea.png">
+<img src="https://fastly.jsdelivr.net/npm/@vant/assets/safearea.png">

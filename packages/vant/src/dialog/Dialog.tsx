@@ -1,5 +1,7 @@
 import {
+  ref,
   reactive,
+  withKeys,
   defineComponent,
   type PropType,
   type ExtractPropTypes,
@@ -7,6 +9,7 @@ import {
 
 // Utils
 import {
+  noop,
   pick,
   extend,
   addUnit,
@@ -19,6 +22,7 @@ import {
   makeStringProp,
   callInterceptor,
   createNamespace,
+  type ComponentInstance,
 } from '../utils';
 import { popupSharedProps, popupSharedPropKeys } from '../popup/shared';
 
@@ -38,7 +42,7 @@ import type {
 
 const [name, bem, t] = createNamespace('dialog');
 
-const dialogProps = extend({}, popupSharedProps, {
+export const dialogProps = extend({}, popupSharedProps, {
   title: String,
   theme: String as PropType<DialogTheme>,
   width: numericProp,
@@ -52,10 +56,13 @@ const dialogProps = extend({}, popupSharedProps, {
   showCancelButton: Boolean,
   cancelButtonText: String,
   cancelButtonColor: String,
+  cancelButtonDisabled: Boolean,
   confirmButtonText: String,
   confirmButtonColor: String,
+  confirmButtonDisabled: Boolean,
   showConfirmButton: truthProp,
   closeOnClickOverlay: Boolean,
+  keyboardEnabled: truthProp,
 });
 
 export type DialogProps = ExtractPropTypes<typeof dialogProps>;
@@ -71,9 +78,10 @@ export default defineComponent({
 
   props: dialogProps,
 
-  emits: ['confirm', 'cancel', 'update:show'],
+  emits: ['confirm', 'cancel', 'keydown', 'update:show'],
 
   setup(props, { emit, slots }) {
+    const root = ref<ComponentInstance>();
     const loading = reactive({
       confirm: false,
       cancel: false,
@@ -113,6 +121,26 @@ export default defineComponent({
 
     const onCancel = getActionHandler('cancel');
     const onConfirm = getActionHandler('confirm');
+    const onKeydown = withKeys(
+      (event: KeyboardEvent) => {
+        if (!props.keyboardEnabled) {
+          return;
+        }
+        // skip keyboard events of child elements
+        if (event.target !== root.value?.popupRef?.value) {
+          return;
+        }
+
+        const onEventType: Record<string, () => void> = {
+          Enter: props.showConfirmButton ? onConfirm : noop,
+          Escape: props.showCancelButton ? onCancel : noop,
+        };
+
+        onEventType[event.key]();
+        emit('keydown', event);
+      },
+      ['enter', 'esc'],
+    );
 
     const renderTitle = () => {
       const title = slots.title ? slots.title() : props.title;
@@ -156,7 +184,7 @@ export default defineComponent({
         return (
           <div
             // add key to force re-render
-            // see: https://github.com/youzan/vant/issues/7963
+            // see: https://github.com/vant-ui/vant/issues/7963
             key={allowHtml ? 1 : 0}
             class={bem('content', { isolated: !hasTitle })}
           >
@@ -175,6 +203,7 @@ export default defineComponent({
             class={bem('cancel')}
             style={{ color: props.cancelButtonColor }}
             loading={loading.cancel}
+            disabled={props.cancelButtonDisabled}
             onClick={onCancel}
           />
         )}
@@ -185,6 +214,7 @@ export default defineComponent({
             class={[bem('confirm'), { [BORDER_LEFT]: props.showCancelButton }]}
             style={{ color: props.confirmButtonColor }}
             loading={loading.confirm}
+            disabled={props.confirmButtonDisabled}
             onClick={onConfirm}
           />
         )}
@@ -200,6 +230,7 @@ export default defineComponent({
             class={bem('cancel')}
             color={props.cancelButtonColor}
             loading={loading.cancel}
+            disabled={props.cancelButtonDisabled}
             onClick={onCancel}
           />
         )}
@@ -210,6 +241,7 @@ export default defineComponent({
             class={bem('confirm')}
             color={props.confirmButtonColor}
             loading={loading.confirm}
+            disabled={props.confirmButtonDisabled}
             onClick={onConfirm}
           />
         )}
@@ -229,10 +261,13 @@ export default defineComponent({
       const { width, title, theme, message, className } = props;
       return (
         <Popup
+          ref={root}
           role="dialog"
           class={[bem([theme]), className]}
           style={{ width: addUnit(width) }}
+          tabindex={0}
           aria-labelledby={title || message}
+          onKeydown={onKeydown}
           onUpdate:show={updateShow}
           {...pick(props, popupInheritKeys)}
         >

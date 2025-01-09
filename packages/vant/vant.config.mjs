@@ -2,65 +2,64 @@ export default {
   name: 'vant',
   build: {
     srcDir: 'src',
+    tagPrefix: 'van-',
     namedExport: true,
     skipInstall: ['lazyload'],
     packageManager: 'pnpm',
+    extensions: {
+      esm: '.mjs',
+    },
     site: {
       publicPath:
-        (typeof window === 'undefined' && process.env.PUBLIC_PATH) ||
-        '/vant/v3/',
+        (typeof window === 'undefined' && process.env.PUBLIC_PATH) || '/vant/',
     },
     vetur: {
       tagPrefix: 'van-',
     },
+    css: {
+      removeSourceFile: true,
+    },
   },
   site: {
     defaultLang: 'en-US',
+    darkModeClass: 'van-theme-dark',
+    lightModeClass: 'van-theme-light',
+    enableVConsole: false,
     versions: [
       { label: 'v1', link: '/vant/v1/' },
-      { label: 'v2', link: '/vant/' },
+      { label: 'v2', link: '/vant/v2/' },
+      { label: 'v3', link: '/vant/v3/' },
     ],
     baiduAnalytics: {
-      seed: 'ad6b5732c36321f2dafed737ac2da92f',
+      seed: 'af5d41bc4e446e76665dbe3ec18d55c3',
     },
-    htmlMeta: {
-      'docsearch:version': 'v3',
+    icpLicense: {
+      text: '浙ICP备2021036118号',
+      link: 'https://beian.miit.gov.cn/',
     },
+    headHtml: `<script>
+if (location.host === 'youzan.github.io') {
+location.href = location.href.replace('youzan.github.io', 'vant-ui.github.io');
+}
+</script>
+`,
     locales: {
       'zh-CN': {
-        title: 'Vant',
-        description: '轻量、可靠的移动端组件库',
-        logo: 'https://img.yzcdn.cn/vant/logo.png',
+        title: 'Vant 4',
+        subtitle: '（适用于 Vue 3）',
+        description: '轻量、可定制的移动端组件库',
+        logo: 'https://fastly.jsdelivr.net/npm/@vant/assets/logo.png',
         langLabel: '中',
         links: [
           {
-            logo: 'https://b.yzcdn.cn/vant/logo/weapp.svg',
-            url: 'https://vant-contrib.gitee.io/vant-weapp/',
+            logo: 'https://fastly.jsdelivr.net/npm/@vant/assets/weapp.svg',
+            url: '/vant-weapp/',
           },
           {
-            logo: 'https://b.yzcdn.cn/vant/logo/github.svg',
-            url: 'https://github.com/youzan/vant',
+            logo: 'https://fastly.jsdelivr.net/npm/@vant/assets/github.svg',
+            url: 'https://github.com/vant-ui/vant',
           },
         ],
-        searchConfig: {
-          apiKey: '90067aecdaa2c85220e2783cd305caac',
-          indexName: 'vant',
-          searchParameters: {
-            facetFilters: ['lang:zh-CN', 'version:v3'],
-          },
-          transformItems(items) {
-            if (location.hostname !== 'youzan.github.io') {
-              items.forEach((item) => {
-                if (item.url) {
-                  item.url =
-                    item.url &&
-                    item.url.replace('youzan.github.io', location.hostname);
-                }
-              });
-            }
-            return items;
-          },
-        },
         nav: [
           {
             title: '开发指南',
@@ -86,8 +85,16 @@ export default {
                 title: '更新日志',
               },
               {
+                path: 'release-note-v4',
+                title: '4.0 更新介绍',
+              },
+              {
                 path: 'migrate-from-v2',
-                title: '从 v2 升级',
+                title: '从 v2 升级到 v3',
+              },
+              {
+                path: 'migrate-from-v3',
+                title: '从 v3 升级到 v4',
               },
               {
                 path: 'contribution',
@@ -96,10 +103,6 @@ export default {
               {
                 path: 'design',
                 title: '设计资源',
-              },
-              {
-                path: 'style-guide',
-                title: '风格指南',
               },
               {
                 path: 'locale',
@@ -139,6 +142,10 @@ export default {
                 title: 'Popup 弹出层',
               },
               {
+                path: 'space',
+                title: 'Space 间距',
+              },
+              {
                 path: 'style',
                 title: 'Style 内置样式',
               },
@@ -164,8 +171,8 @@ export default {
                 title: 'Checkbox 复选框',
               },
               {
-                path: 'datetime-picker',
-                title: 'DatetimePicker 时间选择',
+                path: 'date-picker',
+                title: 'DatePicker 日期选择',
               },
               {
                 path: 'field',
@@ -188,6 +195,10 @@ export default {
                 title: 'Picker 选择器',
               },
               {
+                path: 'picker-group',
+                title: 'PickerGroup 选择器组',
+              },
+              {
                 path: 'radio',
                 title: 'Radio 单选框',
               },
@@ -204,12 +215,20 @@ export default {
                 title: 'Slider 滑块',
               },
               {
+                path: 'signature',
+                title: 'Signature 签名',
+              },
+              {
                 path: 'stepper',
                 title: 'Stepper 步进器',
               },
               {
                 path: 'switch',
                 title: 'Switch 开关',
+              },
+              {
+                path: 'time-picker',
+                title: 'TimePicker 时间选择',
               },
               {
                 path: 'uploader',
@@ -225,12 +244,24 @@ export default {
                 title: 'ActionSheet 动作面板',
               },
               {
+                path: 'barrage',
+                title: 'Barrage 弹幕',
+              },
+              {
                 path: 'dialog',
                 title: 'Dialog 弹出框',
               },
               {
                 path: 'dropdown-menu',
                 title: 'DropdownMenu 下拉菜单',
+              },
+              {
+                path: 'floating-panel',
+                title: 'FloatingPanel 浮动面板',
+              },
+              {
+                path: 'floating-bubble',
+                title: 'FloatingBubble 浮动气泡',
               },
               {
                 path: 'loading',
@@ -286,6 +317,10 @@ export default {
                 title: 'Empty 空状态',
               },
               {
+                path: 'highlight',
+                title: 'Highlight 高亮文本',
+              },
+              {
                 path: 'image-preview',
                 title: 'ImagePreview 图片预览',
               },
@@ -310,6 +345,10 @@ export default {
                 title: 'Progress 进度条',
               },
               {
+                path: 'rolling-text',
+                title: 'RollingText 翻滚文本',
+              },
+              {
                 path: 'skeleton',
                 title: 'Skeleton 骨架屏',
               },
@@ -329,6 +368,14 @@ export default {
                 path: 'tag',
                 title: 'Tag 标签',
               },
+              {
+                path: 'text-ellipsis',
+                title: 'TextEllipsis 文本省略',
+              },
+              {
+                path: 'watermark',
+                title: 'Watermark 水印',
+              },
             ],
           },
           {
@@ -337,6 +384,10 @@ export default {
               {
                 path: 'action-bar',
                 title: 'ActionBar 动作栏',
+              },
+              {
+                path: 'back-top',
+                title: 'BackTop 回到顶部',
               },
               {
                 path: 'grid',
@@ -460,37 +511,27 @@ export default {
                 path: 'use-window-size',
                 title: 'useWindowSize',
               },
-            ],
-          },
-          {
-            title: '废弃',
-            items: [
               {
-                path: 'theme',
-                title: '定制主题',
+                path: 'use-raf',
+                title: 'useRaf',
               },
             ],
           },
         ],
       },
       'en-US': {
-        title: 'Vant',
-        description: 'Mobile UI Components built on Vue',
-        logo: 'https://img.yzcdn.cn/vant/logo.png',
+        title: 'Vant 4',
+        subtitle: ' (for Vue 3)',
+        description:
+          'A lightweight, customizable Vue UI library for mobile web apps.',
+        logo: 'https://fastly.jsdelivr.net/npm/@vant/assets/logo.png',
         langLabel: 'EN',
         links: [
           {
-            logo: 'https://b.yzcdn.cn/vant/logo/github.svg',
-            url: 'https://github.com/youzan/vant',
+            logo: 'https://fastly.jsdelivr.net/npm/@vant/assets/github.svg',
+            url: 'https://github.com/vant-ui/vant',
           },
         ],
-        searchConfig: {
-          apiKey: '90067aecdaa2c85220e2783cd305caac',
-          indexName: 'vant',
-          searchParameters: {
-            facetFilters: ['lang:en-US', 'version:v3'],
-          },
-        },
         nav: [
           {
             title: 'Essentials',
@@ -508,8 +549,28 @@ export default {
                 title: 'Advanced Usage',
               },
               {
+                path: 'faq',
+                title: 'FAQ',
+              },
+              {
                 path: 'changelog',
                 title: 'Changelog',
+              },
+              {
+                path: 'release-note-v4',
+                title: '4.0 Release Note',
+              },
+              {
+                path: 'migrate-from-v2',
+                title: 'Upgrade from v2 to v3',
+              },
+              {
+                path: 'migrate-from-v3',
+                title: 'Upgrade from v3 to v4',
+              },
+              {
+                path: 'contribution',
+                title: 'Contribution Guide',
               },
               {
                 path: 'design',
@@ -553,6 +614,10 @@ export default {
                 title: 'Popup',
               },
               {
+                path: 'space',
+                title: 'Space',
+              },
+              {
                 path: 'style',
                 title: 'Built-in style',
               },
@@ -578,8 +643,8 @@ export default {
                 title: 'Checkbox',
               },
               {
-                path: 'datetime-picker',
-                title: 'DatetimePicker',
+                path: 'date-picker',
+                title: 'DatePicker',
               },
               {
                 path: 'field',
@@ -602,6 +667,10 @@ export default {
                 title: 'Picker',
               },
               {
+                path: 'picker-group',
+                title: 'PickerGroup',
+              },
+              {
                 path: 'radio',
                 title: 'Radio',
               },
@@ -618,12 +687,20 @@ export default {
                 title: 'Slider',
               },
               {
+                path: 'signature',
+                title: 'Signature',
+              },
+              {
                 path: 'stepper',
                 title: 'Stepper',
               },
               {
                 path: 'switch',
                 title: 'Switch',
+              },
+              {
+                path: 'time-picker',
+                title: 'TimePicker',
               },
               {
                 path: 'uploader',
@@ -639,12 +716,24 @@ export default {
                 title: 'ActionSheet',
               },
               {
+                path: 'barrage',
+                title: 'Barrage',
+              },
+              {
                 path: 'dialog',
                 title: 'Dialog',
               },
               {
                 path: 'dropdown-menu',
                 title: 'DropdownMenu',
+              },
+              {
+                path: 'floating-panel',
+                title: 'FloatingPanel',
+              },
+              {
+                path: 'floating-bubble',
+                title: 'FloatingBubble',
               },
               {
                 path: 'loading',
@@ -700,6 +789,10 @@ export default {
                 title: 'Empty',
               },
               {
+                path: 'highlight',
+                title: 'Highlight',
+              },
+              {
                 path: 'image-preview',
                 title: 'ImagePreview',
               },
@@ -724,6 +817,10 @@ export default {
                 title: 'Progress',
               },
               {
+                path: 'rolling-text',
+                title: 'RollingText',
+              },
+              {
                 path: 'skeleton',
                 title: 'Skeleton',
               },
@@ -743,6 +840,14 @@ export default {
                 path: 'tag',
                 title: 'Tag',
               },
+              {
+                path: 'text-ellipsis',
+                title: 'TextEllipsis',
+              },
+              {
+                path: 'watermark',
+                title: 'Watermark',
+              },
             ],
           },
           {
@@ -751,6 +856,10 @@ export default {
               {
                 path: 'action-bar',
                 title: 'ActionBar',
+              },
+              {
+                path: 'back-top',
+                title: 'BackTop',
               },
               {
                 path: 'grid',
@@ -850,38 +959,33 @@ export default {
                 path: 'use-event-listener',
                 title: 'useEventListener',
               },
-              // {
-              //   path: 'use-page-visibility',
-              //   title: 'usePageVisibility',
-              // },
-              // {
-              //   path: 'use-rect',
-              //   title: 'useRect',
-              // },
-              // {
-              //   path: 'use-relation',
-              //   title: 'useRelation',
-              // },
-              // {
-              //   path: 'use-scroll-parent',
-              //   title: 'useScrollParent',
-              // },
+              {
+                path: 'use-page-visibility',
+                title: 'usePageVisibility',
+              },
+              {
+                path: 'use-rect',
+                title: 'useRect',
+              },
+              {
+                path: 'use-relation',
+                title: 'useRelation',
+              },
+              {
+                path: 'use-scroll-parent',
+                title: 'useScrollParent',
+              },
               {
                 path: 'use-toggle',
                 title: 'useToggle',
               },
-              // {
-              //   path: 'use-window-size',
-              //   title: 'useWindowSize',
-              // },
-            ],
-          },
-          {
-            title: 'Deprecated',
-            items: [
               {
-                path: 'theme',
-                title: 'Custom Theme',
+                path: 'use-window-size',
+                title: 'useWindowSize',
+              },
+              {
+                path: 'use-raf',
+                title: 'useRaf',
               },
             ],
           },

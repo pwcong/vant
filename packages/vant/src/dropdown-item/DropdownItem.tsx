@@ -2,6 +2,7 @@ import {
   reactive,
   Teleport,
   defineComponent,
+  ref,
   type PropType,
   type TeleportProps,
   type CSSProperties,
@@ -15,11 +16,12 @@ import {
   getZIndexStyle,
   createNamespace,
   makeArrayProp,
+  getContainingBlock,
 } from '../utils';
 import { DROPDOWN_KEY } from '../dropdown-menu/DropdownMenu';
 
 // Composables
-import { useParent } from '@vant/use';
+import { useParent, useRect } from '@vant/use';
 import { useExpose } from '../composables/use-expose';
 
 // Components
@@ -32,7 +34,7 @@ import type { DropdownItemOption } from './types';
 
 const [name, bem] = createNamespace('dropdown-item');
 
-const dropdownItemProps = {
+export const dropdownItemProps = {
   title: String,
   options: makeArrayProp<DropdownItemOption>(),
   disabled: Boolean,
@@ -47,23 +49,26 @@ export type DropdownItemProps = ExtractPropTypes<typeof dropdownItemProps>;
 export default defineComponent({
   name,
 
+  inheritAttrs: false,
+
   props: dropdownItemProps,
 
   emits: ['open', 'opened', 'close', 'closed', 'change', 'update:modelValue'],
 
-  setup(props, { emit, slots }) {
+  setup(props, { emit, slots, attrs }) {
     const state = reactive({
       showPopup: false,
       transition: true,
       showWrapper: false,
     });
+    const wrapperRef = ref<HTMLElement>();
 
     const { parent, index } = useParent(DROPDOWN_KEY);
 
     if (!parent) {
       if (process.env.NODE_ENV !== 'production') {
         console.error(
-          '[Vant] <DropdownItem> must be a child component of <DropdownMenu>.'
+          '[Vant] <DropdownItem> must be a child component of <DropdownMenu>.',
         );
       }
       return;
@@ -88,7 +93,7 @@ export default defineComponent({
 
     const toggle = (
       show = !state.showPopup,
-      options: { immediate?: boolean } = {}
+      options: { immediate?: boolean } = {},
     ) => {
       if (show === state.showPopup) {
         return;
@@ -98,6 +103,7 @@ export default defineComponent({
       state.transition = !options.immediate;
 
       if (show) {
+        parent.updateOffset();
         state.showWrapper = true;
       }
     };
@@ -112,7 +118,7 @@ export default defineComponent({
       }
 
       const match = props.options.find(
-        (option) => option.value === props.modelValue
+        (option) => option.value === props.modelValue,
       );
 
       return match ? match.text : '';
@@ -120,9 +126,14 @@ export default defineComponent({
 
     const renderOption = (option: DropdownItemOption) => {
       const { activeColor } = parent.props;
+      const { disabled } = option;
       const active = option.value === props.modelValue;
 
       const onClick = () => {
+        if (disabled) {
+          return;
+        }
+
         state.showPopup = false;
 
         if (option.value !== props.modelValue) {
@@ -134,7 +145,11 @@ export default defineComponent({
       const renderIcon = () => {
         if (active) {
           return (
-            <Icon class={bem('icon')} color={activeColor} name="success" />
+            <Icon
+              class={bem('icon')}
+              color={disabled ? undefined : activeColor}
+              name="success"
+            />
           );
         }
       };
@@ -143,13 +158,13 @@ export default defineComponent({
         <Cell
           v-slots={{ value: renderIcon }}
           role="menuitem"
-          key={option.value}
+          key={String(option.value)}
           icon={option.icon}
           title={option.text}
-          class={bem('option', { active })}
+          class={bem('option', { active, disabled })}
           style={{ color: active ? activeColor : '' }}
           tabindex={active ? 0 : -1}
-          clickable
+          clickable={!disabled}
           onClick={onClick}
         />
       );
@@ -157,23 +172,39 @@ export default defineComponent({
 
     const renderContent = () => {
       const { offset } = parent;
-      const { zIndex, overlay, duration, direction, closeOnClickOverlay } =
-        parent.props;
-
+      const {
+        autoLocate,
+        zIndex,
+        overlay,
+        duration,
+        direction,
+        closeOnClickOverlay,
+      } = parent.props;
       const style: CSSProperties = getZIndexStyle(zIndex);
+      let offsetValue = offset.value;
+
+      if (autoLocate && wrapperRef.value) {
+        const offsetParent = getContainingBlock(wrapperRef.value);
+
+        if (offsetParent) {
+          offsetValue -= useRect(offsetParent).top;
+        }
+      }
 
       if (direction === 'down') {
-        style.top = `${offset.value}px`;
+        style.top = `${offsetValue}px`;
       } else {
-        style.bottom = `${offset.value}px`;
+        style.bottom = `${offsetValue}px`;
       }
 
       return (
         <div
           v-show={state.showWrapper}
+          ref={wrapperRef}
           style={style}
           class={bem([direction])}
           onClick={onClickWrapper}
+          {...attrs}
         >
           <Popup
             v-model:show={state.showPopup}
@@ -185,6 +216,7 @@ export default defineComponent({
             lazyRender={props.lazyRender}
             overlayStyle={{ position: 'absolute' }}
             aria-labelledby={`${parent.id}-${index.value}`}
+            data-allow-mismatch="attribute"
             closeOnClickOverlay={closeOnClickOverlay}
             onOpen={onOpen}
             onClose={onClose}

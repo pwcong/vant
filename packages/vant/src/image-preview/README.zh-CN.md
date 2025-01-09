@@ -2,75 +2,58 @@
 
 ### 介绍
 
-图片放大预览，支持函数调用和组件调用两种方式。
+图片放大预览，支持组件调用和函数调用两种方式。
 
-### 函数调用
+### 引入
 
-`ImagePreview` 是一个函数，调用函数后会直接在页面中展示图片预览界面。
-
-```js
-import { ImagePreview } from 'vant';
-
-ImagePreview(['https://img.yzcdn.cn/vant/apple-1.jpg']);
-```
-
-### 组件调用
-
-通过组件调用 `ImagePreview` 时，可以通过下面的方式进行注册。
+通过以下方式来全局注册组件，更多注册方式请参考[组件注册](#/zh-CN/advanced-usage#zu-jian-zhu-ce)。
 
 ```js
 import { createApp } from 'vue';
 import { ImagePreview } from 'vant';
 
-// 全局注册
 const app = createApp();
 app.use(ImagePreview);
-
-// 局部注册
-export default {
-  components: {
-    [ImagePreview.Component.name]: ImagePreview.Component,
-  },
-};
 ```
 
-在 `script setup` 中，可以通过以下方式使用：
+### 函数调用
 
-```html
-<script setup>
-  const VanImagePreview = ImagePreview.Component;
-</script>
+为了便于使用 `ImagePreview`，Vant 提供了一系列辅助函数，通过辅助函数可以快速唤起全局的图片预览组件。
 
-<template>
-  <!-- 中划线命名 -->
-  <van-image-preview />
-  <!-- 也支持大驼峰命名 -->
-  <VanImagePreview>
-</template>
+比如使用 `showImagePreview` 函数，调用后会直接在页面中渲染对应的图片预览组件。
+
+```js
+import { showImagePreview } from 'vant';
+
+showImagePreview(['https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg']);
 ```
 
 ## 代码演示
 
 ### 基础用法
 
-直接传入图片数组，即可展示图片预览。
+在调用 `showImagePreview` 时，直接传入图片数组，即可展示图片预览。
 
 ```js
-ImagePreview([
-  'https://img.yzcdn.cn/vant/apple-1.jpg',
-  'https://img.yzcdn.cn/vant/apple-2.jpg',
+import { showImagePreview } from 'vant';
+
+showImagePreview([
+  'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
+  'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
 ]);
 ```
 
 ### 指定初始位置
 
-`ImagePreview` 支持传入配置对象，并通过 `startPosition` 选项指定图片的初始位置（索引值）。
+`showImagePreview` 支持传入配置对象，并通过 `startPosition` 选项指定图片的初始位置（索引值）。
 
 ```js
-ImagePreview({
+import { showImagePreview } from 'vant';
+
+showImagePreview({
   images: [
-    'https://img.yzcdn.cn/vant/apple-1.jpg',
-    'https://img.yzcdn.cn/vant/apple-2.jpg',
+    'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
+    'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
   ],
   startPosition: 1,
 });
@@ -78,13 +61,15 @@ ImagePreview({
 
 ### 展示关闭按钮
 
-设置 `closeable` 属性后，会在弹出层的右上角显示关闭图标，并且可以通过 `close-icon` 属性自定义图标，使用`close-icon-position` 属性可以自定义图标位置。
+开启 `closeable` 选项后，会在弹出层的右上角显示关闭图标，并且可以通过 `close-icon` 属性自定义图标，使用`close-icon-position` 属性可以自定义图标位置。
 
 ```js
-ImagePreview({
+import { showImagePreview } from 'vant';
+
+showImagePreview({
   images: [
-    'https://img.yzcdn.cn/vant/apple-1.jpg',
-    'https://img.yzcdn.cn/vant/apple-2.jpg',
+    'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
+    'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
   ],
   closeable: true,
 });
@@ -95,28 +80,30 @@ ImagePreview({
 通过 `onClose` 选项监听图片预览的关闭事件。
 
 ```js
-import { Toast } from 'vant';
+import { showToast, showImagePreview } from 'vant';
 
-ImagePreview({
+showImagePreview({
   images: [
-    'https://img.yzcdn.cn/vant/apple-1.jpg',
-    'https://img.yzcdn.cn/vant/apple-2.jpg',
+    'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
+    'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
   ],
   onClose() {
-    Toast('关闭');
+    showToast('关闭');
   },
 });
 ```
 
 ### 异步关闭
 
-通过 `beforeClose` 属性可以拦截关闭行为。
+通过 `beforeClose` 属性可以传入一个回调函数，在图片预览关闭前进行特定操作。
 
 ```js
-const instance = ImagePreview({
+import { showImagePreview } from 'vant';
+
+const instance = showImagePreview({
   images: [
-    'https://img.yzcdn.cn/vant/apple-1.jpg',
-    'https://img.yzcdn.cn/vant/apple-2.jpg',
+    'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
+    'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
   ],
   beforeClose: () => false,
 });
@@ -127,13 +114,13 @@ setTimeout(() => {
 }, 2000);
 ```
 
-### 组件调用
+### 使用 ImagePreview 组件
 
-如果需要在图片预览内嵌入组件或其他自定义内容，可以使用组件调用的方式，调用前需要通过 `app.use` 注册组件。
+如果需要在 ImagePreview 内嵌入组件或其他自定义内容，可以直接使用 ImagePreview 组件，并使用 `index` 插槽进行定制。使用前需要通过 `app.use` 等方式注册组件。
 
 ```html
 <van-image-preview v-model:show="show" :images="images" @change="onChange">
-  <template v-slot:index>第{{ index }}页</template>
+  <template v-slot:index>第{{ index + 1 }}页</template>
 </van-image-preview>
 ```
 
@@ -145,8 +132,8 @@ export default {
     const show = ref(false);
     const index = ref(0);
     const images = [
-      'https://img.yzcdn.cn/vant/apple-1.jpg',
-      'https://img.yzcdn.cn/vant/apple-2.jpg',
+      'https://fastly.jsdelivr.net/npm/@vant/assets/apple-1.jpeg',
+      'https://fastly.jsdelivr.net/npm/@vant/assets/apple-2.jpeg',
     ];
     const onChange = (newIndex) => {
       index.value = newIndex;
@@ -162,11 +149,70 @@ export default {
 };
 ```
 
+### 使用 image 插槽
+
+当以组件调用的方式使用 ImagePreview 时，可以通过 `image` 插槽来插入自定义的内容，比如展示一个视频内容。在这个例子中，你可以将 `close-on-click-image` 属性设置为 `false`，这样当你点击视频时就不会意外关闭预览了。
+
+```html
+<van-image-preview
+  v-model:show="show"
+  :images="images"
+  :close-on-click-image="false"
+>
+  <template #image="{ src }">
+    <video style="width: 100%;" controls>
+      <source :src="src" />
+    </video>
+  </template>
+</van-image-preview>
+```
+
+```js
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const show = ref(false);
+    const images = [
+      'https://www.w3school.com.cn/i/movie.ogg',
+      'https://www.w3school.com.cn/i/movie.ogg',
+      'https://www.w3school.com.cn/i/movie.ogg',
+    ];
+    return {
+      show,
+      images,
+    };
+  },
+};
+```
+
+当你通过 `image` 插槽自定义图片时，可以通过插槽的参数绑定 `style` 样式和 `onLoad` 回调函数，这可以让 `<img>` 标签支持图片缩放。
+
+```html
+<van-image-preview
+  v-model:show="show"
+  :images="images"
+  :close-on-click-image="false"
+>
+  <template #image="{ src, style, onLoad }">
+    <img :src="src" :style="[{ width: '100%' }, style]" @load="onLoad" />
+  </template>
+</van-image-preview>
+```
+
 ## API
 
-### Options
+### 方法
 
-通过函数调用 `ImagePreview` 时，支持传入以下选项：
+Vant 中导出了以下 ImagePreview 相关的辅助函数：
+
+| 方法名 | 说明 | 参数 | 返回值 |
+| --- | --- | --- | --- |
+| showImagePreview | 展示一个全屏的图片预览组件 | _string[] \| ImagePreviewOptions_ | ImagePreview 实例 |
+
+### ImagePreviewOptions
+
+调用 `showImagePreview` 方法时，支持传入以下选项：
 
 | 参数名 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
@@ -176,21 +222,25 @@ export default {
 | showIndex | 是否显示页码 | _boolean_ | `true` |
 | showIndicators | 是否显示轮播指示器 | _boolean_ | `false` |
 | loop | 是否开启循环播放 | _boolean_ | `true` |
+| doubleScale `v4.7.2` | 是否启用双击缩放手势，禁用后，点击时会立即关闭图片预览 | _boolean_ | `true` |
 | onClose | 关闭时的回调函数 | _Function_ | - |
 | onChange | 切换图片时的回调函数，回调参数为当前索引 | _Function_ | - |
 | onScale | 缩放图片时的回调函数，回调参数为当前索引和当前缩放值组成的对象 | _Function_ | - |
 | beforeClose | 关闭前的回调函数，返回 `false` 可阻止关闭，支持返回 Promise | _(active: number) => boolean \| Promise\<boolean\>_ | - |
 | closeOnPopstate | 是否在页面回退时自动关闭 | _boolean_ | `true` |
-| className | 自定义类名 | _string \| Array \| object_ | - |
+| closeOnClickImage `v4.8.3` | 是否在点击图片后关闭图片预览 | _boolean_ | `true` |
+| closeOnClickOverlay `v4.6.4` | 是否在点击遮罩层后关闭图片预览 | _boolean_ | `true` |
+| vertical `v4.8.6` | 是否开启纵向手势滑动 | _boolean_ | `false` |
+| className | 自定义类名 (应用在图片预览的弹出层) | _string \| Array \| object_ | - |
 | maxZoom | 手势缩放时，最大缩放比例 | _number \| string_ | `3` |
 | minZoom | 手势缩放时，最小缩放比例 | _number \| string_ | `1/3` |
 | closeable | 是否显示关闭图标 | _boolean_ | `false` |
 | closeIcon | 关闭图标名称或图片链接 | _string_ | `clear` |
 | closeIconPosition | 关闭图标位置，可选值为 `top-left`<br>`bottom-left` `bottom-right` | _string_ | `top-right` |
-| transition `v3.0.8` | 动画类名，等价于 [transition](https://v3.cn.vuejs.org/api/built-in-components.html#transition) 的 `name` 属性 | _string_ | `van-fade` |
-| overlayClass `v3.2.8` | 自定义遮罩层类名 | _string \| Array \| object_ | - |
-| overlayStyle `v3.0.8` | 自定义遮罩层样式 | _object_ | - |
-| teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://v3.cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | - |
+| transition | 动画类名，等价于 [transition](https://cn.vuejs.org/api/built-in-components.html#transition) 的 `name` 属性 | _string_ | `van-fade` |
+| overlayClass | 自定义遮罩层类名 | _string \| Array \| object_ | - |
+| overlayStyle | 自定义遮罩层样式 | _object_ | - |
+| teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | - |
 
 ### Props
 
@@ -205,29 +255,34 @@ export default {
 | show-index | 是否显示页码 | _boolean_ | `true` |
 | show-indicators | 是否显示轮播指示器 | _boolean_ | `false` |
 | loop | 是否开启循环播放 | _boolean_ | `true` |
+| double-scale `v4.7.2` | 是否启用双击缩放手势，禁用后，点击时会立即关闭图片预览 | _boolean_ | `true` |
 | before-close | 关闭前的回调函数，返回 `false` 可阻止关闭，支持返回 Promise | _(active: number) => boolean \| Promise\<boolean\>_ | - |
 | close-on-popstate | 是否在页面回退时自动关闭 | _boolean_ | `true` |
+| close-on-click-image `v4.8.3` | 是否在点击图片后关闭图片预览 | _boolean_ | `true` |
+| close-on-click-overlay `v4.6.4` | 是否在点击遮罩层后关闭图片预览 | _boolean_ | `true` |
+| vertical `v4.8.6` | 是否开启纵向手势滑动 | _boolean_ | `false` |
 | class-name | 自定义类名 | _string \| Array \| object_ | - |
 | max-zoom | 手势缩放时，最大缩放比例 | _number \| string_ | `3` |
 | min-zoom | 手势缩放时，最小缩放比例 | _number \| string_ | `1/3` |
 | closeable | 是否显示关闭图标 | _boolean_ | `false` |
 | close-icon | 关闭图标名称或图片链接 | _string_ | `clear` |
 | close-icon-position | 关闭图标位置，可选值为 `top-left`<br>`bottom-left` `bottom-right` | _string_ | `top-right` |
-| transition `v3.0.8` | 动画类名，等价于 [transition](https://v3.cn.vuejs.org/api/built-in-components.html#transition) 的 `name` 属性 | _string_ | `van-fade` |
-| overlay-class `v3.2.8` | 自定义遮罩层类名 | _string \| Array \| object_ | - |
-| overlay-style `v3.0.8` | 自定义遮罩层样式 | _object_ | - |
-| teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://v3.cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | - |
+| transition | 动画类名，等价于 [transition](https://cn.vuejs.org/api/built-in-components.html#transition) 的 `name` 属性 | _string_ | `van-fade` |
+| overlay-class | 自定义遮罩层类名 | _string \| Array \| object_ | - |
+| overlay-style | 自定义遮罩层样式 | _object_ | - |
+| teleport | 指定挂载的节点，等同于 Teleport 组件的 [to 属性](https://cn.vuejs.org/api/built-in-components.html#teleport) | _string \| Element_ | - |
 
 ### Events
 
 通过组件调用 `ImagePreview` 时，支持以下事件：
 
-| 事件 | 说明 | 回调参数 |
-| --- | --- | --- |
-| close | 关闭时触发 | { index: 索引, url: 图片链接 } |
-| closed | 关闭且且动画结束后触发 | - |
-| change | 切换当前图片时触发 | index: 当前图片的索引 |
-| scale | 缩放当前图片时触发 | { index: 当前图片的索引, scale: 当前缩放的值 } |
+| 事件名     | 说明                   | 回调参数                           |
+| ---------- | ---------------------- | ---------------------------------- |
+| close      | 关闭时触发             | _{ index: number, url: string }_   |
+| closed     | 关闭且且动画结束后触发 | -                                  |
+| change     | 切换当前图片时触发     | _index: number_                    |
+| scale      | 缩放当前图片时触发     | _{ index: number, scale: number }_ |
+| long-press | 长按当前图片时触发     | _{ index: number }_                |
 
 ### 方法
 
@@ -235,7 +290,8 @@ export default {
 
 | 方法名 | 说明 | 参数 | 返回值 |
 | --- | --- | --- | --- |
-| swipeTo `2.9.0` | 切换到指定位置 | _index: number, options?: SwipeToOptions_ | - |
+| resetScale `4.7.4` | 重置当前图片的缩放比 | - | - |
+| swipeTo | 切换到指定位置 | _index: number, options?: SwipeToOptions_ | - |
 
 ### 类型定义
 
@@ -265,10 +321,11 @@ imagePreviewRef.value?.swipeTo(1);
 
 通过组件调用 `ImagePreview` 时，支持以下插槽：
 
-| 名称  | 说明                           | 参数                      |
-| ----- | ------------------------------ | ------------------------- |
-| index | 自定义页码内容                 | { index: 当前图片的索引 } |
-| cover | 自定义覆盖在图片预览上方的内容 | -                         |
+| 名称 | 说明 | 参数 |
+| --- | --- | --- |
+| index | 自定义页码内容 | _{ index: 当前图片的索引 }_ |
+| cover | 自定义覆盖在图片预览上方的内容 | - |
+| image | 自定义图片内容 | _{ src: 当前资源地址, onLoad: 加载图片函数, style: 当前图片样式 }_ |
 
 ### onClose 回调参数
 
@@ -296,7 +353,7 @@ imagePreviewRef.value?.swipeTo(1);
 | --van-image-preview-index-font-size | _var(--van-font-size-md)_ | - |
 | --van-image-preview-index-line-height | _var(--van-line-height-md)_ | - |
 | --van-image-preview-index-text-shadow | _0 1px 1px var(--van-gray-8)_ | - |
-| --van-image-preview-overlay-background-color | _rgba(0, 0, 0, 0.9)_ | - |
+| --van-image-preview-overlay-background | _rgba(0, 0, 0, 0.9)_ | - |
 | --van-image-preview-close-icon-size | _22px_ | - |
 | --van-image-preview-close-icon-color | _var(--van-gray-5)_ | - |
 | --van-image-preview-close-icon-margin | _var(--van-padding-md)_ | - |
@@ -308,15 +365,15 @@ imagePreviewRef.value?.swipeTo(1);
 
 参见[桌面端适配](#/zh-CN/advanced-usage#zhuo-mian-duan-gua-pei)。
 
-### 在 JSX 中渲染 ImagePreview 组件无法展示？
+### 引用 showImagePreview 时出现编译报错？
 
-请注意 `ImagePreview` 是一个函数，`ImagePreview.Component` 才是 ImagePreview 对应的组件。JSX 调用图片预览的正确姿势如下：
+如果引用 `showImagePreview` 方法时出现以下报错，说明项目中使用了 `babel-plugin-import` 插件，导致代码被错误编译。
 
-```jsx
-export default {
-  setup() {
-    const show = ref(false);
-    return () => <ImagePreview.Component v-model={[show, 'show']} />;
-  },
-};
+```bash
+These dependencies were not found:
+
+* vant/es/show-image-preview in ./src/xxx.js
+* vant/es/show-image-preview/style in ./src/xxx.js
 ```
+
+Vant 从 4.0 版本开始不再支持 `babel-plugin-import` 插件，请参考 [迁移指南](#/zh-CN/migrate-from-v3#yi-chu-babel-plugin-import) 移除该插件。

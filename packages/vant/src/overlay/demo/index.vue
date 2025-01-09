@@ -2,14 +2,16 @@
 import VanButton from '../../button';
 import VanOverlay from '..';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 
 const t = useTranslate({
   'zh-CN': {
+    setZIndex: '设置 z-index',
     showOverlay: '显示遮罩层',
     embeddedContent: '嵌入内容',
   },
   'en-US': {
+    setZIndex: 'Set z-index',
     showOverlay: 'Show Overlay',
     embeddedContent: 'Embedded Content',
   },
@@ -17,6 +19,7 @@ const t = useTranslate({
 
 const show = ref(false);
 const showEmbedded = ref(false);
+const showZIndex = ref(false);
 </script>
 
 <template>
@@ -43,12 +46,20 @@ const showEmbedded = ref(false);
       </div>
     </van-overlay>
   </demo-block>
+
+  <demo-block :title="t('setZIndex')">
+    <van-button
+      type="primary"
+      :text="t('setZIndex')"
+      style="margin-left: 16px"
+      @click="showZIndex = true"
+    />
+    <van-overlay :show="showZIndex" @click="showZIndex = false" z-index="100" />
+  </demo-block>
 </template>
 
 <style lang="less">
 .demo-overlay {
-  background: var(--van-background-color-light);
-
   .wrapper {
     display: flex;
     align-items: center;
@@ -59,7 +70,7 @@ const showEmbedded = ref(false);
   .block {
     width: 120px;
     height: 120px;
-    background-color: var(--van-background-color-light);
+    background-color: var(--van-background-2);
     border-radius: 4px;
   }
 }

@@ -48,7 +48,7 @@ export default {
       () => {
         console.log('touch outside!');
       },
-      { eventName: 'touchstart' }
+      { eventName: 'touchstart' },
     );
 
     return { root };
@@ -66,19 +66,22 @@ type Options = {
 };
 
 function useClickAway(
-  target: Element | Ref<Element | undefined>,
+  target:
+    | Element
+    | Ref<Element | undefined>
+    | Array<Element | Ref<Element | undefined>>,
   listener: EventListener,
-  options?: Options
+  options?: Options,
 ): void;
 ```
 
 ### 参数
 
-| 参数     | 说明                     | 类型                       | 默认值 |
-| -------- | ------------------------ | -------------------------- | ------ |
-| target   | 绑定事件的元素           | _Element \| Ref\<Element>_ | -      |
-| listener | 点击外部时触发的回调函数 | _EventListener_            | -      |
-| options  | 可选的配置项             | _Options_                  | 见下表 |
+| 参数 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| target | 绑定事件的元素，支持传入数组来绑定多个元素 | _Element \| Ref\<Element> \| Array\<Element \| Ref\<Element>>_ | - |
+| listener | 点击外部时触发的回调函数 | _EventListener_ | - |
+| options | 可选的配置项 | _Options_ | 见下表 |
 
 ### Options
 

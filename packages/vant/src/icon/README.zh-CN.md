@@ -31,7 +31,7 @@ app.use(Icon);
 你也可以直接在 `name` 属性中传入一个图片 URL 来作为图标。
 
 ```html
-<van-icon name="https://b.yzcdn.cn/vant/icon-demo-1126.png" />
+<van-icon name="https://fastly.jsdelivr.net/npm/@vant/assets/icon-demo.png" />
 ```
 
 ### 徽标提示
@@ -98,7 +98,7 @@ app.use(Icon);
 | name | 图标名称或图片链接 | _string_ | - |
 | dot | 是否显示图标右上角小红点 | _boolean_ | `false` |
 | badge | 图标右上角徽标的内容 | _number \| string_ | - |
-| badge-props `v3.2.8` | 自定义徽标的属性，传入的对象会被透传给 [Badge 组件的 props](#/zh-CN/badge#props) | _BadgeProps_ | - |
+| badge-props | 自定义徽标的属性，传入的对象会被透传给 [Badge 组件的 props](#/zh-CN/badge#props) | _BadgeProps_ | - |
 | color | 图标颜色 | _string_ | `inherit` |
 | size | 图标大小，如 `20px` `2em`，默认单位为 `px` | _number \| string_ | `inherit` |
 | class-prefix | 类名前缀，用于使用自定义图标 | _string_ | `van-icon` |
@@ -117,3 +117,13 @@ app.use(Icon);
 ```ts
 import type { IconProps } from 'vant';
 ```
+
+## 主题定制
+
+### 样式变量
+
+组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
+
+| 名称                   | 默认值       | 描述 |
+| ---------------------- | ------------ | ---- |
+| --van-icon-font-family | _'van-icon'_ | -    |

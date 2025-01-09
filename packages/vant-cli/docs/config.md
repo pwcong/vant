@@ -1,6 +1,8 @@
-# 配置指南
+# Config
 
-- [配置指南](#----)
+- [Config](#----)
+  - [rsbuild.config.mjs](#rsbuildconfigmjs)
+  - [vite.config.mjs](#viteconfigmjs)
   - [vant.config.mjs](#vantconfigmjs)
     - [name](#name)
     - [build.css.base](#buildcssbase)
@@ -8,7 +10,6 @@
     - [build.site.publicPath](#buildsitepublicpath)
     - [build.srcDir](#buildsrcdir)
     - [build.namedExport](#buildnamedexport)
-    - [build.configureVite](#buildconfigurevite)
     - [build.packageManager](#buildpackagemanager)
     - [site.title](#sitetitle)
     - [site.logo](#sitelogo)
@@ -16,56 +17,81 @@
     - [site.nav](#sitenav)
     - [site.versions](#siteversions)
     - [site.baiduAnalytics](#sitebaiduanalytics)
-    - [site.searchConfig](#sitesearchconfig)
     - [site.hideSimulator](#sitehidesimulator)
     - [site.simulator.url](#sitesimulatorurl)
     - [site.htmlMeta](#sitehtmlmeta)
     - [site.enableVConsole](#siteenablevconsole)
-  - [Babel](#babel)
-    - [默认配置](#----)
-  - [Postcss](#postcss)
-    - [默认配置](#-----1)
+  - [PostCSS](#postcss)
+    - [Default Config](#-----1)
   - [browserslist](#browserslist)
+
+## rsbuild.config.mjs
+
+Vant CLI uses [Rsbuild](https://github.com/web-infra-dev/rsbuild) to build the documentation site. You can create an Rsbuild configuration file in the same directory as `vant.config.mjs`. The contents of the file will be automatically read by Vant CLI.
+
+```js
+// rsbuild.config.mjs or rsbuild.config.ts
+export default {
+  plugins: [
+    // Configure Rsbuild plugins
+  ],
+  dev: {
+    // Options related to local development
+  },
+  html: {
+    // Options related to HTML generation
+  },
+  // Other options
+};
+```
+
+> Please refer to [Configure Rsbuild](https://rsbuild.dev/guide/basic/configure-rsbuild) for more information.
+
+## vite.config.mjs
+
+Vant Cli uses Vite to build component library code. You can create a Vite configuration file in the same directory as `vant.config.mjs`. In this file, you can add any Vite configuration.
+
+> Please refer to [Vite Configuration](https://vitejs.dev/config/) to learn more.
 
 ## vant.config.mjs
 
-`vant.config.mjs` 中包含了 `vant-cli` 的打包配置和文档站点配置，请创建此文件并置于项目根目录下。下面是一份基本配置的示例：
+`vant.config.mjs` includes bundle and documentation site config. Please create this file and place it in your project root directory. Here is a basic example:
 
 ```js
 export default {
-  // 组件库名称
+  // component library name
   name: 'demo-ui',
-  // 构建配置
+  // bundle config
   build: {
     site: {
       publicPath: '/demo-ui/',
     },
   },
-  // 文档站点配置
+  // documentation site config
   site: {
-    // 标题
+    // title
     title: 'Demo UI',
-    // 图标
-    logo: 'https://img.yzcdn.cn/vant/logo.png',
-    // 描述
+    // logo
+    logo: 'https://fastly.jsdelivr.net/npm/@vant/assets/logo.png',
+    // description
     description: '示例组件库',
-    // 左侧导航
+    // left nav
     nav: [
       {
-        title: '开发指南',
+        title: 'example',
         items: [
           {
             path: 'home',
-            title: '介绍',
+            title: 'home',
           },
         ],
       },
       {
-        title: '基础组件',
+        title: 'basic components',
         items: [
           {
             path: 'my-button',
-            title: 'MyButton 按钮',
+            title: 'MyButton',
           },
         ],
       },
@@ -79,16 +105,16 @@ export default {
 - Type: `string`
 - Default: `''`
 
-组件库名称，建议使用中划线分割，如 `demo-ui`。
+Component library name. kebab-case recommended.
 
 ### build.css.base
 
 - Type: `string`
 - Default: `'style/base.less'`
 
-全局样式文件的路径，可以为相对路径或绝对路径。
+Global style file path. Support absolute path and relative path both.
 
-相对路径基于 `src` 目录计算。
+Note: relative path is calculated based on `src`.
 
 ```js
 module.exports = {
@@ -105,7 +131,7 @@ module.exports = {
 - Type: `string`
 - Default: `'less'`
 
-CSS 预处理器配置，目前支持 `less` 和 `sass` 两种预处理器，默认使用 `less`。
+CSS preprocessor config, support `less` and `sass`. Use `less` by default.
 
 ```js
 module.exports = {
@@ -117,14 +143,31 @@ module.exports = {
 };
 ```
 
+### build.css.removeSourceFile
+
+- Type: `boolean`
+- Default: `'false'`
+
+Whether to remove the source style files after build.
+
+```js
+module.exports = {
+  build: {
+    css: {
+      removeSourceFile: true,
+    },
+  },
+};
+```
+
 ### build.site.publicPath
 
 - Type: `string`
 - Default: `/`
 
-等价于 vite 的 `build.outDir` 配置。
+Equivalent to vite `build.outDir`.
 
-一般来说，我们的文档网站会部署在一个域名的子路径上，如 `https://my.github.io/demo-ui/`，这时候 `publicPath` 需要跟子路径保持一致，即 `/demo-ui/`。
+Generally, documentation site will be deployed to subpath of domain. For example: `https://my.github.io/demo-ui/`, `publicPath` should be `/demo-ui/`.
 
 ```js
 module.exports = {
@@ -154,103 +197,121 @@ module.exports = {
 - Type: `boolean`
 - Default: `false`
 
-是否通过 Named Export 对组件进行导出。
+Should export components by Named Export.
 
-未开启此选项时，会通过 `export default from 'xxx'` 导出组件内部的默认模块。
+When set to `false`, `export default from 'xxx'` will be used to export module.
 
-开启此选项后，会通过 `export * from 'xxx'` 导出组件内部的所有模块、类型定义。
+When set to `true`, `export * from 'xxx'` will be used to export all modules and type definition.
 
 ### build.configureVite
 
-- Type: `(config: InlineConfig): InlineConfig`
+- Type: `(config: InlineConfig): InlineConfig | undefined`
 - Default: `undefined`
 
-vant-cli 使用 vite 来构建组件库和文档站点，通过 `configureVite` 选项可以自定义 vite 配置（从 4.0.0 版本开始支持）。
+Custom [vite config](https://vitejs.dev/config/), requires `@vant/cli>= 4.0.0`.
 
 ```js
 module.exports = {
   build: {
     configureVite(config) {
-      // 添加一个自定义插件
-      config.plugins.push(vitePluginXXX);
+      config.server.port = 3000;
       return config;
     },
   },
 };
 ```
 
-在自定义配置时，可以通过 `process.env.BUILD_TARGET` 对构建目标进行区分：
-
-```js
-module.exports = {
-  build: {
-    configureVite(config) {
-      const { BUILD_TARGET } = process.env;
-
-      if (BUILD_TARGET === 'package') {
-        // 修改组件库构建配置
-      }
-
-      if (BUILD_TARGET === 'site') {
-        // 修改文档站点构建配置
-      }
-
-      return config;
-    },
-  },
-};
-```
+If you need to configure some vite plugins, please create a `vite.config.ts` file in the same directory of `vant.config.mjs`, in which you can add any vite configuration (this feature requires @vant/cli 5.1.0).
 
 ### build.packageManager
 
-- Type: `'npm' | 'yarn' | 'pnpm'`
-- Default: `undefined`
+- Type: `'npm' | 'yarn' | 'pnpm' | 'bun'`
+- Default: `yarn`
 
-指定使用的包管理器。
+`npm` package manager.
+
+### build.bundleOptions
+
+- Type: `BundleOptions[]`
+
+Specify the format of the bundled output.
+
+The type of `BundleOptions`:
+
+```ts
+type BundleOption = {
+  // Whether to minify code (Tips: es format output can't be minified by vite)
+  minify?: boolean;
+  // Formats, can be set to 'es' | 'cjs' | 'umd' | 'iife'
+  formats: LibraryFormats[];
+  // Dependencies to external (Vue is externaled by default)
+  external?: string[];
+};
+```
+
+Default value：
+
+```ts
+const DEFAULT_OPTIONS: BundleOption[] = [
+  {
+    minify: false,
+    formats: ['umd'],
+  },
+  {
+    minify: true,
+    formats: ['umd'],
+  },
+  {
+    minify: false,
+    formats: ['es', 'cjs'],
+    external: allDependencies,
+  },
+];
+```
 
 ### site.title
 
 - Type: `string`
 - Default: `''`
 
-文档站点的标题。
+Documentation site title.
 
 ### site.logo
 
 - Type: `string`
 - Default: `''`
 
-文档站点的 Logo。
+Documentation site logo.
 
 ### site.description
 
 - Type: `string`
 - Default: `''`
 
-标题下方的描述文案。
+Documentation site description.
 
 ### site.nav
 
 - Type: `object[]`
 - Default: `undefined`
 
-文档站点的左侧导航，数组中的每个对象表示一个导航分组。
+Documentation site left nav. Each item of `nav` means a navigation group.
 
 ```js
 module.exports = {
   site: {
     nav: [
       {
-        // 分组标题
-        title: '开发指南',
-        // 导航项
+        // group title
+        title: 'Development Guide',
+        // nav items
         items: [
           {
-            // 导航项路由
+            // nav router
             path: 'home',
-            // 导航项文案
-            title: '介绍',
-            // 是否隐藏当前页右侧的手机模拟器（默认不隐藏）
+            // nav title
+            title: 'title',
+            // should hide phone emulator(false by default)
             hideSimulator: true,
           },
         ],
@@ -265,7 +326,7 @@ module.exports = {
 - Type: `object[]`
 - Default: `undefined`
 
-文档站点多版本配置，当组件库存在多个版本的文档时，可以通过`site.versions`在顶部导航配置一个版本切换按钮。
+Documentation site muti-version config.
 
 ```js
 module.exports = {
@@ -273,7 +334,7 @@ module.exports = {
     versions: [
       {
         label: 'v1',
-        link: 'https://youzan.github.io/vant/v1/',
+        link: '/v1/',
       },
     ],
   },
@@ -283,90 +344,65 @@ module.exports = {
 ### site.baiduAnalytics
 
 - Type: `object`
-- Default: `undefied`
+- Default: `undefined`
 
-文档网站的百度统计配置，添加这项配置后，会自动在构建文档网站时加载百度统计的脚本。
+Documentation site baidu analysis config. The script of Baidu Statistic will be automatically loaded when build documentation website.
 
 ```js
 module.exports = {
   site: {
     baiduAnalytics: {
       // 打开百度统计 ->『管理』->『代码获取』
-      // 找到下面这串 URL: "https://hm.baidu.com/hm.js?xxxxx"
-      // 将 `xxxxx` 填写在 seed 中即可
+      // find the followed URL: "https://hm.baidu.com/hm.js?xxxxx"
+      // add `xxxxx` in the seed
       seed: 'xxxxx',
     },
   },
 };
 ```
 
-### site.searchConfig
-
-- Type: `object`
-- Default: `undefined`
-
-文档网站的搜索配置，基于 algolia 提供的 docsearch 服务实现。
-
-配置内容参见 [docsearch](https://docsearch.algolia.com/docs/behavior)。
-
 ### site.hideSimulator
 
 - Type: `boolean`
 - Default: `false`
 
-是否隐藏所有页面右侧的手机模拟器，默认不隐藏
+Should hide phone emulator, `false` by default.
 
 ### site.simulator.url
 
 - Type: `string`
 - Default: -
 
-自定义手机模拟器的 iframe URL 地址。
+Customize iframe URL.
 
 ### site.htmlMeta
 
 - Type: `Record<string, string>`
 - Default: `undefined`
 
-配置 HTML 中的 meta 标签，对象的 key 为 name，value 为 content。
+Customize HTML meta tag, key means name, value means content.
+
+### site.headHtml
+
+- Type: `string`
+- Default: `undefined`
+
+Insert a custom HTML content in the `<head>` tag.
 
 ### site.enableVConsole
 
 - Type: `boolean`
 - Default: `false`
 
-是否在 dev 时开启 [vConsole](https://github.com/Tencent/vConsole) 调试，用于移动端 debug。
+Whether to enable [vConsole](https://github.com/Tencent/vConsole) debugging in dev, usually used for mobile debugging.
 
-## Babel
+## PostCSS
 
-通过根目录下的`babel.config.js`文件可以对 Babel 进行配置。
+PostCSS can be configured through the `postcss.config.js` file in the root directory.
 
-### 默认配置
+### Default Config
 
-推荐使用`vant-cli`内置的 preset，配置如下：
-
-```js
-module.exports = {
-  presets: ['@vant/cli/preset'],
-};
-```
-
-`@vant/cli/preset`中默认包含了以下插件：
-
-- @babel/preset-env（不含 core-js）
-- @babel/preset-typescript
-- @babel/plugin-transform-object-assign
-- @babel/plugin-proposal-optional-chaining
-- @babel/plugin-proposal-nullish-coalescing-operator
-- @vue/babel-preset-jsx
-
-## Postcss
-
-通过根目录下的`postcss.config.js`文件可以对 Postcss 进行配置。
-
-### 默认配置
-
-`vant-cli`中默认的 Postcss 配置如下：
+PostCSS default config:
 
 ```js
 module.exports = {
@@ -378,9 +414,9 @@ module.exports = {
 
 ## browserslist
 
-推荐在`package.json`文件里添加 browserslist 字段，这个值会被`@babel/preset-env`和`autoprefixer`用来确定目标浏览器的版本，保证编译后代码的兼容性。
+Add browserslist field to `package.json` file is recommended. It's used by `autoprefixer` to determine the version of target browser, ensuring compatibility of compiled code.
 
-在移动端浏览器中使用，可以添加如下配置：
+You can add the following config for mobile:
 
 ```json
 {

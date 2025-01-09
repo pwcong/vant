@@ -1,12 +1,16 @@
 import {
-  Transition,
+  ref,
   defineComponent,
+  Teleport,
+  Transition,
   type PropType,
   type CSSProperties,
   type ExtractPropTypes,
+  type TeleportProps,
 } from 'vue';
+
+// Utils
 import {
-  noop,
   isDef,
   extend,
   truthProp,
@@ -16,17 +20,22 @@ import {
   createNamespace,
   getZIndexStyle,
 } from '../utils';
+
+// Composables
+import { useEventListener } from '@vant/use';
 import { useLazyRender } from '../composables/use-lazy-render';
 
 const [name, bem] = createNamespace('overlay');
 
-const overlayProps = {
+export const overlayProps = {
   show: Boolean,
   zIndex: numericProp,
   duration: numericProp,
   className: unknownProp,
   lockScroll: truthProp,
+  lazyRender: truthProp,
   customStyle: Object as PropType<CSSProperties>,
+  teleport: [String, Object] as PropType<TeleportProps['to']>,
 };
 
 export type OverlayProps = ExtractPropTypes<typeof overlayProps>;
@@ -37,16 +46,19 @@ export default defineComponent({
   props: overlayProps,
 
   setup(props, { slots }) {
-    const lazyRender = useLazyRender(() => props.show);
+    const root = ref<HTMLElement>();
+    const lazyRender = useLazyRender(() => props.show || !props.lazyRender);
 
-    const preventTouchMove = (event: TouchEvent) => {
-      preventDefault(event, true);
+    const onTouchMove = (event: TouchEvent) => {
+      if (props.lockScroll) {
+        preventDefault(event, true);
+      }
     };
 
     const renderOverlay = lazyRender(() => {
       const style: CSSProperties = extend(
         getZIndexStyle(props.zIndex),
-        props.customStyle
+        props.customStyle,
       );
 
       if (isDef(props.duration)) {
@@ -56,17 +68,34 @@ export default defineComponent({
       return (
         <div
           v-show={props.show}
+          ref={root}
           style={style}
           class={[bem(), props.className]}
-          onTouchmove={props.lockScroll ? preventTouchMove : noop}
         >
           {slots.default?.()}
         </div>
       );
     });
 
-    return () => (
-      <Transition v-slots={{ default: renderOverlay }} name="van-fade" appear />
-    );
+    // useEventListener will set passive to `false` to eliminate the warning of Chrome
+    useEventListener('touchmove', onTouchMove, {
+      target: root,
+    });
+
+    return () => {
+      const Content = (
+        <Transition
+          v-slots={{ default: renderOverlay }}
+          name="van-fade"
+          appear
+        />
+      );
+
+      if (props.teleport) {
+        return <Teleport to={props.teleport}>{Content}</Teleport>;
+      }
+
+      return Content;
+    };
   },
 });

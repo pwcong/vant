@@ -1,4 +1,5 @@
 import { ref } from 'vue';
+import { TAP_OFFSET } from '../utils';
 
 type Direction = '' | 'vertical' | 'horizontal';
 
@@ -20,6 +21,7 @@ export function useTouch() {
   const offsetX = ref(0);
   const offsetY = ref(0);
   const direction = ref<Direction>('');
+  const isTap = ref(true);
 
   const isVertical = () => direction.value === 'vertical';
   const isHorizontal = () => direction.value === 'horizontal';
@@ -30,6 +32,7 @@ export function useTouch() {
     offsetX.value = 0;
     offsetY.value = 0;
     direction.value = '';
+    isTap.value = true;
   };
 
   const start = ((event: TouchEvent) => {
@@ -41,7 +44,7 @@ export function useTouch() {
   const move = ((event: TouchEvent) => {
     const touch = event.touches[0];
     // safari back will set clientX to negative number
-    deltaX.value = touch.clientX < 0 ? 0 : touch.clientX - startX.value;
+    deltaX.value = (touch.clientX < 0 ? 0 : touch.clientX) - startX.value;
     deltaY.value = touch.clientY - startY.value;
     offsetX.value = Math.abs(deltaX.value);
     offsetY.value = Math.abs(deltaY.value);
@@ -54,6 +57,13 @@ export function useTouch() {
         offsetY.value < LOCK_DIRECTION_DISTANCE)
     ) {
       direction.value = getDirection(offsetX.value, offsetY.value);
+    }
+
+    if (
+      isTap.value &&
+      (offsetX.value > TAP_OFFSET || offsetY.value > TAP_OFFSET)
+    ) {
+      isTap.value = false;
     }
   }) as EventListener;
 
@@ -70,5 +80,6 @@ export function useTouch() {
     direction,
     isVertical,
     isHorizontal,
+    isTap,
   };
 }

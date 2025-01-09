@@ -2,6 +2,8 @@ import {
   ref,
   watch,
   computed,
+  nextTick,
+  onMounted,
   onBeforeUnmount,
   defineComponent,
   getCurrentInstance,
@@ -9,6 +11,7 @@ import {
   type PropType,
   type CSSProperties,
   type ExtractPropTypes,
+  type ImgHTMLAttributes,
 } from 'vue';
 
 // Utils
@@ -27,13 +30,16 @@ import { Icon } from '../icon';
 
 const [name, bem] = createNamespace('image');
 
-export type ImageFit = 'contain' | 'cover' | 'fill' | 'none' | 'scale-down';
+// Types
+import type { ImageFit, ImagePosition } from './types';
 
-const imageProps = {
+export const imageProps = {
   src: String,
   alt: String,
   fit: String as PropType<ImageFit>,
+  position: String as PropType<ImagePosition>,
   round: Boolean,
+  block: Boolean,
   width: numericProp,
   height: numericProp,
   radius: numericProp,
@@ -44,6 +50,8 @@ const imageProps = {
   iconPrefix: String,
   showLoading: truthProp,
   loadingIcon: makeStringProp('photo'),
+  crossorigin: String as PropType<ImgHTMLAttributes['crossorigin']>,
+  referrerpolicy: String as PropType<ImgHTMLAttributes['referrerpolicy']>,
 };
 
 export type ImageProps = ExtractPropTypes<typeof imageProps>;
@@ -58,7 +66,7 @@ export default defineComponent({
   setup(props, { emit, slots }) {
     const error = ref(false);
     const loading = ref(true);
-    const imageRef = ref<HTMLElement>();
+    const imageRef = ref<HTMLImageElement>();
 
     const { $Lazyload } = getCurrentInstance()!.proxy!;
 
@@ -81,12 +89,23 @@ export default defineComponent({
       () => {
         error.value = false;
         loading.value = true;
-      }
+      },
     );
 
-    const onLoad = (event?: Event) => {
-      loading.value = false;
-      emit('load', event);
+    const onLoad = (event: Event) => {
+      if (loading.value) {
+        loading.value = false;
+        emit('load', event);
+      }
+    };
+
+    const triggerLoad = () => {
+      const loadEvent = new Event('load');
+      Object.defineProperty(loadEvent, 'target', {
+        value: imageRef.value,
+        enumerable: true,
+      });
+      onLoad(loadEvent);
     };
 
     const onError = (event?: Event) => {
@@ -136,7 +155,10 @@ export default defineComponent({
         class: bem('img'),
         style: {
           objectFit: props.fit,
+          objectPosition: props.position,
         },
+        crossorigin: props.crossorigin,
+        referrerpolicy: props.referrerpolicy,
       };
 
       if (props.lazyLoad) {
@@ -144,13 +166,28 @@ export default defineComponent({
       }
 
       return (
-        <img src={props.src} onLoad={onLoad} onError={onError} {...attrs} />
+        <img
+          ref={imageRef}
+          src={props.src}
+          onLoad={onLoad}
+          onError={onError}
+          {...attrs}
+        />
       );
     };
 
     const onLazyLoaded = ({ el }: { el: HTMLElement }) => {
-      if (el === imageRef.value && loading.value) {
-        onLoad();
+      const check = () => {
+        if (el === imageRef.value && loading.value) {
+          triggerLoad();
+        }
+      };
+      if (imageRef.value) {
+        check();
+      } else {
+        // LazyLoad may trigger loaded event before Image mounted
+        // https://github.com/vant-ui/vant/issues/10046
+        nextTick(check);
       }
     };
 
@@ -170,8 +207,22 @@ export default defineComponent({
       });
     }
 
+    // In nuxt3, the image may not trigger load event,
+    // so the initial complete state should be checked.
+    // https://github.com/youzan/vant/issues/11335
+    onMounted(() => {
+      nextTick(() => {
+        if (imageRef.value?.complete && !props.lazyLoad) {
+          triggerLoad();
+        }
+      });
+    });
+
     return () => (
-      <div class={bem({ round: props.round })} style={style.value}>
+      <div
+        class={bem({ round: props.round, block: props.block })}
+        style={style.value}
+      >
         {renderImage()}
         {renderPlaceholder()}
         {slots.default?.()}

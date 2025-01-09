@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import VanArea, { AreaColumnOption } from '../../area';
+import VanArea from '../../area';
 import VanField from '../../field';
 import VanPopup from '../../popup';
 import { ref } from 'vue';
 import { areaList } from '@vant/area-data';
-import { useTranslate } from '../../../docs/site/use-translate';
+import { useTranslate } from '../../../docs/site';
 import { areaListEn } from '../../area/demo/area-en';
+import type { PickerConfirmEventParams } from '../../picker';
 
 const t = useTranslate({
   'zh-CN': {
@@ -21,13 +22,17 @@ const t = useTranslate({
 });
 
 const areaCode = ref('');
+const pickerValue = ref('');
 const showArea = ref(false);
 
-const onConfirm = (areaValues: AreaColumnOption[]) => {
-  areaCode.value = areaValues
-    .filter((item) => !!item)
-    .map((item) => item.name)
-    .join('/');
+const onConfirm = ({
+  selectedValues,
+  selectedOptions,
+}: PickerConfirmEventParams) => {
+  areaCode.value = selectedOptions.map((item) => item!.text).join('/');
+  pickerValue.value = selectedValues.length
+    ? (selectedValues[selectedValues.length - 1] as string)
+    : '';
   showArea.value = false;
 };
 
@@ -46,9 +51,16 @@ const onCancel = () => {
     :placeholder="t('placeholder')"
     @click="showArea = true"
   />
-  <van-popup v-model:show="showArea" round position="bottom" teleport="body">
+  <van-popup
+    v-model:show="showArea"
+    destroy-on-close
+    round
+    position="bottom"
+    teleport="body"
+  >
     <van-area
       :area-list="t('areaList')"
+      :model-value="pickerValue"
       @confirm="onConfirm"
       @cancel="onCancel"
     />

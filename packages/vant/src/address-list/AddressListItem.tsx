@@ -1,19 +1,26 @@
 import { defineComponent, type PropType } from 'vue';
 
 // Utils
-import { createNamespace, extend, makeRequiredProp } from '../utils';
+import {
+  extend,
+  createNamespace,
+  makeRequiredProp,
+  type Numeric,
+  makeStringProp,
+} from '../utils';
 
 // Components
 import { Tag } from '../tag';
 import { Icon } from '../icon';
 import { Cell } from '../cell';
 import { Radio } from '../radio';
+import { Checkbox } from '../checkbox';
 
 const [name, bem] = createNamespace('address-item');
 
 export type AddressListAddress = {
-  id: number | string;
-  tel: number | string;
+  id: Numeric;
+  tel: Numeric;
   name: string;
   address: string;
   isDefault?: boolean;
@@ -26,27 +33,29 @@ export default defineComponent({
     address: makeRequiredProp<PropType<AddressListAddress>>(Object),
     disabled: Boolean,
     switchable: Boolean,
+    singleChoice: Boolean,
     defaultTagText: String,
+    rightIcon: makeStringProp('edit'),
   },
 
   emits: ['edit', 'click', 'select'],
 
   setup(props, { slots, emit }) {
-    const onClick = () => {
+    const onClick = (event: MouseEvent) => {
       if (props.switchable) {
         emit('select');
       }
-      emit('click');
+      emit('click', event);
     };
 
     const renderRightIcon = () => (
       <Icon
-        name="edit"
+        name={props.rightIcon}
         class={bem('edit')}
         onClick={(event) => {
           event.stopPropagation();
           emit('edit');
-          emit('click');
+          emit('click', event);
         }}
       />
     );
@@ -57,7 +66,7 @@ export default defineComponent({
       }
       if (props.address.isDefault && props.defaultTagText) {
         return (
-          <Tag type="danger" round class={bem('tag')}>
+          <Tag type="primary" round class={bem('tag')}>
             {props.defaultTagText}
           </Tag>
         );
@@ -65,7 +74,7 @@ export default defineComponent({
     };
 
     const renderContent = () => {
-      const { address, disabled, switchable } = props;
+      const { address, disabled, switchable, singleChoice } = props;
 
       const Info = [
         <div class={bem('name')}>
@@ -76,11 +85,19 @@ export default defineComponent({
       ];
 
       if (switchable && !disabled) {
-        return (
-          <Radio name={address.id} iconSize={18}>
-            {Info}
-          </Radio>
-        );
+        if (singleChoice) {
+          return (
+            <Radio name={address.id} iconSize={18}>
+              {Info}
+            </Radio>
+          );
+        } else {
+          return (
+            <Checkbox name={address.id} iconSize={18}>
+              {Info}
+            </Checkbox>
+          );
+        }
       }
 
       return Info;
@@ -93,11 +110,11 @@ export default defineComponent({
         <div class={bem({ disabled })} onClick={onClick}>
           <Cell
             v-slots={{
-              value: renderContent,
+              title: renderContent,
               'right-icon': renderRightIcon,
             }}
             border={false}
-            valueClass={bem('value')}
+            titleClass={bem('title')}
           />
           {slots.bottom?.(extend({}, props.address, { disabled }))}
         </div>

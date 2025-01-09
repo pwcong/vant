@@ -1,7 +1,13 @@
-import { watch, computed, defineComponent, type ExtractPropTypes } from 'vue';
+import {
+  watch,
+  computed,
+  defineComponent,
+  type PropType,
+  type ExtractPropTypes,
+} from 'vue';
 
 // Utils
-import { createNamespace, extend, pick, truthProp } from '../utils';
+import { pick, extend, truthProp, createNamespace } from '../utils';
 import { CHECKBOX_GROUP_KEY } from '../checkbox-group/CheckboxGroup';
 
 // Composables
@@ -9,15 +15,20 @@ import { useParent, useCustomFieldValue } from '@vant/use';
 import { useExpose } from '../composables/use-expose';
 
 // Components
-import Checker, { checkerProps } from './Checker';
+import Checker, { checkerProps, type CheckerShape } from './Checker';
 
 // Types
 import type { CheckboxExpose } from './types';
 
 const [name, bem] = createNamespace('checkbox');
 
-const checkboxProps = extend({}, checkerProps, {
+export const checkboxProps = extend({}, checkerProps, {
+  shape: String as PropType<CheckerShape>,
   bindGroup: truthProp,
+  indeterminate: {
+    type: Boolean as PropType<boolean | null>,
+    default: null,
+  },
 });
 
 export type CheckboxProps = ExtractPropTypes<typeof checkboxProps>;
@@ -38,7 +49,7 @@ export default defineComponent({
       const value = modelValue.slice();
 
       if (checked) {
-        const overlimit = max && value.length >= max;
+        const overlimit = max && value.length >= +max;
 
         if (!overlimit && !value.includes(name)) {
           value.push(name);
@@ -73,11 +84,15 @@ export default defineComponent({
       } else {
         emit('update:modelValue', newValue);
       }
+
+      if (props.indeterminate !== null) emit('change', newValue);
     };
 
     watch(
       () => props.modelValue,
-      (value) => emit('change', value)
+      (value) => {
+        if (props.indeterminate === null) emit('change', value);
+      },
     );
 
     useExpose<CheckboxExpose>({ toggle, props, checked });

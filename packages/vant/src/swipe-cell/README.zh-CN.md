@@ -47,7 +47,7 @@ app.use(SwipeCell);
     desc="描述信息"
     title="商品标题"
     class="goods-card"
-    thumb="https://img.yzcdn.cn/vant/cat.jpeg"
+    thumb="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
   />
   <template #right>
     <van-button square text="删除" type="danger" class="delete-button" />
@@ -83,7 +83,7 @@ app.use(SwipeCell);
 ```
 
 ```js
-import { Dialog } from 'vant';
+import { showConfirmDialog } from 'vant';
 
 export default {
   setup() {
@@ -96,9 +96,11 @@ export default {
           return true;
         case 'right':
           return new Promise((resolve) => {
-            Dialog.confirm({
+            showConfirmDialog({
               title: '确定删除吗？',
-            }).then(resolve);
+            })
+              .then(() => resolve(true))
+              .catch(() => resolve(false));
           });
       }
     };
@@ -114,7 +116,7 @@ export default {
 
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| name | 标识符，可以在事件参数中获取到 | _number \| string_ | `''` |
+| name | 标识符，通常为一个唯一的字符串或数字，可以在事件参数中获取到 | _number \| string_ | `''` |
 | left-width | 指定左侧滑动区域宽度，单位为 `px` | _number \| string_ | `auto` |
 | right-width | 指定右侧滑动区域宽度，单位为 `px` | _number \| string_ | `auto` |
 | before-close | 关闭前的回调函数，返回 `false` 可阻止关闭，支持返回 Promise | _(args) => boolean \| Promise\<boolean\>_ | - |
@@ -141,9 +143,10 @@ export default {
 
 beforeClose 的第一个参数为对象，对象中包含以下属性：
 
-| 参数名   | 说明             | 类型                                       |
-| -------- | ---------------- | ------------------------------------------ |
-| name     | 标识符           | _string \| number_                         |
+| 参数名 | 说明 | 类型 |
+| --- | --- | --- |
+| event `v4.9.4` | 触发关闭的事件对象 | _MouseEvent \| TouchEvent_ |
+| name | 标识符 | _string \| number_ |
 | position | 关闭时的点击位置 | _'left' \| 'right' \| 'cell' \| 'outside'_ |
 
 ### 方法
@@ -178,19 +181,6 @@ const swipeCellRef = ref<SwipeCellInstance>();
 
 swipeCellRef.value?.close();
 ```
-
-## 主题定制
-
-### 样式变量
-
-组件提供了下列 CSS 变量，可用于自定义样式，使用方法请参考 [ConfigProvider 组件](#/zh-CN/config-provider)。
-
-| 名称 | 默认值 | 描述 |
-| --- | --- | --- |
-| --van-switch-cell-padding-top | _var(--van-cell-vertical-padding) - 1px_ | - |
-| --van-switch-cell-padding-bottom | _var(--van-cell-vertical-padding) - 1px_ | - |
-| --van-switch-cell-large-padding-top | _var(--van-cell-large-vertical-padding) - 1px_ | - |
-| --van-switch-cell-large-padding-bottom | _var(--van-cell-large-vertical-padding) - 1px_ | - |
 
 ## 常见问题
 

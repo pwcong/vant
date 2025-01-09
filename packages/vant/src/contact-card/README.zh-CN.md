@@ -25,11 +25,11 @@ app.use(ContactCard);
 ```
 
 ```js
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
-    const onAdd = () => Toast('新增');
+    const onAdd = () => showToast('新增');
     return {
       onAdd,
     };
@@ -45,17 +45,17 @@ export default {
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { showToast } from 'vant';
 
 export default {
   setup() {
     const tel = ref('13000000000');
     const name = ref('张三');
-    const onEdit = () => Toast('edit');
+    const onEdit = () => showToast('edit');
     return {
       tel,
       name,
-      currentContact,
+      onEdit,
     };
   },
 };
@@ -71,12 +71,13 @@ export default {
 
 ### Props
 
-| 参数     | 说明                      | 类型     | 默认值       |
-| -------- | ------------------------- | -------- | ------------ |
-| type     | 卡片类型，可选值为 `edit` | _string_ | `add`        |
-| name     | 联系人姓名                | _string_ | -            |
-| tel      | 联系人手机号              | _string_ | -            |
-| add-text | 添加时的文案提示          | _string_ | `添加联系人` |
+| 参数     | 说明                      | 类型      | 默认值       |
+| -------- | ------------------------- | --------- | ------------ |
+| type     | 卡片类型，可选值为 `edit` | _string_  | `add`        |
+| name     | 联系人姓名                | _string_  | -            |
+| tel      | 联系人手机号              | _string_  | -            |
+| add-text | 添加时的文案提示          | _string_  | `添加联系人` |
+| editable | 是否可以编辑联系人        | _boolean_ | `true`       |
 
 ### Events
 
@@ -103,4 +104,4 @@ import type { ContactCardType, ContactCardProps } from 'vant';
 | --van-contact-card-padding           | _var(--van-padding-md)_     | -    |
 | --van-contact-card-add-icon-size     | _40px_                      | -    |
 | --van-contact-card-add-icon-color    | _var(--van-primary-color)_  | -    |
-| --van-contact-card-value-line-height | _var(--van-line-height-md)_ | -    |
+| --van-contact-card-title-line-height | _var(--van-line-height-md)_ | -    |

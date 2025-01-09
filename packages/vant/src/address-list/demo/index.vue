@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import VanAddressList from '..';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
-import { Toast } from '../../toast';
+import { useTranslate } from '../../../docs/site';
+import { showToast } from '../../toast';
 
 const t = useTranslate({
   'zh-CN': {
@@ -67,10 +67,10 @@ const t = useTranslate({
 
 const chosenAddressId = ref('1');
 const onAdd = () => {
-  Toast(t('add'));
+  showToast(t('add'));
 };
 const onEdit = (item: unknown, index: number) => {
-  Toast(`${t('edit')}:${index}`);
+  showToast(`${t('edit')}:${index}`);
 };
 </script>
 

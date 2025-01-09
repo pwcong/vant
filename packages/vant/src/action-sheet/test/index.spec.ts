@@ -23,7 +23,7 @@ test('should emit select event after clicking option', async () => {
 });
 
 test('should call callback function after clicking option', () => {
-  const callback = jest.fn();
+  const callback = vi.fn();
   const wrapper = mount(ActionSheet, {
     props: {
       show: true,
@@ -181,7 +181,7 @@ test('should render description correctly', () => {
   });
 
   expect(
-    wrapper.find('.van-action-sheet__description').html()
+    wrapper.find('.van-action-sheet__description').html(),
   ).toMatchSnapshot();
 });
 
@@ -209,7 +209,7 @@ test('should render description slot when match snapshot', () => {
   });
 
   expect(
-    wrapper.find('.van-action-sheet__description').html()
+    wrapper.find('.van-action-sheet__description').html(),
   ).toMatchSnapshot();
 });
 
@@ -230,7 +230,7 @@ test('should close after clicking option if close-on-click-action prop is true',
 });
 
 test('should emit click-overlay event and closed after clicking the overlay', () => {
-  const onClickOverlay = jest.fn();
+  const onClickOverlay = vi.fn();
   const wrapper = mount(ActionSheet, {
     props: {
       show: true,
@@ -251,14 +251,14 @@ test('should allow to control safe-area with safe-area-inset-bottom prop', async
   });
 
   expect(wrapper.find('.van-action-sheet').classes()).toContain(
-    'van-safe-area-bottom'
+    'van-safe-area-bottom',
   );
 
   await wrapper.setProps({
     safeAreaInsetBottom: false,
   });
   expect(wrapper.find('.van-action-sheet').classes()).not.toContain(
-    'van-safe-area-bottom'
+    'van-safe-area-bottom',
   );
 });
 

@@ -11,9 +11,12 @@ yarn add @vant/icons
 
 # with pnpm
 pnpm add @vant/icons
+
+# with Bun
+bun add @vant/icons
 ```
 
 ## Document
 
-- [Usage in Vue](https://youzan.github.io/vant/#/zh-CN/icon)
-- [Usage in Weapp](https://youzan.github.io/vant-weapp/#/icon)
+- [Usage in Vue](https://vant-ui.github.io/vant/#/zh-CN/icon)
+- [Usage in Weapp](https://vant-ui.github.io/vant-weapp/#/icon)

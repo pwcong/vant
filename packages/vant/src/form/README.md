@@ -109,13 +109,13 @@ export default {
 
 ```js
 import { ref } from 'vue';
-import { Toast } from 'vant';
+import { closeToast, showLoadingToast } from 'vant';
 
 export default {
   setup() {
     const value1 = ref('');
     const value2 = ref('');
-    const value3 = ref('');
+    const value3 = ref('abc');
     const value4 = ref('');
     const pattern = /\d{6}/;
 
@@ -125,11 +125,11 @@ export default {
 
     const asyncValidator = (val) =>
       new Promise((resolve) => {
-        Toast.loading('Validating...');
+        showLoadingToast('Validating...');
 
         setTimeout(() => {
-          Toast.clear();
-          resolve(/\d{6}/.test(val));
+          closeToast();
+          resolve(val === '1234');
         }, 1000);
       });
 
@@ -157,7 +157,7 @@ export default {
 ```html
 <van-field name="switch" label="Switch">
   <template #input>
-    <van-switch v-model="checked" size="20" />
+    <van-switch v-model="checked" />
   </template>
 </van-field>
 ```
@@ -308,7 +308,9 @@ import { ref } from 'vue';
 
 export default {
   setup() {
-    const value = ref([{ url: 'https://img.yzcdn.cn/vant/leaf.jpg' }]);
+    const value = ref([
+      { url: 'https://fastly.jsdelivr.net/npm/@vant/assets/leaf.jpeg' },
+    ]);
     return { value };
   },
 };
@@ -326,8 +328,9 @@ export default {
   placeholder="Select city"
   @click="showPicker = true"
 />
-<van-popup v-model:show="showPicker" position="bottom">
+<van-popup v-model:show="showPicker" destroy-on-close position="bottom">
   <van-picker
+    :model-value="pickerValue"
     :columns="columns"
     @confirm="onConfirm"
     @cancel="showPicker = false"
@@ -341,16 +344,25 @@ import { ref } from 'vue';
 export default {
   setup() {
     const result = ref('');
+    const pickerValue = ref([]);
     const showPicker = ref(false);
-    const columns = ['Delaware', 'Florida', 'Georqia', 'Indiana', 'Maine'];
+    const columns = [
+      { text: 'Delaware', value: 'Delaware' },
+      { text: 'Florida', value: 'Florida' },
+      { text: 'Georgia', value: 'Georgia' },
+      { text: 'Indiana', value: 'Indiana' },
+      { text: 'Maine', value: 'Maine' },
+    ];
 
-    const onConfirm = (value) => {
-      result.value = value;
+    const onConfirm = ({ selectedValues, selectedOptions }) => {
+      result.value = selectedOptions[0]?.text;
+      pickerValue.value = selectedValues;
       showPicker.value = false;
     };
 
     return {
       result,
+      pickerValue,
       columns,
       onConfirm,
       showPicker,
@@ -359,21 +371,21 @@ export default {
 };
 ```
 
-### Field Type - DatetimePicker
+### Field Type - DatePicker
 
 ```html
 <van-field
   v-model="result"
   is-link
   readonly
-  name="datetimePicker"
-  label="Datetime Picker"
-  placeholder="Select time"
+  name="datePicker"
+  label="Date Picker"
+  placeholder="Select date"
   @click="showPicker = true"
 />
-<van-popup v-model:show="showPicker" position="bottom">
-  <van-datetime-picker
-    type="time"
+<van-popup v-model:show="showPicker" destroy-on-close position="bottom">
+  <van-date-picker
+    :model-value="pickerValue"
     @confirm="onConfirm"
     @cancel="showPicker = false"
   />
@@ -387,14 +399,16 @@ export default {
   setup() {
     const result = ref('');
     const showPicker = ref(false);
-
-    const onConfirm = (value) => {
-      result.value = value;
+    const pickerValue = ref<string[]>([]);
+    const onConfirm = ({ selectedValues }) => {
+      result.value = selectedValues.join('/');
+      pickerValue.value = selectedValues;
       showPicker.value = false;
     };
 
     return {
       result,
+      pickerValue,
       onConfirm,
       showPicker,
     };
@@ -414,9 +428,10 @@ export default {
   placeholder="Select area"
   @click="showArea = true"
 />
-<van-popup v-model:show="showArea" position="bottom">
+<van-popup v-model:show="showArea" destroy-on-close position="bottom">
   <van-area
     :area-list="areaList"
+    :model-value="pickerValue"
     @confirm="onConfirm"
     @cancel="showArea = false"
   />
@@ -431,17 +446,19 @@ export default {
   setup() {
     const result = ref('');
     const showArea = ref(false);
-    const onConfirm = (areaValues) => {
+    const pickerValue = ref('');
+    const onConfirm = ({ selectedValues, selectedOptions }) => {
+      pickerValue.value = selectedValues.length
+        ? selectedValues[selectedValues.length - 1]
+        : '';
       showArea.value = false;
-      result.value = areaValues
-        .filter((item) => !!item)
-        .map((item) => item.name)
-        .join('/');
+      result.value = selectedOptions.map((item) => item.text).join('/');
     };
 
     return {
       result,
       areaList,
+      pickerValue,
       showArea,
       onConfirm,
     };
@@ -492,15 +509,17 @@ export default {
 | Attribute | Description | Type | Default |
 | --- | --- | --- | --- |
 | label-width | Field label width | _number \| string_ | `6.2em` |
-| label-align | Field label align, can be set to `center` `right` | _string_ | `left` |
+| label-align | Field label align, can be set to `center` `right` `top` | _string_ | `left` |
 | input-align | Field input align, can be set to `center` `right` | _string_ | `left` |
 | error-message-align | Error message align, can be set to `center` `right` | _string_ | `left` |
-| validate-trigger | When to validate the form，can be set to `onChange`、`onSubmit` | _string_ | `onBlur` |
+| validate-trigger | When to validate the form, can be set to `onChange`、`onSubmit`, supports using array to set multiple values | _string \| string[]_ | `onBlur` |
 | colon | Whether to display colon after label | _boolean_ | `false` |
 | disabled | Whether to disable form | _boolean_ | `false` |
 | readonly | Whether to be readonly | _boolean_ | `false` |
+| required `v4.7.3` | Whether to show required mark | _boolean \| 'auto'_ | `null` |
 | validate-first | Whether to stop the validation when a rule fails | _boolean_ | `false` |
 | scroll-to-error | Whether to scroll to the error field when validation failed | _boolean_ | `false` |
+| scroll-to-error-position `v4.9.2` | The position when scrolling to the wrong form item, can be set to `center` \| `end` \| `nearest` \| `start` | _string_ | - |
 | show-error | Whether to highlight input when validation failed | _boolean_ | `false` |
 | show-error-message | Whether to show error message when validation failed | _boolean_ | `true` |
 | submit-on-enter | Whether to submit form on enter | _boolean_ | `true` |
@@ -509,12 +528,13 @@ export default {
 
 | Key | Description | Type |
 | --- | --- | --- |
-| required | Whether to be a required field, the value is not allowed to be empty string, empty array, `undefined`, `null` | _boolean_ |
-| message | Error message | _string \| (value, rule) => string_ |
-| validator | Custom validator | _(value, rule) => boolean \| string \| Promise_ |
-| pattern | Regex pattern | _RegExp_ |
-| trigger | When to validate the form，can be set to `onChange`、`onBlur` | _string_ |
+| required | Whether to be a required field, the value is not allowed to be empty (empty string, empty array, `false`, `undefined`, `null`) | _boolean_ |
+| message | Error message, can be a function to dynamically return message content | _string \| (value, rule) => string_ |
+| validator | Custom validator, can return a Promise to validate dynamically | _(value, rule) => boolean \| string \| Promise_ |
+| pattern | Regexp pattern, if the regexp cannot match, means that the validation fails | _RegExp_ |
+| trigger | When to validate the form, priority is higher than the `validate-trigger` of the Form component, can be set to `onChange`, `onBlur`, `onSubmit` | _string \| string[]_ |
 | formatter | Format value before validate | _(value, rule) => any_ |
+| validateEmpty | Controls whether the `validator` and `pattern` options to verify empty values, the default value is `true`, you can set to `false` to disable this behavior | _boolean_ |
 
 ### validate-trigger
 
@@ -533,13 +553,15 @@ export default {
 
 ### Methods
 
-Use [ref](https://v3.vuejs.org/guide/component-template-refs.html) to get Form instance and call instance methods.
+Use [ref](https://vuejs.org/guide/essentials/template-refs.html) to get Form instance and call instance methods.
 
 | Name | Description | Attribute | Return value |
 | --- | --- | --- | --- |
 | submit | Submit form | - | - |
-| validate | Validate form | _name?: string \| string[]_ | _Promise_ |
+| getValues | Get current form values | - | _Record<string, unknown>_ |
+| validate | Validate form | _name?: string \| string[]_ | _Promise\<void\>_ |
 | resetValidation | Reset validation | _name?: string \| string[]_ | - |
+| getValidationStatus | Get validation status of all fields，status can be `passed`、`failed`、`unvalidated` | - | _Record\<string, FieldValidationStatus\>_ |
 | scrollToField | Scroll to field | _name: string, alignToTop: boolean_ | - |
 
 ### Types

@@ -4,6 +4,7 @@ import {
   onUnmounted,
   defineComponent,
   type PropType,
+  type TeleportProps,
   type CSSProperties,
   type ExtractPropTypes,
 } from 'vue';
@@ -26,20 +27,22 @@ import { Popup } from '../popup';
 import { Loading, LoadingType } from '../loading';
 
 // Types
-import type { ToastType, ToastPosition } from './types';
+import type { ToastType, ToastPosition, ToastWordBreak } from './types';
 
 const [name, bem] = createNamespace('toast');
 
 const popupInheritProps = [
   'show',
   'overlay',
+  'teleport',
   'transition',
   'overlayClass',
   'overlayStyle',
   'closeOnClickOverlay',
+  'zIndex',
 ] as const;
 
-const toastProps = {
+export const toastProps = {
   icon: String,
   show: Boolean,
   type: makeStringProp<ToastType>('text'),
@@ -48,6 +51,8 @@ const toastProps = {
   iconSize: numericProp,
   duration: makeNumberProp(2000),
   position: makeStringProp<ToastPosition>('middle'),
+  teleport: [String, Object] as PropType<TeleportProps['to']>,
+  wordBreak: String as PropType<ToastWordBreak>,
   className: unknownProp,
   iconPrefix: String,
   transition: makeStringProp('van-fade'),
@@ -57,6 +62,7 @@ const toastProps = {
   overlayStyle: Object as PropType<CSSProperties>,
   closeOnClick: Boolean,
   closeOnClickOverlay: Boolean,
+  zIndex: numericProp,
 };
 
 export type ToastProps = ExtractPropTypes<typeof toastProps>;
@@ -68,8 +74,8 @@ export default defineComponent({
 
   emits: ['update:show'],
 
-  setup(props, { emit }) {
-    let timer: NodeJS.Timeout;
+  setup(props, { emit, slots }) {
+    let timer: ReturnType<typeof setTimeout>;
     let clickable = false;
 
     const toggleClickable = () => {
@@ -115,9 +121,13 @@ export default defineComponent({
     const renderMessage = () => {
       const { type, message } = props;
 
+      if (slots.message) {
+        return <div class={bem('text')}>{slots.message()}</div>;
+      }
+
       if (isDef(message) && message !== '') {
         return type === 'html' ? (
-          <div class={bem('text')} innerHTML={String(message)} />
+          <div key={0} class={bem('text')} innerHTML={String(message)} />
         ) : (
           <div class={bem('text')}>{message}</div>
         );
@@ -135,7 +145,7 @@ export default defineComponent({
             updateShow(false);
           }, props.duration);
         }
-      }
+      },
     );
 
     onMounted(toggleClickable);
@@ -144,7 +154,11 @@ export default defineComponent({
     return () => (
       <Popup
         class={[
-          bem([props.position, { [props.type]: !props.icon }]),
+          bem([
+            props.position,
+            props.wordBreak === 'normal' ? 'break-normal' : props.wordBreak,
+            { [props.type]: !props.icon },
+          ]),
           props.className,
         ]}
         lockScroll={false}

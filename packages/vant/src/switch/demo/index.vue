@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import VanSwitch from '..';
 import VanCell from '../../cell';
+import VanIcon from '../../icon';
 import { ref } from 'vue';
-import { useTranslate } from '../../../docs/site/use-translate';
-import { Dialog } from '../../dialog';
+import { useTranslate } from '../../../docs/site';
+import { showConfirmDialog } from '../../dialog';
 
 const t = useTranslate({
   'zh-CN': {
@@ -12,6 +13,7 @@ const t = useTranslate({
     message: '是否切换开关？',
     withCell: '搭配单元格使用',
     customSize: '自定义大小',
+    customNode: '自定义按钮',
     customColor: '自定义颜色',
     asyncControl: '异步控制',
   },
@@ -21,6 +23,7 @@ const t = useTranslate({
     message: 'Are you sure to toggle switch?',
     withCell: 'Inside a Cell',
     customSize: 'Custom Size',
+    customNode: 'Custom Node',
     customColor: 'Custom Color',
     asyncControl: 'Async Control',
   },
@@ -33,7 +36,7 @@ const checked4 = ref(true);
 const checked5 = ref(true);
 
 const onUpdateValue = (checked: boolean) => {
-  Dialog.confirm({
+  showConfirmDialog({
     title: t('title'),
     message: t('message'),
   }).then(() => {
@@ -56,7 +59,7 @@ const onUpdateValue = (checked: boolean) => {
   </demo-block>
 
   <demo-block :title="t('customSize')">
-    <van-switch v-model="checked2" size="24px" />
+    <van-switch v-model="checked2" size="22px" />
   </demo-block>
 
   <demo-block :title="t('customColor')">
@@ -67,6 +70,16 @@ const onUpdateValue = (checked: boolean) => {
     />
   </demo-block>
 
+  <demo-block :title="t('customNode')">
+    <van-switch v-model="checked3">
+      <template #node>
+        <div class="icon-wrapper">
+          <van-icon :name="checked3 ? 'success' : 'cross'" />
+        </div>
+      </template>
+    </van-switch>
+  </demo-block>
+
   <demo-block :title="t('asyncControl')">
     <van-switch :model-value="checked4" @update:model-value="onUpdateValue" />
   </demo-block>
@@ -74,7 +87,7 @@ const onUpdateValue = (checked: boolean) => {
   <demo-block :title="t('withCell')">
     <van-cell center :title="t('title')">
       <template #right-icon>
-        <van-switch v-model="checked5" size="24" />
+        <van-switch v-model="checked5" />
       </template>
     </van-cell>
   </demo-block>
@@ -84,6 +97,25 @@ const onUpdateValue = (checked: boolean) => {
 .demo-switch {
   .van-switch {
     margin-left: var(--van-padding-md);
+  }
+
+  .icon-wrapper {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    font-size: 18px;
+
+    .van-icon {
+      line-height: 32px;
+    }
+
+    .van-icon-success {
+      color: var(--van-blue);
+    }
+
+    .van-icon-cross {
+      color: var(--van-gray-5);
+    }
   }
 }
 </style>

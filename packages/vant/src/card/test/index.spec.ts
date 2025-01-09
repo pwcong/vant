@@ -2,7 +2,7 @@ import { Card } from '..';
 import { mount } from '../../../test';
 
 test('should emit click event after clicked', () => {
-  const onClick = jest.fn();
+  const onClick = vi.fn();
   const wrapper = mount(Card, {
     props: {
       onClick,
@@ -12,7 +12,7 @@ test('should emit click event after clicked', () => {
   expect(onClick).toHaveBeenCalledTimes(1);
 });
 
-test('should emit click-thumb event after clicking thumb', () => {
+test('should emit clickThumb event after clicking thumb', () => {
   const wrapper = mount(Card, {
     props: {
       thumb: 'xx',
@@ -20,7 +20,7 @@ test('should emit click-thumb event after clicking thumb', () => {
   });
 
   wrapper.find('.van-card__thumb').trigger('click');
-  expect(wrapper.emitted('click-thumb')!).toHaveLength(1);
+  expect(wrapper.emitted('clickThumb')!).toHaveLength(1);
 });
 
 test('should render price and num slot correctly', () => {
@@ -85,4 +85,14 @@ test('should render price and price-top slot correctly', () => {
   });
 
   expect(wrapper.html()).toMatchSnapshot();
+});
+
+test('should render correctly when the price is an integer', () => {
+  const wrapper = mount(Card, {
+    props: {
+      price: 12,
+    },
+  });
+
+  expect(wrapper.find('.van-card__price').text()).toEqual('¥12');
 });

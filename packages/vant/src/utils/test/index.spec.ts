@@ -1,7 +1,7 @@
-import { get, noop } from '../basic';
+import { get, noop, isDef, isMobile, isNumeric } from '../basic';
 import { deepClone } from '../deep-clone';
 import { deepAssign } from '../deep-assign';
-import { isDef, isMobile, isNumeric } from '../validate';
+import { getContainingBlock } from '../dom';
 import { addUnit, unitToPx, camelize, formatNumber } from '../format';
 import { trigger } from '../../../test';
 
@@ -23,7 +23,7 @@ test('deepAssign', () => {
   expect(deepAssign({ noop: null }, { noop })).toEqual({ noop });
   expect(deepAssign({ foo: 0 }, { bar: 1 })).toEqual({ foo: 0, bar: 1 });
   expect(
-    deepAssign({ foo: { bar: false } }, { foo: { bar: true, foo: false } })
+    deepAssign({ foo: { bar: false } }, { foo: { bar: true, foo: false } }),
   ).toEqual({
     foo: {
       bar: true,
@@ -105,9 +105,7 @@ test('addUnit', () => {
 
 test('unitToPx', () => {
   const mockedStyle = { fontSize: '16px' } as CSSStyleDeclaration;
-  const spy = jest
-    .spyOn(window, 'getComputedStyle')
-    .mockReturnValue(mockedStyle);
+  const spy = vi.spyOn(window, 'getComputedStyle').mockReturnValue(mockedStyle);
 
   Object.defineProperty(window, 'innerWidth', { value: 100 });
   Object.defineProperty(window, 'innerHeight', { value: 200 });
@@ -120,6 +118,31 @@ test('unitToPx', () => {
   expect(unitToPx('10rem')).toEqual(160);
   expect(unitToPx('10vw')).toEqual(10);
   expect(unitToPx('10vh')).toEqual(20);
+
+  spy.mockRestore();
+});
+
+test('getContainingBlock', () => {
+  const root = document.createElement('div');
+  const parent = document.createElement('div');
+  const child = document.createElement('div');
+
+  root.appendChild(parent);
+  parent.appendChild(child);
+
+  const spy = vi.spyOn(window, 'getComputedStyle').mockImplementation((el) => {
+    if (el === root)
+      return {
+        transform: 'matrix(1, 1, -1, 1, 0, 0)',
+      } as CSSStyleDeclaration;
+
+    return {
+      transform: 'none',
+      perspective: 'none',
+    } as CSSStyleDeclaration;
+  });
+
+  expect(getContainingBlock(child)).toEqual(root);
 
   spy.mockRestore();
 });

@@ -8,6 +8,7 @@ import {
   type PropType,
   type CSSProperties,
   type ExtractPropTypes,
+  type TeleportProps,
 } from 'vue';
 
 // Utils
@@ -37,37 +38,46 @@ import { Popup, PopupCloseIconPosition } from '../popup';
 import ImagePreviewItem from './ImagePreviewItem';
 
 // Types
-import { ImagePreviewScaleEventParams } from './types';
+import {
+  ImagePreviewScaleEventParams,
+  ImagePreviewItemInstance,
+} from './types';
 
 const [name, bem] = createNamespace('image-preview');
 
 const popupProps = [
   'show',
+  'teleport',
   'transition',
   'overlayStyle',
   'closeOnPopstate',
 ] as const;
 
-const imagePreviewProps = {
+export const imagePreviewProps = {
   show: Boolean,
   loop: truthProp,
   images: makeArrayProp<string>(),
   minZoom: makeNumericProp(1 / 3),
   maxZoom: makeNumericProp(3),
   overlay: truthProp,
+  vertical: Boolean,
   closeable: Boolean,
   showIndex: truthProp,
   className: unknownProp,
   closeIcon: makeStringProp('clear'),
   transition: String,
   beforeClose: Function as PropType<Interceptor>,
+  doubleScale: truthProp,
   overlayClass: unknownProp,
   overlayStyle: Object as PropType<CSSProperties>,
   swipeDuration: makeNumericProp(300),
   startPosition: makeNumericProp(0),
   showIndicators: Boolean,
   closeOnPopstate: truthProp,
+  closeOnClickImage: truthProp,
+  closeOnClickOverlay: truthProp,
   closeIconPosition: makeStringProp<PopupCloseIconPosition>('top-right'),
+  teleport: [String, Object] as PropType<TeleportProps['to']>,
 };
 
 export type ImagePreviewProps = ExtractPropTypes<typeof imagePreviewProps>;
@@ -77,15 +87,17 @@ export default defineComponent({
 
   props: imagePreviewProps,
 
-  emits: ['scale', 'close', 'closed', 'change', 'update:show'],
+  emits: ['scale', 'close', 'closed', 'change', 'longPress', 'update:show'],
 
   setup(props, { emit, slots }) {
     const swipeRef = ref<SwipeInstance>();
+    const activedPreviewItemRef = ref<ImagePreviewItemInstance>();
 
     const state = reactive({
       active: 0,
       rootWidth: 0,
       rootHeight: 0,
+      disableZoom: false,
     });
 
     const resize = () => {
@@ -134,20 +146,39 @@ export default defineComponent({
       }
     };
 
+    const onDragStart = () => {
+      state.disableZoom = true;
+    };
+
+    const onDragEnd = () => {
+      state.disableZoom = false;
+    };
+
     const renderImages = () => (
       <Swipe
         ref={swipeRef}
         lazyRender
         loop={props.loop}
         class={bem('swipe')}
+        vertical={props.vertical}
         duration={props.swipeDuration}
         initialSwipe={props.startPosition}
         showIndicators={props.showIndicators}
         indicatorColor="white"
         onChange={setActive}
+        onDragEnd={onDragEnd}
+        onDragStart={onDragStart}
       >
-        {props.images.map((image) => (
+        {props.images.map((image, index) => (
           <ImagePreviewItem
+            v-slots={{
+              image: slots.image,
+            }}
+            ref={(item) => {
+              if (index === state.active) {
+                activedPreviewItemRef.value = item as ImagePreviewItemInstance;
+              }
+            }}
             src={image}
             show={props.show}
             active={state.active}
@@ -155,8 +186,14 @@ export default defineComponent({
             minZoom={props.minZoom}
             rootWidth={state.rootWidth}
             rootHeight={state.rootHeight}
+            disableZoom={state.disableZoom}
+            doubleScale={props.doubleScale}
+            closeOnClickImage={props.closeOnClickImage}
+            closeOnClickOverlay={props.closeOnClickOverlay}
+            vertical={props.vertical}
             onScale={emitScale}
             onClose={emitClose}
+            onLongPress={() => emit('longPress', { index })}
           />
         ))}
       </Swipe>
@@ -183,7 +220,12 @@ export default defineComponent({
     const swipeTo = (index: number, options?: SwipeToOptions) =>
       swipeRef.value?.swipeTo(index, options);
 
-    useExpose({ swipeTo });
+    useExpose({
+      resetScale: () => {
+        activedPreviewItemRef.value?.resetScale();
+      },
+      swipeTo,
+    });
 
     onMounted(resize);
 
@@ -191,7 +233,7 @@ export default defineComponent({
 
     watch(
       () => props.startPosition,
-      (value) => setActive(+value)
+      (value) => setActive(+value),
     );
 
     watch(
@@ -210,7 +252,7 @@ export default defineComponent({
             url: images[state.active],
           });
         }
-      }
+      },
     );
 
     return () => (

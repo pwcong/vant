@@ -20,6 +20,7 @@ import { popupSharedProps, popupSharedPropKeys } from '../popup/shared';
 const [name, bem] = createNamespace('action-sheet');
 
 export type ActionSheetAction = {
+  icon?: string;
   name?: string;
   color?: string;
   subname?: string;
@@ -29,7 +30,7 @@ export type ActionSheetAction = {
   className?: unknown;
 };
 
-const actionSheetProps = extend({}, popupSharedProps, {
+export const actionSheetProps = extend({}, popupSharedProps, {
   title: String,
   round: truthProp,
   actions: makeArrayProp<ActionSheetAction>(),
@@ -94,6 +95,12 @@ export default defineComponent({
       }
     };
 
+    const renderIcon = (action: ActionSheetAction) => {
+      if (action.icon) {
+        return <Icon class={bem('item-icon')} name={action.icon} />;
+      }
+    };
+
     const renderActionContent = (action: ActionSheetAction, index: number) => {
       if (action.loading) {
         return <Loading class={bem('loading-icon')} />;
@@ -135,6 +142,7 @@ export default defineComponent({
           class={[bem('item', { loading, disabled }), className]}
           onClick={onClick}
         >
+          {renderIcon(action)}
           {renderActionContent(action, index)}
         </button>
       );
