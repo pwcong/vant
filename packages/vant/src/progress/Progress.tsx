@@ -32,20 +32,23 @@ export default defineComponent({
 
   props: progressProps,
 
-  setup(props) {
+  setup(props, { slots }) {
     const background = computed(() =>
       props.inactive ? undefined : props.color,
     );
 
+    const format = (rate: Numeric) => Math.min(Math.max(+rate, 0), 100);
+
     const renderPivot = () => {
       const { textColor, pivotText, pivotColor, percentage } = props;
-      const text = pivotText ?? `${percentage}%`;
+      const safePercentage = format(percentage);
+      const text = pivotText ?? `${safePercentage}%`;
 
-      if (props.showPivot && text) {
+      if (props.showPivot && (slots.pivot || text)) {
         const style = {
           color: textColor,
-          left: `${+percentage}%`,
-          transform: `translate(-${+percentage}%,-50%)`,
+          left: `${safePercentage}%`,
+          transform: `translate(-${safePercentage}%,-50%)`,
           background: pivotColor || background.value,
         };
 
@@ -54,7 +57,7 @@ export default defineComponent({
             style={style}
             class={bem('pivot', { inactive: props.inactive })}
           >
-            {text}
+            {slots.pivot ? slots.pivot({ percentage: safePercentage }) : text}
           </span>
         );
       }
@@ -62,12 +65,13 @@ export default defineComponent({
 
     return () => {
       const { trackColor, percentage, strokeWidth } = props;
+      const safePercentage = format(percentage);
       const rootStyle = {
         background: trackColor,
         height: addUnit(strokeWidth),
       };
       const portionStyle = {
-        width: `${percentage}%`,
+        width: `${safePercentage}%`,
         background: background.value,
       };
 

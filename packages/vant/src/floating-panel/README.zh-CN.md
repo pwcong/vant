@@ -78,6 +78,33 @@ export default {
 </van-floating-panel>
 ```
 
+### 禁用磁力吸附
+
+默认情况下，拖拽结束后面板会自动吸附到最近的锚点。你可以通过 `magnetic` 属性来禁用这种磁力吸附行为。
+
+当 `magnetic` 设置为 `false` 时，面板在拖拽结束后不会自动吸附到锚点，但仍然会被约束在锚点定义的最小和最大边界范围内。
+
+```html
+<van-floating-panel :anchors="[100, 200, 300]" :magnetic="false">
+  <div style="text-align: center; padding: 15px">
+    <p>已禁用磁力吸附</p>
+    <p>面板可在边界范围内任意位置停留</p>
+  </div>
+</van-floating-panel>
+```
+
+### 禁用拖拽
+
+你可以通过 `draggable` 属性来禁用面板的拖拽功能。当设置为 `false` 时，面板将不可拖拽，同时头部拖拽栏也会被隐藏。
+
+```html
+<van-floating-panel :draggable="false">
+  <div style="text-align: center; padding: 15px">
+    <p>该面板不可拖拽</p>
+  </div>
+</van-floating-panel>
+```
+
 ## API
 
 ### Props
@@ -85,9 +112,11 @@ export default {
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | v-model:height | 当前面板的显示高度 | _number \| string_ | `0` |
-| anchors | 设置自定义锚点, 单位 `px` | _number[]_ | `[100, window.innerWidth * 0.6]` |
+| anchors | 设置自定义锚点, 单位 `px` | _number[]_ | `[100, window.innerHeight * 0.6]` |
 | duration | 动画时长，单位秒，设置为 0 可以禁用动画 | _number \| string_ | `0.3` |
+| magnetic | 是否启用磁力吸附到锚点。禁用后面板可在锚点边界范围内任意位置停留 | _boolean_ | `true` |
 | content-draggable | 允许拖拽内容容器 | _boolean_ | `true` |
+| draggable | 是否允许拖拽面板。禁用后头部拖拽栏会被隐藏 | _boolean_ | `true` |
 | lock-scroll `v4.6.4` | 当不拖拽时，是否锁定背景滚动 | _boolean_ | `false` |
 | safe-area-inset-bottom | 是否开启[底部安全区适配](#/zh-CN/advanced-usage#di-bu-an-quan-qu-gua-pei) | _boolean_ | `true` |
 

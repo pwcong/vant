@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import VanProgress from '..';
 import VanButton from '../../button';
+import VanIcon from '../../icon';
 import { ref } from 'vue';
 import { useTranslate } from '../../../docs/site';
 
@@ -8,12 +9,14 @@ const t = useTranslate({
   'zh-CN': {
     title2: '置灰',
     title3: '样式定制',
+    title4: '进度插槽内容',
     strokeWidth: '线条粗细',
     transition: '过渡效果',
   },
   'en-US': {
     title2: 'Inactive',
     title3: 'Custom Style',
+    title4: 'Pivot Slot',
     strokeWidth: 'Stroke Width',
     transition: 'Transition',
   },
@@ -21,14 +24,12 @@ const t = useTranslate({
 
 const percentage = ref(50);
 
-const format = (rate: number) => Math.min(Math.max(rate, 0), 100);
-
 const add = () => {
-  percentage.value = format(percentage.value + 20);
+  percentage.value = percentage.value + 20;
 };
 
 const reduce = () => {
-  percentage.value = format(percentage.value - 20);
+  percentage.value = percentage.value - 20;
 };
 </script>
 
@@ -54,6 +55,17 @@ const reduce = () => {
       pivot-color="#7232dd"
       color="linear-gradient(to right, #be99ff, #7232dd)"
     />
+  </demo-block>
+
+  <demo-block :title="t('title4')">
+    <van-progress :percentage="percentage">
+      <template #pivot="{ percentage: value }">
+        <span style="display: inline-flex; align-items: center">
+          <van-icon name="fire" />
+          <span style="margin-left: 2px">{{ value }}%</span>
+        </span>
+      </template>
+    </van-progress>
   </demo-block>
 
   <demo-block :title="t('transition')">
